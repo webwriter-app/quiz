@@ -21,5 +21,10 @@
 'sc56e9323f076a11e': `Текст за добавяне на пропуски`,
 'scd1dd6ff53d0d01a': `Опитайте отново`,
 'sd26e8d4eef55e341': `Проверете отговорите си`,
+'sb0aadaa04e658ad6': `Choice`,
+'s2ba5f4d8f3bd7c57': `Order`,
+'s2492f5fb1b05b45e': `Text`,
+'s49c940aecfef3ea0': `Mark`,
+'saa3efba1f0c816b7': `Speech`,
     };
   

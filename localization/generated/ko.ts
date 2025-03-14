@@ -21,5 +21,10 @@
 'sc56e9323f076a11e': `공백을 추가할 텍스트`,
 'scd1dd6ff53d0d01a': `다시 시도`,
 'sd26e8d4eef55e341': `답변 확인`,
+'sb0aadaa04e658ad6': `Choice`,
+'s2ba5f4d8f3bd7c57': `Order`,
+'s2492f5fb1b05b45e': `Text`,
+'s49c940aecfef3ea0': `Mark`,
+'saa3efba1f0c816b7': `Speech`,
     };
   

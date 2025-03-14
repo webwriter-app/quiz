@@ -49,6 +49,21 @@
         <source>Prompt</source>
         <target>Podpowiedź</target>
       </trans-unit>
+<trans-unit id="sb0aadaa04e658ad6">
+  <source>Choice</source>
+</trans-unit>
+<trans-unit id="s2ba5f4d8f3bd7c57">
+  <source>Order</source>
+</trans-unit>
+<trans-unit id="s2492f5fb1b05b45e">
+  <source>Text</source>
+</trans-unit>
+<trans-unit id="s49c940aecfef3ea0">
+  <source>Mark</source>
+</trans-unit>
+<trans-unit id="saa3efba1f0c816b7">
+  <source>Speech</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
