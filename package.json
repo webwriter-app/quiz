@@ -275,7 +275,7 @@
         },
         "./widgets/webwriter-task": {
             "isolating": true,
-            "content": "webwriter-task-prompt webwriter-task-hint? answer webwriter-task-explainer*",
+            "content": "webwriter-task-prompt webwriter-task-hint? answer",
             "uninsertable": true
         },
         "./widgets/webwriter-task-prompt": {

@@ -522,9 +522,9 @@ export class WebwriterTask extends LitElementWw {
         <span>${this.ordinalExpr}</span>
         <slot name="prompt"></slot>
         <div id="task-buttons">
-          <sl-icon-button class="author-only" id="feedback" src=${!this.explainers.length? IconPatchCheck: IconPatchCheckFill} @click=${() => this.toggleExplainers()}></sl-icon-button>
+          <sl-icon-button style="display: none" class="author-only" id="feedback" src=${!this.explainers.length? IconPatchCheck: IconPatchCheckFill} @click=${() => this.toggleExplainers()}></sl-icon-button>
           <sl-popup id="hint-popup" ?active=${this.hintOpen} placement="left" arrow auto-size shift @selectstart=${e => e.stopImmediatePropagation()}>
-            <sl-icon-button class="author-only" slot="anchor" id="hint" src=${!this.hasHintContent && !this.hintOpen? IconPatchQuestion: IconPatchQuestionFill} @click=${() => this.toggleHint()}></sl-icon-button>
+            <sl-icon-button slot="anchor" id="hint" src=${!this.hasHintContent && !this.hintOpen? IconPatchQuestion: IconPatchQuestionFill} @click=${() => this.toggleHint()}></sl-icon-button>
             <div id="hint-content">
               <slot name="hint" @slotchange=${this.handleHintSlotChange}></slot>
             </div>
