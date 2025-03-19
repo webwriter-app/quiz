@@ -142,7 +142,7 @@ export class WebwriterOrder extends LitElementWw {
     type: Boolean,
     label: {"en": "show Solution", "de": "Lösung anzeigen"},
   })
-  accessor showSolution = true
+  accessor showSolution = false
 
   observer: MutationObserver
 

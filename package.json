@@ -1,6 +1,6 @@
 {
     "name": "@webwriter/quiz",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "Add interactive tasks (multiple choice, order, free text, highlighting, or speech input). Make a quiz out of multiple tasks.",
     "keywords": [
         "webwriter-widget",
