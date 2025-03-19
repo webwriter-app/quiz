@@ -214,7 +214,6 @@ export class WebwriterQuiz extends LitElementWw {
   }
 
   handleReset = () => {
-    console.warn(this.tasks)
     this.tasks.forEach(task => task.handleReset())
     this.requestUpdate()
     this.submitted = false

@@ -460,7 +460,7 @@ export class WebwriterTask extends LitElementWw {
   }
 
   handleHintKeydown = (e: KeyboardEvent) => {
-    console.log(document.getSelection().anchorOffset === 0, this.hints.includes(document.getSelection().anchorNode.parentElement))
+    // console.log(document.getSelection().anchorOffset === 0, this.hints.includes(document.getSelection().anchorNode.parentElement))
     if(e.key === "Backspace" && document.getSelection().anchorOffset === 0 && this.hints.includes(document.getSelection().anchorNode.parentElement)) {
       this.hintOpen = false
       this.hint = false

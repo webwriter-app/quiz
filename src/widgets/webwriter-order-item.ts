@@ -367,7 +367,7 @@ export class WebwriterOrderItem extends LitElementWw {
 
   protected async updated(_changedProperties: PropertyValues) {
     if(_changedProperties.has("layout") && this.layout === "list") {
-      console.log("switched to list")
+      // console.log("switched to list")
       this.syncSize(true)
       this.observer?.disconnect()
       this.requestUpdate()

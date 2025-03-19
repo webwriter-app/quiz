@@ -93,19 +93,16 @@ export class WebwriterChoice extends LitElementWw {
 
     let itemActive: boolean = false
     this.items.forEach(item => {itemActive = itemActive || item.active})
-    console.log(itemActive)
     if(!itemActive){
       this.items.forEach(item => {item.valid = undefined; item.active = false; item.style.pointerEvents = "auto"})
       return
     }
-    console.warn("h")
     if(!this.solution) {
       this.items.forEach(item => item.valid = true)
       return
     }
     this.items.forEach(item => {
         item.valid = (this.solution ?? []).includes(item.id)
-        console.log(this.solution, item.active, item.valid)
         if(item.active != item.valid && !this.showSolution){
           this.items.forEach(item => {
             item.showSolution = false

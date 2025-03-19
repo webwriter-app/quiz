@@ -272,11 +272,9 @@ export class WebwriterOrder extends LitElementWw {
 
   
   reportSolution() {
-    console.log(this.solution, this.items)
     this.solution.forEach((id, i) => (this.querySelector(`#${id}`) as any).validOrder = i)
     if(!this.showSolution){
       this.items.forEach(item => {
-        console.log(item.validOrder, this.solution.indexOf(item.id))
         if(this.items.indexOf(item) != this.solution.indexOf(item.id)){
           this.items.forEach(i => {
             i.showSolution = false
