@@ -132,11 +132,17 @@ export class WebwriterOrder extends LitElementWw {
   }
 
   @property({type: Boolean, attribute: true, reflect: true}) //@ts-ignore
-  @option({type: Boolean, label: {_: "Hide order buttons"}})
+  @option({type: Boolean, label: {"en": "Hide order buttons", "de": "Pfeile zum Verschieben verstecken"}})
   set hideOrderButtons(value: boolean) {
     this.items.forEach(item => item.hideOrderButtons = value)
   }
 
+  @property({type: Boolean, attribute: true, reflect: true})
+  @option({
+    type: Boolean,
+    label: {"en": "show Solution", "de": "Lösung anzeigen"},
+  })
+  accessor showSolution = true
 
   observer: MutationObserver
 
@@ -266,12 +272,33 @@ export class WebwriterOrder extends LitElementWw {
 
   
   reportSolution() {
+    console.log(this.solution, this.items)
     this.solution.forEach((id, i) => (this.querySelector(`#${id}`) as any).validOrder = i)
+    if(!this.showSolution){
+      this.items.forEach(item => {
+        console.log(item.validOrder, this.solution.indexOf(item.id))
+        if(this.items.indexOf(item) != this.solution.indexOf(item.id)){
+          this.items.forEach(i => {
+            i.showSolution = false
+          })
+        }
+      })
+    }
+    this.items.forEach(item=>{
+      item.style.pointerEvents="none"
+    })
   }
 
   reset() {
     this.solution = undefined
     this.shuffleItems()
+    this.items.forEach(item=>{
+      item.style.pointerEvents="auto"
+    })
+  }
+
+  protected firstUpdated(_changedProperties: PropertyValues): void {
+      this.showSolution = this.showSolution
   }
 
   render() {

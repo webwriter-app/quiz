@@ -48,7 +48,6 @@ export class WebwriterChoice extends LitElementWw {
   })
   accessor mode: "truefalse" | "single" | "multiple" = "single"
 
-
   get layout(): "list" | "tiles" {
     return this.children?.item(0)?.getAttribute("layout") as any ?? "list"
   }
@@ -69,10 +68,16 @@ export class WebwriterChoice extends LitElementWw {
   @property({type: Boolean, attribute: true, reflect: true})
   @option({
     type: Boolean,
-    label: {"en": "Random Choice Order"}
+    label: {"en": "Random Choice Order", "de": "Zufällige Reihenfolge"}
   })
   accessor randomOrder = false
 
+  @property({type: Boolean, attribute: true, reflect: true})
+  @option({
+    type: Boolean,
+    label: {"en": "show Solution", "de": "Lösung anzeigen"},
+  })
+  accessor showSolution = false
 
   get solution() {
     const validIDs = this.items.filter(item => item.valid).map(item => item.id)
@@ -85,15 +90,35 @@ export class WebwriterChoice extends LitElementWw {
 
   
   reportSolution() {
+
+    let itemActive: boolean = false
+    this.items.forEach(item => {itemActive = itemActive || item.active})
+    console.log(itemActive)
+    if(!itemActive){
+      this.items.forEach(item => {item.valid = undefined; item.active = false; item.style.pointerEvents = "auto"})
+      return
+    }
+    console.warn("h")
     if(!this.solution) {
       this.items.forEach(item => item.valid = true)
       return
     }
-    this.items.forEach(item => item.valid = (this.solution ?? []).includes(item.id))
+    this.items.forEach(item => {
+        item.valid = (this.solution ?? []).includes(item.id)
+        console.log(this.solution, item.active, item.valid)
+        if(item.active != item.valid && !this.showSolution){
+          this.items.forEach(item => {
+            item.showSolution = false
+          })
+        }
+        item.style.pointerEvents = "none"
+      }
+    )
+
   }
 
   reset() {
-    this.items.forEach(item => {item.valid = undefined; item.active = false})
+    this.items.forEach(item => {item.valid = undefined; item.active = false; item.showSolution = true; item.style.pointerEvents = "auto"})
     this.shuffleItems()
   }
 

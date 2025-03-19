@@ -26,6 +26,9 @@ export class WebwriterChoiceItem extends LitElementWw {
   localize = LOCALIZE
 
   @property({type: Boolean, attribute: false})
+  accessor showSolution = true
+
+  @property({type: Boolean, attribute: false})
   accessor active = false
 
   @property({type: Boolean, attribute: false})
@@ -242,7 +245,7 @@ export class WebwriterChoiceItem extends LitElementWw {
 
   render() {
     return keyed(this.layout, html`
-      ${this.valid !== undefined && (this.active || !this.active && this.valid)? html`<sl-icon class="solution user-only" ?data-valid=${this.valid} src=${this.valid? IconCheck: IconX}></sl-icon>`: null}
+      ${this.showSolution && this.valid !== undefined && (this.active || !this.active && this.valid)? html`<sl-icon class="solution user-only" ?data-valid=${this.valid} src=${this.valid? IconCheck: IconX}></sl-icon>`: null}
       <sl-checkbox class=${classMap({valid: this.valid, active: this.active})} exportparts="base, control, label" @click=${this.handleClick} @sl-change=${this.handleChange} ?checked=${this.isContentEditable? this.valid: this.active}>
         <slot part="slot" style=${styleMap({"--ww-placeholder": `"${msg("Option")}"`})}></slot>
       </sl-checkbox>

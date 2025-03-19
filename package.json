@@ -1,6 +1,6 @@
 {
     "name": "@webwriter/quiz",
-    "version": "1.0.10",
+    "version": "1.1.1",
     "description": "Add interactive tasks (multiple choice, order, free text, highlighting, or speech input). Make a quiz out of multiple tasks.",
     "keywords": [
         "webwriter-widget",
@@ -77,6 +77,7 @@
             "source": "./src/widgets/webwriter-quiz.ts",
             "default": "./dist/widgets/webwriter-quiz.*"
         },
+        "./snippets/blank.html": "./src/snippets/blank.html",
         "./snippets/choice.html": "./src/snippets/choice.html",
         "./snippets/order.html": "./src/snippets/order.html",
         "./snippets/text.html": "./src/snippets/text.html",
@@ -151,6 +152,9 @@
     },
     "editingConfig": {
         ".": {
+            "label": {
+                "_": "Quiz"
+            },
             "description": {
                 "de": "Fügen Sie interaktive Aufgaben hinzu (Multiple Choice, Reihenfolge, freier Text, Hervorhebung oder Spracheingabe). Erstellen Sie ein Quiz aus mehreren Aufgaben."
             }
@@ -248,7 +252,8 @@
             "uninsertable": true
         },
         "./widgets/webwriter-quiz": {
-            "content": "webwriter-task*"
+            "content": "webwriter-task*",
+            "uninsertable": true
         }
     }
 }

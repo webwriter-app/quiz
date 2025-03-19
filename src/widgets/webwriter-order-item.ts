@@ -33,6 +33,9 @@ export class WebwriterOrderItem extends LitElementWw {
     "sl-icon-button": SlIconButton
   }
 
+  @property({attribute: false, type: Boolean})
+  accessor showSolution = true
+
   @property({attribute: true, reflect: true, converter: {toAttribute: (v: boolean) => v? "true": "false", fromAttribute: (attr: string) => attr === "true"}})
   accessor draggable = true
 
@@ -420,7 +423,7 @@ export class WebwriterOrderItem extends LitElementWw {
   render() {
     const solution = this.validOrder !== undefined? html`<span class="solution" ?data-valid=${this.elementIndex === this.validOrder}>${this.validOrder + 1}</span>`: null
     return html`<ol part="base" start=${this.elementIndex + 1}>
-      ${this.layout === "list"? solution: null}
+      ${this.layout === "list" && this.showSolution ? solution: null}
       <li id="main-li">
         <slot id="content" style=${styleMap({"--ww-placeholder": `"${msg("Option")}"`, "--offset": `${this.contentSlotEl?.offsetLeft + 1}px`})}></slot>
       </li>
@@ -431,7 +434,7 @@ export class WebwriterOrderItem extends LitElementWw {
     </ol>
     <ol id="count" start=${this.elementIndex + 1}>
       <li ?data-two-digit=${this.elementIndex + 1 >= 10}></li>
-      ${this.layout === "tiles"? solution: null}
+      ${this.layout === "tiles" && this.showSolution? solution: null}
     </ol>
     <div id="handle"></div>`
   }

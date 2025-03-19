@@ -1,4 +1,4 @@
-import {html, css} from "lit"
+import {html, css, PropertyValues} from "lit"
 import {LitElementWw, option} from "@webwriter/lit"
 import {customElement, property, query} from "lit/decorators.js"
 import {ifDefined} from "lit/directives/if-defined.js"
@@ -37,6 +37,26 @@ export class WebwriterText extends LitElementWw {
   @property({type: String, attribute: true, reflect: true})
   @option()
   accessor placeholder: string
+
+  @property({type: Boolean, attribute: true, reflect: true})
+  @option({
+    type: Boolean,
+    label: {"en": "Ignore capitalization", "de": "Großschreibung ignorieren"},
+  })
+  accessor ignoreCase = false
+
+  @property({type: Boolean, attribute: true, reflect: true})
+  @option({
+    type: Boolean,
+    label: {"en": "show Solution", "de": "Lösung anzeigen"},
+  })
+  accessor showSolution = false
+
+  @property({type: String, attribute: true, reflect: true})
+  @option({
+    label: {"en": "Message for wrong solution", "de": "Nachricht bei falscher Lösung"},
+  })
+  accessor wrongMessage: string
 
   @property({type: String, attribute: true, reflect: true})
   accessor value: string
@@ -84,11 +104,11 @@ export class WebwriterText extends LitElementWw {
     }
 
     #solution[data-correct] {
-      background: var(--sl-color-success-200);
+      background-color: var(--sl-color-success-200);
     }
 
     #solution:not([data-correct]) {
-      background: var(--sl-color-danger-200);
+      background-color: var(--sl-color-danger-200);
     }
   `
 
@@ -125,12 +145,12 @@ export class WebwriterText extends LitElementWw {
   accessor solution: string
 
   render() {
-    const correct = this.solution && this.value?.trim() === this.solution
+    const correct = !this.ignoreCase ? this.solution && this.value?.trim() === this.solution : this.solution && this.value?.trim().toLowerCase() === this.solution.toLowerCase()
     const textarea = html`<sl-textarea ?data-correct=${correct} value=${this.isContentEditable? this.solution: this.value} placeholder=${this.placeholder} resize="none" @sl-change=${this.handleChange}></sl-textarea>`
     const input = html`<sl-input ?data-correct=${correct} value=${this.isContentEditable? this.solution: this.value} placeholder=${this.placeholder} type=${this.type} @sl-change=${this.handleChange}></sl-input>`
     return html`
       ${this.type === "long-text"? textarea: input}
-      ${this.solution && !this.isContentEditable && !correct? html`<div id="solution" ?data-correct=${correct}>${this.solution}</div>`: undefined}
+      ${this.solution && !this.isContentEditable && !correct? html`<div id="solution" ?data-correct=${correct}>${this.showSolution?this.solution:html`<i>${this.wrongMessage}</i>`}</div>`: undefined}
     `
   }
 }
