@@ -72,12 +72,17 @@ export class WebwriterChoice extends LitElementWw {
   })
   accessor randomOrder = false
 
-  @property({type: Boolean, attribute: true, reflect: true})
+  @property({type: String, attribute: true, reflect: true})
   @option({
-    type: Boolean,
-    label: {"en": "show Solution", "de": "Lösung anzeigen"},
+    type: "select",
+    label: {"de": "Lösung anzeigen", "en": "Show solution"},
+    options: [
+      {value: "right", label: {"en": "Right answers", "de": "Korrekte Antworten"}},
+      {value: "both", label: {"en": "all (indicator)", "de": "Alle (Indikator)"}},
+      {value: "full", label: {"en": "all (conclusive)", "de": "Alle (vollständig)"}}
+    ],
   })
-  accessor showSolution = false
+  accessor showSolution = "right"
 
   get solution() {
     const validIDs = this.items.filter(item => item.valid).map(item => item.id)
@@ -90,7 +95,7 @@ export class WebwriterChoice extends LitElementWw {
 
   
   reportSolution() {
-
+    console.log(this.solution, this.items)
     let itemActive: boolean = false
     this.items.forEach(item => {itemActive = itemActive || item.active})
     if(!itemActive){
@@ -101,21 +106,32 @@ export class WebwriterChoice extends LitElementWw {
       this.items.forEach(item => item.valid = true)
       return
     }
+    let wrongSolution: boolean = false
     this.items.forEach(item => {
+      console.log(!(item.active === item.valid), item.active, item.valid)
         item.valid = (this.solution ?? []).includes(item.id)
-        if(item.active != item.valid && !this.showSolution){
-          this.items.forEach(item => {
-            item.showSolution = false
-          })
+        if(item.active != item.valid){
+          wrongSolution = true
+          if(this.showSolution != "full"){
+            this.items.forEach(item => {
+              item.showSolution = false
+            })
+          }
         }
         item.style.pointerEvents = "none"
       }
     )
-
+    if(wrongSolution){
+      if(this.showSolution != "right"){
+        this.style.backgroundColor = "#F9B5C4"
+      }
+    }else{
+      this.style.backgroundColor = "#BCE194"
+    }
   }
 
   reset() {
-    this.items.forEach(item => {item.valid = undefined; item.active = false; item.showSolution = true; item.style.pointerEvents = "auto"})
+    this.items.forEach(item => {item.valid = undefined; item.active = false; item.showSolution = true; item.style.pointerEvents = "auto", this.style.backgroundColor = ""})
     this.shuffleItems()
   }
 

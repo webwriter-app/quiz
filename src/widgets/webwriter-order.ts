@@ -103,11 +103,11 @@ export class WebwriterOrder extends LitElementWw {
       align-items: center;
       justify-content: center;
     }
-
-
+// broken for some reason o.O
+/* 
     :host(:not([contenteditable=true]):not([contenteditable=""])) .author-only {
       display: none;
-    }
+    } */
   `
 
   get layout(): "list" | "tiles" {
@@ -137,12 +137,17 @@ export class WebwriterOrder extends LitElementWw {
     this.items.forEach(item => item.hideOrderButtons = value)
   }
 
-  @property({type: Boolean, attribute: true, reflect: true})
+  @property({type: String, attribute: true, reflect: true})
   @option({
-    type: Boolean,
-    label: {"en": "show Solution", "de": "Lösung anzeigen"},
+    type: "select",
+    label: {"de": "Lösung anzeigen", "en": "Show solution"},
+    options: [
+      {value: "right", label: {"en": "Right answers", "de": "Korrekte Antworten"}},
+      {value: "both", label: {"en": "all (indicator)", "de": "Alle (Indikator)"}},
+      {value: "full", label: {"en": "all (conclusive)", "de": "Alle (vollständig)"}}
+    ],
   })
-  accessor showSolution = false
+  accessor showSolution = "right"
 
   observer: MutationObserver
 
@@ -273,14 +278,23 @@ export class WebwriterOrder extends LitElementWw {
   
   reportSolution() {
     this.solution.forEach((id, i) => (this.querySelector(`#${id}`) as any).validOrder = i)
-    if(!this.showSolution){
-      this.items.forEach(item => {
-        if(this.items.indexOf(item) != this.solution.indexOf(item.id)){
+    let wrongSolution: boolean = false
+    this.items.forEach(item => {
+      if(this.items.indexOf(item) != this.solution.indexOf(item.id)){
+        wrongSolution = true
+        if(this.showSolution != "full"){
           this.items.forEach(i => {
             i.showSolution = false
           })
         }
-      })
+      }
+    })
+    if(wrongSolution){
+      if(this.showSolution != "right"){
+        this.style.backgroundColor = "#F9B5C4"
+      }
+    }else{
+      this.style.backgroundColor = "#BCE194"
     }
     this.items.forEach(item=>{
       item.style.pointerEvents="none"
@@ -289,6 +303,7 @@ export class WebwriterOrder extends LitElementWw {
 
   reset() {
     this.solution = undefined
+    this.style.backgroundColor = ""
     this.shuffleItems()
     this.items.forEach(item=>{
       item.style.pointerEvents="auto"
@@ -302,9 +317,11 @@ export class WebwriterOrder extends LitElementWw {
   render() {
     return html`
       <slot id="items-slot" @webwriter-clear-drop-preview=${this.clearDropPreviews}></slot>
-      <sl-button size="small" id="add-option" class="author-only" @click=${() => this.addItem()}>
+      ${this.hasAttribute("contenteditable")?html`
+      <sl-button size="small" id="add-option" @click=${() => this.addItem()}>
         <sl-icon src=${IconPlus}></sl-icon><span>${msg("Add Option")}</span>
       </sl-button>
+      `:""}
     `
   }
 }
