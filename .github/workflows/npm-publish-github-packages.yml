@@ -11,13 +11,14 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
-      - run: npm install -g @webwriter/build 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           registry-url: 'https://npm.pkg.github.com/'
           scope: '@webwriter'
-      - run: 'npm_config_registry=https://registry.npmjs.org/ npm install @webwriter/build -g'
+      - run: npm config set registry https://registry.npmjs.org/
+      - run: npm install @webwriter/build -g
+      - run: npm config set registry https://npm.pkg.github.com/
       - run: npm ci
       - run: npm publish --access public
         env:
