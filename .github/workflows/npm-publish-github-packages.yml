@@ -23,6 +23,7 @@ jobs:
       - run: npm config set registry=https://npm.pkg.github.com/
         if: always()
       - run: npm config set '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}'
+        if: always()
       - run: npm publish --access public --ignore-scripts
         if: always()
         env:
