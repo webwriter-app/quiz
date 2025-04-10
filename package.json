@@ -53,6 +53,7 @@
         "dev": "npx @webwriter/build dev",
         "localize": "lit-localize extract && npx @webwriter/build localize && lit-localize build"
     },
+    "repository": "https://github.com/webwriter-app/quiz",
     "dependencies": {
         "@shoelace-style/shoelace": "^2.13.1",
         "@shopify/draggable": "^1.1.3",
