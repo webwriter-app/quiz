@@ -22,7 +22,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - run: npm config set registry=https://npm.pkg.github.com/
         if: always()
-      - run: npm publish --access public --no-scripts
+      - run: npm publish --access public --ignore-scripts
         if: always()
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
