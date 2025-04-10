@@ -4,7 +4,7 @@ on:
   release:
     types: [published]
 jobs: 
-  publish:
+  publish-npm:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -19,13 +19,19 @@ jobs:
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - run: |
-          npm config set @webwriter:registry=https://npm.pkg.github.com
-          npm config set //npm.pkg.github.com:_authToken '${NODE_AUTH_TOKEN}'
-        if: always()
-      - run: npm install npm@11 -g
-        if: always()
-      - run: npm publish --access public --ignore-scripts
-        if: always()
+
+  publish-gpr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://npm.pkg.github.com/'
+      - run: npm ci
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
