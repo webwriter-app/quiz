@@ -16,9 +16,9 @@ jobs:
           node-version: 20
           registry-url: 'https://npm.pkg.github.com/'
           scope: '@webwriter'
-      - run: npm config set registry https://registry.npmjs.org/
+      - run: npm config set registry @webwriter:https://registry.npmjs.org/
       - run: npm install @webwriter/build -g
-      - run: npm config set registry https://npm.pkg.github.com/
+      - run: npm config set registry @webwriter:https://npm.pkg.github.com/
       - run: npm ci
       - run: npm publish --access public
         env:
