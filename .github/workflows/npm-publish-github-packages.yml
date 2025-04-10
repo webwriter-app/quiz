@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: 20
           registry-url: 'https://npm.pkg.github.com/'
-          scope: '@webwriter'
+          scope: '@webwriter-app'
       - run: npm install -g npm@11
       - run: npm config set @webwriter:registry='https://registry.npmjs.org/'
       - run: npm ci
