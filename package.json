@@ -49,7 +49,7 @@
     "license": "MIT",
     "author": "Frederic Salmen <frederic@fsalmen.de>",
     "scripts": {
-        "prepublishOnly": "npx @webwriter/build",
+        "prepare": "npx @webwriter/build",
         "dev": "npx @webwriter/build dev",
         "localize": "lit-localize extract && npx @webwriter/build localize && lit-localize build"
     },
