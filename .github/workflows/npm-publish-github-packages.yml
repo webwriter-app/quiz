@@ -37,7 +37,7 @@ jobs:
       - run: npm ci
       - run: npm run prepare --if-present
       - run: npm config set @webwriter:registry='https://npm.pkg.github.com/'
-      - run: npm pkg set name='@webwriter-app/$(awk -F/ '{print $2}' <<< npm pkg get name)'
+      - run: npm pkg set name="@webwriter-app/$(awk -F/ '{print $2}' <<< npm pkg get name)"
       - run: npm publish --access public --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
