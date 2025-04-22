@@ -21,6 +21,7 @@
 'sc56e9323f076a11e': `Текст для добавления пробелов`,
 'scd1dd6ff53d0d01a': `Попробуйте еще раз`,
 'sd26e8d4eef55e341': `Проверьте свои ответы`,
+'saf8b589e65febbd2': `Save answer`,
 'sb0aadaa04e658ad6': `Choice`,
 's2ba5f4d8f3bd7c57': `Order`,
 's2492f5fb1b05b45e': `Text`,

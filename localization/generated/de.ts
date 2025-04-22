@@ -26,5 +26,6 @@
 'sc56e9323f076a11e': `Text zum Hinzufügen von Lücken`,
 'scd1dd6ff53d0d01a': `Erneut versuchen`,
 'sd26e8d4eef55e341': `Überprüfen Sie Ihre Antworten`,
+'saf8b589e65febbd2': `Save answer`,
     };
   

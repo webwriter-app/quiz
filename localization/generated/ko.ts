@@ -21,6 +21,7 @@
 'sc56e9323f076a11e': `공백을 추가할 텍스트`,
 'scd1dd6ff53d0d01a': `다시 시도`,
 'sd26e8d4eef55e341': `답변 확인`,
+'saf8b589e65febbd2': `Save answer`,
 'sb0aadaa04e658ad6': `Choice`,
 's2ba5f4d8f3bd7c57': `Order`,
 's2492f5fb1b05b45e': `Text`,

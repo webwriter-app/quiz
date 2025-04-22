@@ -468,6 +468,10 @@ export class WebwriterTask extends LitElementWw {
   }
 
   handleSubmit = async () => {
+    if(this.answer.freeText === true){
+      let submitButton: SlButton = this.shadowRoot.getElementById("submit") as SlButton
+      submitButton.style.visibility = "hidden"
+    }
     await this.#decodeSolution()
     this.answer.reportSolution()
     this.dispatchEvent(new SubmitEvent("submit", {bubbles: true, composed: true}))
@@ -476,8 +480,12 @@ export class WebwriterTask extends LitElementWw {
   }
 
   handleReset = () => {
+    if(this.answer.freeText === true){
+      let submitButton: SlButton = this.shadowRoot.getElementById("submit") as SlButton
+      submitButton.style.visibility = "visible"
+    }
     this.answer.reset && this.answer.reset()
-    this.isChanged = false
+    this.isChanged = this.answer.freeText === true ? this.isChanged : false
     this.submitted = false
   }
 
@@ -538,8 +546,8 @@ export class WebwriterTask extends LitElementWw {
       </sl-tab-group>
       ${!this.directSubmit || !this.answer?.reportSolution? null: html`
         <sl-button-group class="user-only user-actions">
-          <sl-button id="submit" @click=${this.handleSubmit}>${msg("Check your answers")}</sl-button>
-          <sl-button ?disabled=${!this.isChanged && !this.submitted} id="reset" class="user-only" @click=${this.handleReset}>${msg("Try again")}</sl-button>
+          <sl-button id="submit" @click=${this.handleSubmit}>${this.answer.freeText != true ? msg("Check your answers") : msg("Save answer")}</sl-button>
+          <sl-button ?disabled=${!this.isChanged && !this.submitted} id="reset" class="user-only" @click=${this.handleReset}>${this.answer.freeText != true ? msg("Try again") : msg("Reset")}</sl-button>
         </sl-button-group>
       `}
     `

@@ -21,6 +21,7 @@
 'sc56e9323f076a11e': `Tekst, millele lisada lüngad`,
 'scd1dd6ff53d0d01a': `Proovi uuesti`,
 'sd26e8d4eef55e341': `Kontrollige oma vastuseid`,
+'saf8b589e65febbd2': `Save answer`,
 'sb0aadaa04e658ad6': `Choice`,
 's2ba5f4d8f3bd7c57': `Order`,
 's2492f5fb1b05b45e': `Text`,

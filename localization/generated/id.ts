@@ -21,6 +21,7 @@
 'sc56e9323f076a11e': `Teks yang akan ditambahkan celah`,
 'scd1dd6ff53d0d01a': `Coba lagi`,
 'sd26e8d4eef55e341': `Periksa jawaban Anda`,
+'saf8b589e65febbd2': `Save answer`,
 'sb0aadaa04e658ad6': `Choice`,
 's2ba5f4d8f3bd7c57': `Order`,
 's2492f5fb1b05b45e': `Text`,

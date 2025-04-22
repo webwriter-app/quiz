@@ -69,6 +69,9 @@
   <source>Speech</source>
   <target>Sprechen</target>
 </trans-unit>
+<trans-unit id="saf8b589e65febbd2">
+  <source>Save answer</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

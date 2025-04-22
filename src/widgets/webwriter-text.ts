@@ -1,4 +1,4 @@
-import {html, css, PropertyValues} from "lit"
+import {html, css, PropertyValues, TemplateResult} from "lit"
 import {LitElementWw, option} from "@webwriter/lit"
 import {customElement, property, query} from "lit/decorators.js"
 import {ifDefined} from "lit/directives/if-defined.js"
@@ -37,6 +37,13 @@ export class WebwriterText extends LitElementWw {
   @property({type: String, attribute: true, reflect: true})
   @option()
   accessor placeholder: string
+
+  @property({type: Boolean, attribute: true, reflect: true})
+  @option({
+    type: Boolean,
+    label: {"en": "free answer (ignores the other options)", "de": "Freitext (ignoriert andere Optionen)"},
+  })
+  accessor freeText = false
 
   @property({type: Boolean, attribute: true, reflect: true})
   @option({
@@ -136,18 +143,32 @@ export class WebwriterText extends LitElementWw {
 
   reset() {
     this.solution = undefined
-    this.input.value = ""
+    if(!this.freeText){
+      this.input.value = ""
+    }
+    
+    
+    let inputElem: SlTextarea | SlInput = this.shadowRoot.getElementById("inputElem") as SlTextarea | SlInput
+    inputElem.disabled = false
   }
 
-  reportSolution() {}
+  reportSolution() {
+    let inputElem: SlTextarea | SlInput = this.shadowRoot.getElementById("inputElem") as SlTextarea | SlInput
+    inputElem.disabled = true
+  }
 
   @property({type: String, attribute: false, reflect: false})
   accessor solution: string
 
   render() {
-    const correct = !this.ignoreCase ? this.solution && this.value?.trim() === this.solution : this.solution && this.value?.trim().toLowerCase() === this.solution.toLowerCase()
-    const textarea = html`<sl-textarea ?data-correct=${correct} value=${this.isContentEditable? this.solution: this.value} placeholder=${this.placeholder} resize="none" @sl-change=${this.handleChange}></sl-textarea>`
-    const input = html`<sl-input ?data-correct=${correct} value=${this.isContentEditable? this.solution: this.value} placeholder=${this.placeholder} type=${this.type} @sl-change=${this.handleChange}></sl-input>`
+    const correct = this.freeText ? this.value?.trim() != "" : !this.ignoreCase ? this.solution && this.value?.trim() === 
+    this.solution : this.solution && this.value?.trim().toLowerCase() === this.solution.toLowerCase()
+    if(this.freeText && correct){
+      this.solution = this.value
+    }
+    const textarea = html`<sl-textarea id="inputElem" ?data-correct=${correct && !(this.freeText)} value=${this.isContentEditable? this.solution: this.value} placeholder=${this.placeholder} resize="none" @sl-change=${this.handleChange}></sl-textarea>`
+    const input = html`<sl-input id="inputElem" ?data-correct=${correct} value=${this.isContentEditable? this.solution: this.value} 
+    placeholder=${this.placeholder} type=${this.type} @sl-change=${this.handleChange}></sl-input>`
     return html`
       ${this.type === "long-text"? textarea: input}
       ${this.solution && !this.isContentEditable && !correct? html`<div id="solution" ?data-correct=${correct}>${this.showSolution?this.solution:html`<i>${this.wrongMessage}</i>`}</div>`: undefined}
