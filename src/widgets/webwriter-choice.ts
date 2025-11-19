@@ -132,7 +132,7 @@ export class WebwriterChoice extends LitElementWw {
 
   reset() {
     this.items.forEach(item => {item.valid = undefined; item.active = false; item.showSolution = true; item.style.pointerEvents = "auto", this.style.backgroundColor = ""})
-    this.shuffleItems()
+    if (this.randomOrder) this.shuffleItems()
   }
 
   static scopedElements = {
