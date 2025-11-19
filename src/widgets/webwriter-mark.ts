@@ -288,7 +288,7 @@ export class WebwriterMark extends LitElementWw {
     }
 
     :host ::highlight(webwriter-mark-solution) {
-      background-color: greenyellow;
+      background-color: #79b521;
     }
 
     #highlight[data-highlighting]::part(base) {
