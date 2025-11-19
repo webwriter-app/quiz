@@ -153,7 +153,6 @@ export class WebwriterSpeech extends LitElementWw {
 
   connectedCallback(): void {
     super.connectedCallback()
-    this.initializeRecorder()
   }
 
   async initializeRecorder() {
@@ -189,6 +188,7 @@ export class WebwriterSpeech extends LitElementWw {
   toggleRecording = async () => {
     if(this.mediaRecorder?.state === "recording") {
       this.mediaRecorder.stop()
+	  this.mediaRecorder.stream.getTracks().forEach(track => track.stop())
     }
     else {
       await this.initializeRecorder()
