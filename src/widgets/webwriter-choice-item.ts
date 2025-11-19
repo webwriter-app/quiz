@@ -177,11 +177,14 @@ export class WebwriterChoiceItem extends LitElementWw {
         min-height: 125px;
         max-height: 350px;
         overflow: hidden;
-        resize: both;
         margin-inline-start: 0;
         overflow-y: auto;
         scrollbar-width: thin;
       }
+
+	  :host(:is([contenteditable=true], [contenteditable=""])) &::part(label) {
+		resize: both;
+	  }
     }    
     }
   `
