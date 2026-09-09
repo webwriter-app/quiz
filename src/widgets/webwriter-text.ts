@@ -1,177 +1,291 @@
-import {html, css, PropertyValues, TemplateResult} from "lit"
-import {LitElementWw, option} from "@webwriter/lit"
-import {customElement, property, query} from "lit/decorators.js"
-import {ifDefined} from "lit/directives/if-defined.js"
+import { msg } from "@lit/localize";
+import SlInput from "@shoelace-style/shoelace/dist/components/input/input.component.js";
+import SlTextarea from "@shoelace-style/shoelace/dist/components/textarea/textarea.component.js";
+import { LitElementWw, type OptionDeclaration } from "@webwriter/lit";
+import TextParagraphIcon from "bootstrap-icons/icons/text-paragraph.svg";
+import { css, html, nothing, type PropertyValues } from "lit";
+import { customElement, property, query, state } from "lit/decorators.js";
+import LOCALIZE from "../../localization/generated";
+import { name as packageId } from "../../package.json";
+import { registerQuizType, type IWebWriterQuizType } from "../api";
+import { encryptedProperty, encryptPlaintextAttributes } from "../lib/encrypted-property";
 
-import SlTextarea from "@shoelace-style/shoelace/dist/components/textarea/textarea.component.js"
-import SlInput from "@shoelace-style/shoelace/dist/components/input/input.component.js"
-import "@shoelace-style/shoelace/dist/themes/light.css"
+declare global {
+	interface HTMLElementTagNameMap {
+		"webwriter-text": WebwriterText;
+	}
+}
 
-import LOCALIZE from "../../localization/generated"
-import {msg} from "@lit/localize"
+export type TextType = "long-text" | "text" | "number" | "date" | "time" | "datetime-local";
 
-declare global {interface HTMLElementTagNameMap {
-  "webwriter-text": WebwriterText;
-}}
+registerQuizType({
+	packageId,
+	widgetPosition: 30,
+	id: "webwriter-text",
+	getName: () => msg("Text"),
+	icon: TextParagraphIcon,
+	createInstance: () => document.createElement("webwriter-text"),
+});
 
+/**
+ * An answer where learners type a value into an input field.
+ *
+ * It must be assigned to the default slot of a `<webwriter-task>`.
+ */
 @customElement("webwriter-text")
-export class WebwriterText extends LitElementWw {
+export class WebwriterText extends LitElementWw implements IWebWriterQuizType {
+	/** @internal */
+	localize = LOCALIZE;
 
-  localize = LOCALIZE
+	/** @internal */
+	static scopedElements = {
+		"sl-textarea": SlTextarea,
+		"sl-input": SlInput,
+	};
 
-  @property({type: String, attribute: true, reflect: true})
-  @option({
-    type: "select",
-    label: {"en": "Type", "de": "Typ"},
-    options: [
-      {value: "long-text", label: {"en": "Long Text", "de": "Langer Text"}},
-      {value: "text", label: {"en": "Short Text", "de": "Kurzer Text"}},
-      {value: "number", label: {"en": "Number", "de": "Zahl"}},
-      {value: "date", label: {"en": "Date", "de": "Datum"}},
-      {value: "time", label: {"en": "Time", "de": "Uhrzeit"}},
-      {value: "datetime-local", label: {"en": "Date & Time", "de": "Datum & Uhrzeit"}}
-    ]
-  })
-  accessor type: "date" | "datetime-local" | "number" | "text" | "time" | "long-text" = "long-text"
+	static styles = css`
+		:host {
+			display: block;
+			width: 100%;
+		}
 
-  @property({type: String, attribute: true, reflect: true})
-  @option()
-  accessor placeholder: string
+		/* Highlight the author's solution while editing. */
+		:host(:is([contenteditable="true"], [contenteditable=""])) :is(sl-textarea::part(textarea), sl-input::part(input)) {
+			color: var(--sl-color-success-700);
+		}
 
-  @property({type: Boolean, attribute: true, reflect: true})
-  @option({
-    type: Boolean,
-    label: {"en": "free answer (ignores the other options)", "de": "Freitext (ignoriert andere Optionen)"},
-  })
-  accessor freeText = false
+		sl-textarea::part(base),
+		sl-input::part(base) {
+			font-size: 1em !important;
+		}
 
-  @property({type: Boolean, attribute: true, reflect: true})
-  @option({
-    type: Boolean,
-    label: {"en": "Ignore capitalization", "de": "Großschreibung ignorieren"},
-  })
-  accessor ignoreCase = false
+		sl-textarea {
+			resize: vertical;
+			overflow: hidden;
+			min-height: 40px;
 
-  @property({type: Boolean, attribute: true, reflect: true})
-  @option({
-    type: Boolean,
-    label: {"en": "show Solution", "de": "Lösung anzeigen"},
-  })
-  accessor showSolution = false
+			&::part(form-control),
+			&::part(form-control-input),
+			&::part(base),
+			&::part(textarea) {
+				height: 100%;
+			}
+		}
 
-  @property({type: String, attribute: true, reflect: true})
-  @option({
-    label: {"en": "Message for wrong solution", "de": "Nachricht bei falscher Lösung"},
-  })
-  accessor wrongMessage: string
+		:is(sl-textarea, sl-input):disabled::part(base) {
+			background-color: var(--sl-input-background-color);
+			border-color: var(--sl-input-border-color);
+			opacity: 1;
+			cursor: inherit;
+		}
 
-  @property({type: String, attribute: true, reflect: true})
-  accessor value: string
+		:is(sl-textarea, sl-input)[data-state="correct"]::part(base) {
+			background: var(--sl-color-success-50);
+			border-color: var(--sl-color-success-400);
+		}
 
-  /*
-  @property({type: Number, attribute: true, reflect: true})
-  @option({type: Number})
-  min: number
+		:is(sl-textarea, sl-input)[data-state="incorrect"]::part(base) {
+			background: var(--sl-color-danger-50);
+			border-color: var(--sl-color-danger-400);
+		}
 
-  @property({type: Number, attribute: true, reflect: true})
-  @option({type: Number})
-  max: number
+		.feedback {
+			margin-top: var(--sl-spacing-x-small);
+			color: var(--sl-color-neutral-500);
+			font-size: var(--sl-font-size-small);
+			overflow-wrap: anywhere;
+		}
 
-  @property({type: Number, attribute: true, reflect: true})
-  @option({type: Number})
-  step: number
-  */
+		.solution {
+			margin-top: var(--sl-spacing-x-small);
+		}
+	`;
 
-  static scopedElements = {
-    "sl-textarea": SlTextarea,
-    "sl-input": SlInput
-  }
+	/**
+	 * The kind of input field learners answer in.
+	 *
+	 * - `long-text`: A multi-line text area.
+	 * - `text`: A single-line text field.
+	 * - `number`: A number field.
+	 * - `date`: A date picker.
+	 * - `time`: A time picker.
+	 * - `datetime-local`: A combined date and time picker.
+	 */
+	@property({ type: String, attribute: true, reflect: true })
+	accessor type: TextType = "long-text";
 
-  static styles = css`
-    :host(:is([contenteditable=true], [contenteditable=""])) sl-textarea::part(textarea) {
-      color: var(--sl-color-success-700);
-    }
+	/**
+	 * The placeholder shown while the field is empty.
+	 */
+	@property({ type: String, attribute: true, reflect: true })
+	accessor placeholder: string = "";
 
-    sl-textarea {
-      resize: vertical;
-      overflow: hidden;
-      min-height: 40px;
+	/**
+	 * Whether any non-empty answer counts as correct, without comparing it to the solution.
+	 */
+	@property({ type: Boolean, attribute: "free-text", reflect: true })
+	accessor freeText = false;
 
-      &::part(form-control), &::part(form-control-input), &::part(base), &::part(textarea) {
-        height: 100%;
-      }
-    }
+	/**
+	 * Whether the answer is compared to the solution case-insensitively.
+	 */
+	@property({ type: Boolean, attribute: "ignore-case", reflect: true })
+	accessor ignoreCase = false;
 
-    :is(sl-textarea, sl-input)[data-correct]::part(base) {
-      background: var(--sl-color-success-200);
-    }
+	/**
+	 * The feedback shown after submitting if the answer is correct.
+	 */
+	@property({ type: String, attribute: "correct-message", reflect: true })
+	accessor correctMessage: string = "";
 
-    #solution {
-      padding: 1rem;
-    }
+	/**
+	 * The feedback shown after submitting if the answer is wrong.
+	 */
+	@property({ type: String, attribute: "wrong-message", reflect: true })
+	accessor wrongMessage: string = "";
 
-    #solution[data-correct] {
-      background-color: var(--sl-color-success-200);
-    }
+	/** @internal */
+	get dynamicOptions(): Record<string, OptionDeclaration> {
+		const isText = this.type === "long-text" || this.type === "text";
+		const options: Record<string, OptionDeclaration> = {
+			type: {
+				type: "select",
+				label: { _: msg("Type") },
+				options: [
+					{ value: "long-text", label: { _: msg("Long Text") } },
+					{ value: "text", label: { _: msg("Short Text") } },
+					{ value: "number", label: { _: msg("Number") } },
+					{ value: "date", label: { _: msg("Date") } },
+					{ value: "time", label: { _: msg("Time") } },
+					{ value: "datetime-local", label: { _: msg("Date & Time") } },
+				],
+			},
+		};
 
-    #solution:not([data-correct]) {
-      background-color: var(--sl-color-danger-200);
-    }
-  `
+		if (isText || this.type === "number") {
+			options.placeholder = { type: "string", label: { _: msg("Placeholder") } };
+		}
 
-  handleChange = (e: CustomEvent) => {
-    const target = e.target as SlTextarea | SlInput
-    if(this.isContentEditable) {
-      this.solution = target.value?.trim()
-    }
-    else {
-      this.value = target.value?.trim()
-    }
-    this.dispatchEvent(new CustomEvent("ww-answer-change", {
-      detail: {value: target.value},
-      bubbles: true,
-      composed: true
-    }))
-  }
+		options["free-text"] = { type: "boolean", label: { _: msg("Free answer") } };
 
-  @query("sl-textarea, sl-input")
-  accessor input: SlTextarea | SlInput
+		if (!this.freeText) {
+			if (isText) {
+				options["ignore-case"] = {
+					type: "boolean",
+					label: { _: msg("Ignore capitalization") },
+				};
+			}
+			options["correct-message"] = {
+				type: "string",
+				label: { _: msg("Message for correct solution") },
+			};
+			options["wrong-message"] = {
+				type: "string",
+				label: { _: msg("Message for wrong solution") },
+			};
+		}
 
-  focus() {
-    this.input.focus()
-  }
+		return options;
+	}
 
-  reset() {
-    this.solution = undefined
-    if(!this.freeText){
-      this.input.value = ""
-    }
-    
-    
-    let inputElem: SlTextarea | SlInput = this.shadowRoot.getElementById("inputElem") as SlTextarea | SlInput
-    inputElem.disabled = false
-  }
+	/**
+	 * The value counting as correct. It is obfuscated in the markup so that learners cannot read it directly.
+	 */
+	@property({ type: String, attribute: true, reflect: true, converter: encryptedProperty })
+	accessor solution: string = "";
 
-  reportSolution() {
-    let inputElem: SlTextarea | SlInput = this.shadowRoot.getElementById("inputElem") as SlTextarea | SlInput
-    inputElem.disabled = true
-  }
+	@state() private accessor currentAnswer: string | undefined;
+	@state() private accessor graded: boolean = false;
+	@state() private accessor detailedFeedback: boolean = false;
 
-  @property({type: String, attribute: false, reflect: false})
-  accessor solution: string
+	@query("sl-textarea, sl-input")
+	private accessor input!: SlTextarea | SlInput;
 
-  render() {
-    const correct = this.freeText ? this.value?.trim() != "" : !this.ignoreCase ? this.solution && this.value?.trim() === 
-    this.solution : this.solution && this.value?.trim().toLowerCase() === this.solution.toLowerCase()
-    if(this.freeText && correct){
-      this.solution = this.value
-    }
-    const textarea = html`<sl-textarea id="inputElem" ?data-correct=${correct && !(this.freeText)} value=${this.isContentEditable? this.solution: this.value} placeholder=${this.placeholder} resize="none" @sl-change=${this.handleChange}></sl-textarea>`
-    const input = html`<sl-input id="inputElem" ?data-correct=${correct} value=${this.isContentEditable? this.solution: this.value} 
-    placeholder=${this.placeholder} type=${this.type} @sl-change=${this.handleChange}></sl-input>`
-    return html`
-      ${this.type === "long-text"? textarea: input}
-      ${this.solution && !this.isContentEditable && !correct? html`<div id="solution" ?data-correct=${correct}>${this.showSolution?this.solution:html`<i>${this.wrongMessage}</i>`}</div>`: undefined}
-    `
-  }
+	protected firstUpdated(changed: PropertyValues): void {
+		super.firstUpdated(changed);
+		encryptPlaintextAttributes(this);
+	}
+
+	private get value(): string {
+		return this.isContentEditable ? this.solution : (this.currentAnswer ?? "");
+	}
+
+	private set value(value: string) {
+		if (this.isContentEditable) this.solution = value;
+		else this.currentAnswer = value;
+	}
+
+	private isCorrect(): boolean {
+		const answer = (this.currentAnswer ?? "").trim();
+		if (this.freeText) return answer !== "";
+		const solution = this.solution.trim();
+		if (!solution) return false;
+		return this.ignoreCase ? answer.toLowerCase() === solution.toLowerCase() : answer === solution;
+	}
+
+	override focus() {
+		this.input?.focus();
+	}
+
+	checkValidity(): boolean {
+		return (this.currentAnswer ?? "").trim() !== "";
+	}
+
+	reset() {
+		this.graded = false;
+		this.detailedFeedback = false;
+		this.currentAnswer = undefined;
+	}
+
+	checkAnswer(detailedFeedback: boolean): number {
+		this.graded = true;
+		this.detailedFeedback = detailedFeedback;
+		return this.isCorrect() ? 1 : 0;
+	}
+
+	private handleChange = (e: Event) => {
+		const target = e.target as SlTextarea | SlInput;
+		this.value = target.value?.trim() ?? "";
+	};
+
+	private get feedbackState(): "correct" | "incorrect" | undefined {
+		// Free answers are locked on submit but never marked correct/incorrect.
+		if (this.freeText || this.isContentEditable || !this.graded || !this.detailedFeedback) return undefined;
+		return this.isCorrect() ? "correct" : "incorrect";
+	}
+
+	render() {
+		const value = this.value;
+		const state = this.feedbackState;
+		const message = state === "correct" ? this.correctMessage : this.wrongMessage;
+		const showSolution = this.detailedFeedback && this.solution.trim() !== "";
+
+		const field =
+			this.type === "long-text"
+				? html`<sl-textarea
+						data-state=${state ?? nothing}
+						value=${value}
+						placeholder=${this.placeholder}
+						resize="none"
+						?disabled=${this.graded}
+						@sl-change=${this.handleChange}
+					></sl-textarea>`
+				: html`<sl-input
+						data-state=${state ?? nothing}
+						value=${value}
+						placeholder=${this.placeholder}
+						type=${this.type}
+						?disabled=${this.graded}
+						@sl-change=${this.handleChange}
+					></sl-input>`;
+
+		return html`${field}${state && (message || showSolution)
+			? html`<div class="feedback" data-state=${state} role="status">
+					${message ? html`<div>${message}</div>` : nothing}
+					${showSolution
+						? html`<div class="solution"><strong>${msg("Solution")}:</strong> ${this.solution}</div>`
+						: nothing}
+				</div>`
+			: nothing}`;
+	}
 }

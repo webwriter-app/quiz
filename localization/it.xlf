@@ -1,72 +1,407 @@
-<xliff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-  <file original="lit-localize-inputs" datatype="plaintext" source-language="en" target-language="it">
-    <body>
-      <trans-unit id="s4802e47fe2e95134">
-        <source>Option</source>
-        <target>Opzione</target>
-      </trans-unit>
-      <trans-unit id="s85ea99fb52be3385">
-        <source>True</source>
-        <target>Vero</target>
-      </trans-unit>
-      <trans-unit id="s7254ca27b16ae2d8">
-        <source>False</source>
-        <target>Falso</target>
-      </trans-unit>
-      <trans-unit id="s159928724265eb05">
-        <source>Add Option</source>
-        <target>Aggiungi opzione</target>
-      </trans-unit>
-      <trans-unit id="sc56e9323f076a11e">
-        <source>Text to add gaps to</source>
-        <target>Testo a cui aggiungere spazi vuoti</target>
-      </trans-unit>
-      <trans-unit id="s80dc9f56411917df">
-        <source>Text to Highlight</source>
-        <target>Testo da evidenziare</target>
-      </trans-unit>
-      <trans-unit id="s1b23c41934894f30">
-        <source>Explanation</source>
-        <target>Spiegazione</target>
-      </trans-unit>
-      <trans-unit id="sd26e8d4eef55e341">
-        <source>Check your answers</source>
-        <target>Controllare le risposte</target>
-      </trans-unit>
-      <trans-unit id="scd1dd6ff53d0d01a">
-        <source>Try again</source>
-        <target>Riprova</target>
-      </trans-unit>
-      <trans-unit id="sb3d4f79d9d8b71e5">
-        <source>Submit</source>
-        <target>Invia</target>
-      </trans-unit>
-      <trans-unit id="s255857544a9d5ec0">
-        <source>Reset</source>
-        <target>Reset</target>
-      </trans-unit>
-      <trans-unit id="s54393bfa280ea55b">
-        <source>Prompt</source>
-        <target>Prompt</target>
-      </trans-unit>
-<trans-unit id="sb0aadaa04e658ad6">
-  <source>Choice</source>
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+<file target-language="it" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<trans-unit id="s54393bfa280ea55b">
+  <source>Prompt</source>
+  <target>Consegna</target>
+</trans-unit>
+<trans-unit id="s468f08dd3166cf44">
+  <source>Choose Background</source>
+  <target>Scegli sfondo</target>
+</trans-unit>
+<trans-unit id="sc01c972e33754d22">
+  <source>Feedback if selected</source>
+  <target>Feedback se selezionata</target>
+</trans-unit>
+<trans-unit id="s31ac9cd289910c65">
+  <source>Feedback if not selected</source>
+  <target>Feedback se non selezionata</target>
+</trans-unit>
+<trans-unit id="s9daa676c05ab2a68">
+  <source>Single Choice</source>
+  <target>Scelta singola</target>
+</trans-unit>
+<trans-unit id="s485bbcc5d19e2b20">
+  <source>Multiple Choice</source>
+  <target>Scelta multipla</target>
+</trans-unit>
+<trans-unit id="s37cbecaec58e2192">
+  <source>Mode</source>
+  <target>Modalità</target>
+</trans-unit>
+<trans-unit id="s3d249bb480032121">
+  <source>List</source>
+  <target>Elenco</target>
+</trans-unit>
+<trans-unit id="sde8252d2a4d268ce">
+  <source>Tiles</source>
+  <target>Riquadri</target>
+</trans-unit>
+<trans-unit id="s2e4818861000b13f">
+  <source>Layout</source>
+  <target>Layout</target>
+</trans-unit>
+<trans-unit id="sf0fce877a8caebec">
+  <source>Randomize Order</source>
+  <target>Ordine casuale</target>
+</trans-unit>
+<trans-unit id="s159928724265eb05">
+  <source>Add Option</source>
+  <target>Aggiungi opzione</target>
+</trans-unit>
+<trans-unit id="s021fb26da6a25f79">
+  <source>True or False</source>
+  <target>Vero o falso</target>
+</trans-unit>
+<trans-unit id="s85ea99fb52be3385">
+  <source>True</source>
+  <target>Vero</target>
+</trans-unit>
+<trans-unit id="s7254ca27b16ae2d8">
+  <source>False</source>
+  <target>Falso</target>
+</trans-unit>
+<trans-unit id="sdc9d86c26cff613b">
+  <source>Drag and Drop</source>
+  <target>Trascinamento</target>
+</trans-unit>
+<trans-unit id="sd24f4d056c0124f6">
+  <source>Empty gap</source>
+  <target>Lacuna vuota</target>
+</trans-unit>
+<trans-unit id="sdb9694f31d64cfc8">
+  <source>Your answer</source>
+  <target>La tua risposta</target>
+</trans-unit>
+<trans-unit id="s855bb4e2b08d1a18">
+  <source>No answer</source>
+  <target>Nessuna risposta</target>
+</trans-unit>
+<trans-unit id="s0d9a7bb29fee2d85">
+  <source>Correct answer</source>
+  <target>Risposta corretta</target>
+</trans-unit>
+<trans-unit id="seaf97719986faf4f">
+  <source>Gap</source>
+  <target>Lacuna</target>
+</trans-unit>
+<trans-unit id="scc5671964ae0d6f7">
+  <source>Insert gap at selection</source>
+  <target>Inserisci lacuna nella selezione</target>
+</trans-unit>
+<trans-unit id="sbbb7581f20733d79">
+  <source>Freeform input</source>
+  <target>Inserimento libero</target>
+</trans-unit>
+<trans-unit id="sb20f85b66b8eed5b">
+  <source>Drag and drop</source>
+  <target>Trascinamento</target>
+</trans-unit>
+<trans-unit id="s34adfb0ab932043d">
+  <source>Ignore case</source>
+  <target>Ignora maiuscole/minuscole</target>
+</trans-unit>
+<trans-unit id="s721db58b7b0ea2e3">
+  <source>Available answers</source>
+  <target>Risposte disponibili</target>
+</trans-unit>
+<trans-unit id="s03d845021c14b84f">
+  <source>Return to answers</source>
+  <target>Rimetti tra le risposte</target>
+</trans-unit>
+<trans-unit id="s4802e47fe2e95134">
+  <source>Option</source>
+  <target>Opzione</target>
 </trans-unit>
 <trans-unit id="s2ba5f4d8f3bd7c57">
   <source>Order</source>
+  <target>Ordinamento</target>
 </trans-unit>
-<trans-unit id="s2492f5fb1b05b45e">
-  <source>Text</source>
+<trans-unit id="s2d96dca399230ff3">
+  <source>The layout variant to use.</source>
+  <target>La variante di layout da usare.</target>
 </trans-unit>
-<trans-unit id="s49c940aecfef3ea0">
-  <source>Mark</source>
+<trans-unit id="sd23ee5e66df8400a">
+  <source>Direction</source>
+  <target>Direzione</target>
+</trans-unit>
+<trans-unit id="s94c650bef124bd01">
+  <source>Ascending</source>
+  <target>Crescente</target>
+</trans-unit>
+<trans-unit id="s15bdec250a4a55fb">
+  <source>Descending</source>
+  <target>Decrescente</target>
+</trans-unit>
+<trans-unit id="s21b5ec7253ee5705">
+  <source>The order direction to use.</source>
+  <target>La direzione di ordinamento da usare.</target>
+</trans-unit>
+<trans-unit id="sde7fee183b3bda88">
+  <source>Numbering</source>
+  <target>Numerazione</target>
+</trans-unit>
+<trans-unit id="s669b18c6d2d9c95b">
+  <source>None</source>
+  <target>Nessuna</target>
+</trans-unit>
+<trans-unit id="scc337566a7187408">
+  <source>Numeric</source>
+  <target>Numerica</target>
+</trans-unit>
+<trans-unit id="se8a94b4effa2033e">
+  <source>Alphabetic</source>
+  <target>Alfabetica</target>
+</trans-unit>
+<trans-unit id="s7667ffa7b27a7232">
+  <source>Roman</source>
+  <target>Romana</target>
+</trans-unit>
+<trans-unit id="s36163be9d8064432">
+  <source>The numbering style to use.</source>
+  <target>Lo stile di numerazione da usare.</target>
+</trans-unit>
+<trans-unit id="s8685fbc5eca0de27">
+  <source>Grading</source>
+  <target>Valutazione</target>
+</trans-unit>
+<trans-unit id="s57784c3b7df6150c">
+  <source>Partial (Position)</source>
+  <target>Parziale (posizione)</target>
+</trans-unit>
+<trans-unit id="sb1c40c0af94993b6">
+  <source>Partial (Sequence)</source>
+  <target>Parziale (sequenza)</target>
+</trans-unit>
+<trans-unit id="s4058ed60e59264ed">
+  <source>The grading method to use.</source>
+  <target>Il metodo di valutazione da usare.</target>
+</trans-unit>
+<trans-unit id="s52cfa1d198476806">
+  <source>Item</source>
+  <target>Elemento</target>
+</trans-unit>
+<trans-unit id="saadba46653e4ffef">
+  <source>Pairing</source>
+  <target>Abbinamento</target>
+</trans-unit>
+<trans-unit id="sbdc2605da169f810">
+  <source>Add Pair</source>
+  <target>Aggiungi coppia</target>
+</trans-unit>
+<trans-unit id="s16e1bead7b9c95ce">
+  <source>Memory</source>
+  <target>Memory</target>
+</trans-unit>
+<trans-unit id="sf4e3c96801ebe794">
+  <source>Volume: <x id="0" equiv-text="${this.volume}"/>%</source>
+  <target>Volume: <x id="0" equiv-text="${this.volume}"/>%</target>
+</trans-unit>
+<trans-unit id="s7acd963aa22be70c">
+  <source>Speed: <x id="0" equiv-text="${this.playbackSpeed}"/>x</source>
+  <target>Velocità: <x id="0" equiv-text="${this.playbackSpeed}"/>x</target>
+</trans-unit>
+<trans-unit id="s5d86300c6e210017">
+  <source>WebWriter does not have permission to access the microphone.</source>
+  <target>WebWriter non dispone dell'autorizzazione per accedere al microfono.</target>
+</trans-unit>
+<trans-unit id="sb5b8485f95c97a79">
+  <source>An error occurred while accessing the microphone.</source>
+  <target>Si è verificato un errore durante l'accesso al microfono.</target>
+</trans-unit>
+<trans-unit id="s653f729e608b6653">
+  <source>Click to Start Recording</source>
+  <target>Clicca per avviare la registrazione</target>
 </trans-unit>
 <trans-unit id="saa3efba1f0c816b7">
   <source>Speech</source>
+  <target>Registrazione vocale</target>
 </trans-unit>
-<trans-unit id="saf8b589e65febbd2">
-  <source>Save answer</source>
+<trans-unit id="s49c940aecfef3ea0">
+  <source>Mark</source>
+  <target>Evidenziazione</target>
 </trans-unit>
-    </body>
-  </file>
+<trans-unit id="s678dbf717a0b079d">
+  <source>Pass/Fail</source>
+  <target>Tutto o niente</target>
+</trans-unit>
+<trans-unit id="sffeb741d73d302b3">
+  <source>Partial Credit</source>
+  <target>Punteggio parziale</target>
+</trans-unit>
+<trans-unit id="sb8f0e32715402f50">
+  <source>Grading Method</source>
+  <target>Metodo di valutazione</target>
+</trans-unit>
+<trans-unit id="s848dd69654cedb5a">
+  <source>Toggle Marking at Position</source>
+  <target>Attiva/disattiva evidenziazione al cursore</target>
+</trans-unit>
+<trans-unit id="s80dc9f56411917df">
+  <source>Text to Highlight</source>
+  <target>Testo da evidenziare</target>
+</trans-unit>
+<trans-unit id="s3ff3b89e5871fae3">
+  <source>Multiple lines are not supported</source>
+  <target>Le righe multiple non sono supportate</target>
+</trans-unit>
+<trans-unit id="s9dcffdd89c8e0f58">
+  <source>Hint</source>
+  <target>Suggerimento</target>
+</trans-unit>
+<trans-unit id="s7a153886c76b7dcb">
+  <source>Show detailed feedback</source>
+  <target>Mostra feedback dettagliato</target>
+</trans-unit>
+<trans-unit id="s2f9c7cb1f24c3de8">
+  <source>Require confirmation before submitting</source>
+  <target>Chiedi conferma prima dell'invio</target>
+</trans-unit>
+<trans-unit id="s5ca3b69235e6046b">
+  <source>Require confirmation before resetting</source>
+  <target>Chiedi conferma prima di azzerare</target>
+</trans-unit>
+<trans-unit id="saa48690ce74705d4">
+  <source>Hide points</source>
+  <target>Nascondi punti</target>
+</trans-unit>
+<trans-unit id="s766f42576852db83">
+  <source>Submit answers?</source>
+  <target>Inviare le risposte?</target>
+</trans-unit>
+<trans-unit id="sbcdedcdd8451318c">
+  <source>Reset answers?</source>
+  <target>Azzerare le risposte?</target>
+</trans-unit>
+<trans-unit id="s0b733d4a22c3b12f">
+  <source>Submit your answers for evaluation?</source>
+  <target>Inviare le risposte per la valutazione?</target>
+</trans-unit>
+<trans-unit id="s7ac431061b2ebf1a">
+  <source>Reset all answers and start over?</source>
+  <target>Azzerare tutte le risposte e ricominciare?</target>
+</trans-unit>
+<trans-unit id="s2ceb11be2290bb1b">
+  <source>Cancel</source>
+  <target>Annulla</target>
+</trans-unit>
+<trans-unit id="sb3d4f79d9d8b71e5">
+  <source>Submit</source>
+  <target>Invia</target>
+</trans-unit>
+<trans-unit id="s270d49ea25614a7b">
+  <source>Reset answers</source>
+  <target>Azzera risposte</target>
+</trans-unit>
+<trans-unit id="s53bc6e49623c8f80">
+  <source>Add Question</source>
+  <target>Aggiungi domanda</target>
+</trans-unit>
+<trans-unit id="s729db3aabe406a0a">
+  <source>Question 1</source>
+  <target>Domanda 1</target>
+</trans-unit>
+<trans-unit id="scabf78417c4e5d86">
+  <source>Points</source>
+  <target>Punti</target>
+</trans-unit>
+<trans-unit id="s729dc6aabe408a53">
+  <source>Question <x id="0" equiv-text="${index + 1}"/></source>
+  <target>Domanda <x id="0" equiv-text="${index + 1}"/></target>
+</trans-unit>
+<trans-unit id="s43f438831bf2524d">
+  <source>Unanswered</source>
+  <target>Senza risposta</target>
+</trans-unit>
+<trans-unit id="s71ba655ef7772e6c">
+  <source>Incorrect</source>
+  <target>Errato</target>
+</trans-unit>
+<trans-unit id="s4158d5fc29a1f991">
+  <source>Correct</source>
+  <target>Corretto</target>
+</trans-unit>
+<trans-unit id="s19d2c07c1effbdaf">
+  <source>Partially correct</source>
+  <target>Parzialmente corretto</target>
+</trans-unit>
+<trans-unit id="s73feab3544c345b1">
+  <source>point</source>
+  <target>punto</target>
+</trans-unit>
+<trans-unit id="sdd02ad83d7cf88a6">
+  <source>points</source>
+  <target>punti</target>
+</trans-unit>
+<trans-unit id="s2492f5fb1b05b45e">
+  <source>Text</source>
+  <target>Testo</target>
+</trans-unit>
+<trans-unit id="sd2223afb7d6b100d">
+  <source>Type</source>
+  <target>Tipo</target>
+</trans-unit>
+<trans-unit id="sfe628f6e69f78cca">
+  <source>Long Text</source>
+  <target>Testo lungo</target>
+</trans-unit>
+<trans-unit id="s2317e68a652c8498">
+  <source>Short Text</source>
+  <target>Testo breve</target>
+</trans-unit>
+<trans-unit id="sbbb97b1c63507dc0">
+  <source>Number</source>
+  <target>Numero</target>
+</trans-unit>
+<trans-unit id="sac8252732f2edb19">
+  <source>Date</source>
+  <target>Data</target>
+</trans-unit>
+<trans-unit id="s48e186fb300e5464">
+  <source>Time</source>
+  <target>Ora</target>
+</trans-unit>
+<trans-unit id="s9bae45e308549364">
+  <source>Date &amp; Time</source>
+  <target>Data e ora</target>
+</trans-unit>
+<trans-unit id="sf90be97cb08f3d5a">
+  <source>Placeholder</source>
+  <target>Segnaposto</target>
+</trans-unit>
+<trans-unit id="se2af7220fe721133">
+  <source>Free answer</source>
+  <target>Risposta libera</target>
+</trans-unit>
+<trans-unit id="sa0a8f80935f767dd">
+  <source>Ignore capitalization</source>
+  <target>Ignora maiuscole/minuscole</target>
+</trans-unit>
+<trans-unit id="s1705e89d78286348">
+  <source>Message for correct solution</source>
+  <target>Messaggio per soluzione corretta</target>
+</trans-unit>
+<trans-unit id="sea7b286dd4c986fd">
+  <source>Message for wrong solution</source>
+  <target>Messaggio per soluzione errata</target>
+</trans-unit>
+<trans-unit id="sa937fce28916575e">
+  <source>Solution</source>
+  <target>Soluzione</target>
+</trans-unit>
+<trans-unit id="s73c0e4814878d26e">
+  <source>Snap to grid</source>
+  <target>Aggancia alla griglia</target>
+</trans-unit>
+<trans-unit id="s5c8e286841ccfd0e">
+  <source>Grid columns</source>
+  <target>Colonne griglia</target>
+</trans-unit>
+<trans-unit id="s96d2f1dc180a46d8">
+  <source>Debug</source>
+  <target>Debug</target>
+</trans-unit>
+</body>
+</file>
 </xliff>
