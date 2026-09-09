@@ -1,0 +1,2779 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/webwriter-mark.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "An answer where learners mark the words of a text that fit the question.\n\nThe text must be assigned to the default slot; the element itself must be\nassigned to the default slot of a `<webwriter-task>`.",
+          "name": "WebWriterMark",
+          "members": [
+            {
+              "kind": "field",
+              "name": "segmenter",
+              "privacy": "private",
+              "static": true,
+              "default": "new Intl.Segmenter(undefined, { granularity: \"word\" })"
+            },
+            {
+              "kind": "field",
+              "name": "highlights",
+              "type": {
+                "text": "Record<HighlightGroup, Highlight>"
+              },
+              "privacy": "private",
+              "static": true,
+              "default": "{ marked: new Highlight(), correct: new Highlight(), missed: new Highlight(), wrong: new Highlight(), }"
+            },
+            {
+              "kind": "field",
+              "name": "gradingMethod",
+              "type": {
+                "text": "MarkGradingMethod"
+              },
+              "default": "\"pass-fail\"",
+              "description": "How the score of this answer is calculated.\n\n- `pass-fail`: Full score only if exactly the correct words are marked.\n- `partial`: Correctly marked words earn credit, wrong ones subtract from it.",
+              "attribute": "grading-method",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "solution",
+              "type": {
+                "text": "number[]"
+              },
+              "default": "[]",
+              "description": "The indices of the word-like segments counting as correct. It is obfuscated in the markup so that learners cannot read it directly.",
+              "attribute": "solution",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "currentAnswer",
+              "type": {
+                "text": "number[]"
+              },
+              "privacy": "private",
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "graded",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "detailedFeedback",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "renderedRanges",
+              "type": {
+                "text": "Record<HighlightGroup, Range[]>"
+              },
+              "privacy": "private",
+              "default": "{ marked: [], correct: [], missed: [], wrong: [], }"
+            },
+            {
+              "kind": "field",
+              "name": "observer",
+              "privacy": "private",
+              "default": "new MutationObserver(records => this.handleMutation(records))"
+            },
+            {
+              "kind": "field",
+              "name": "enterTooltipRef",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "enterAnchorRef",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "getWordSegments",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "WordSegment[]"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "toRange",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "Range"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "{ node, start, end }",
+                  "type": {
+                    "text": "WordSegment"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "setHighlight",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "group",
+                  "type": {
+                    "text": "HighlightGroup"
+                  }
+                },
+                {
+                  "name": "ranges",
+                  "type": {
+                    "text": "Range[]"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderHighlights",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "handleMutation",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "records",
+                  "type": {
+                    "text": "MutationRecord[]"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "toggleIndices",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "number[]"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "current",
+                  "type": {
+                    "text": "number[]"
+                  }
+                },
+                {
+                  "name": "indices",
+                  "type": {
+                    "text": "number[]"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "toggleSolutionMarking",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "point",
+                  "type": {
+                    "text": "CaretPosition | null"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleContextMenu",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "MouseEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "MouseEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "handleKeyDown",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "handleSelectionChange",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "checkValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "checkAnswer",
+              "return": {
+                "type": {
+                  "text": "number"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "detailedFeedback",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "reset",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "grading-method",
+              "type": {
+                "text": "MarkGradingMethod"
+              },
+              "default": "\"pass-fail\"",
+              "description": "How the score of this answer is calculated.\n\n- `pass-fail`: Full score only if exactly the correct words are marked.\n- `partial`: Correctly marked words earn credit, wrong ones subtract from it.",
+              "fieldName": "gradingMethod"
+            },
+            {
+              "name": "solution",
+              "type": {
+                "text": "number[]"
+              },
+              "default": "[]",
+              "description": "The indices of the word-like segments counting as correct. It is obfuscated in the markup so that learners cannot read it directly.",
+              "fieldName": "solution"
+            }
+          ],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-mark",
+          "customElement": true,
+          "modulePath": "src/widgets/webwriter-mark.ts",
+          "definitionPath": "src/widgets/webwriter-mark.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebWriterMark",
+          "declaration": {
+            "name": "WebWriterMark",
+            "module": "src/widgets/webwriter-mark.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-mark",
+          "declaration": {
+            "name": "WebWriterMark",
+            "module": "src/widgets/webwriter-mark.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/webwriter-quiz-hint.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A generic hint element that can be used inside a variety of elements that\nexplicitly mention it in their documentation, such as `<webwriter-task>`.\n\nUnless otherwise specified, it should be assigned to the `hint` slot of its\nparent element.",
+          "name": "WebwriterQuizHint",
+          "members": [],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-quiz-hint",
+          "customElement": true,
+          "modulePath": "src/widgets/webwriter-quiz-hint.ts",
+          "definitionPath": "src/widgets/webwriter-quiz-hint.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterQuizHint",
+          "declaration": {
+            "name": "WebwriterQuizHint",
+            "module": "src/widgets/webwriter-quiz-hint.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-quiz-hint",
+          "declaration": {
+            "name": "WebwriterQuizHint",
+            "module": "src/widgets/webwriter-quiz-hint.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/webwriter-quiz.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A quiz groups multiple `<webwriter-task>` elements into one exercise that is\nsubmitted, graded and reset as a whole.\n\nThe tasks must be assigned to the default slot.",
+          "name": "WebwriterQuiz",
+          "members": [
+            {
+              "kind": "field",
+              "name": "detailedFeedback",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether learners see per-answer feedback and the solution after submitting.",
+              "attribute": "detailed-feedback",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "confirmSubmit",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether learners have to confirm a dialog before submitting.",
+              "attribute": "confirm-submit",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "confirmReset",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether learners have to confirm a dialog before resetting.",
+              "attribute": "confirm-reset",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "hidePoints",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether the points of each task and the total score are hidden.",
+              "attribute": "hide-points",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "quizTypes",
+              "type": {
+                "text": "readonly QuizType[]"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "totalResult",
+              "type": {
+                "text": "{ score: number; maximum: number } | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "confirmationAction",
+              "type": {
+                "text": "\"submit\" | \"reset\" | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "unsubscribe",
+              "type": {
+                "text": "() => void | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "addQuestionDropdownRef",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "insertQuizType",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "quizType",
+                  "type": {
+                    "text": "QuizType"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "InsertQuestionGrid",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "getTasks",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "getTaskApi",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "IWebWriterQuizType | undefined"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "task",
+                  "type": {
+                    "text": "WebwriterTask"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getTaskPoints",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "task",
+                  "type": {
+                    "text": "WebwriterTask"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "formatScore",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "score",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getResultPercentage",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "result",
+                  "type": {
+                    "text": "{ score: number; maximum: number }"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "resetAnswers",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "submit",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "ConfirmationDialog",
+              "privacy": "private"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "detailed-feedback",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether learners see per-answer feedback and the solution after submitting.",
+              "fieldName": "detailedFeedback"
+            },
+            {
+              "name": "confirm-submit",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether learners have to confirm a dialog before submitting.",
+              "fieldName": "confirmSubmit"
+            },
+            {
+              "name": "confirm-reset",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether learners have to confirm a dialog before resetting.",
+              "fieldName": "confirmReset"
+            },
+            {
+              "name": "hide-points",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether the points of each task and the total score are hidden.",
+              "fieldName": "hidePoints"
+            }
+          ],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-quiz",
+          "customElement": true,
+          "modulePath": "src/widgets/webwriter-quiz.ts",
+          "definitionPath": "src/widgets/webwriter-quiz.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterQuiz",
+          "declaration": {
+            "name": "WebwriterQuiz",
+            "module": "src/widgets/webwriter-quiz.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-quiz",
+          "declaration": {
+            "name": "WebwriterQuiz",
+            "module": "src/widgets/webwriter-quiz.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/webwriter-task-prompt.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "The question text of a `<webwriter-task>`.\n\nIt must be assigned to the `prompt` slot of its parent element. An optional\n`<webwriter-quiz-hint>` may be assigned to its `hint` slot.",
+          "name": "WebwriterTaskPrompt",
+          "members": [],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-task-prompt",
+          "customElement": true,
+          "modulePath": "src/widgets/webwriter-task-prompt.ts",
+          "definitionPath": "src/widgets/webwriter-task-prompt.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterTaskPrompt",
+          "declaration": {
+            "name": "WebwriterTaskPrompt",
+            "module": "src/widgets/webwriter-task-prompt.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-task-prompt",
+          "declaration": {
+            "name": "WebwriterTaskPrompt",
+            "module": "src/widgets/webwriter-task-prompt.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/webwriter-task.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A task describes a single quiz question, which consists of a\n`<webwriter-task-prompt>`, an optional `<webwriter-quiz-hint>` and an answer\nof a certain type, such as `<webwriter-choice>`.\n\nThe `<webwriter-task-prompt>` must be assigned to the `prompt` slot, the\n`<webwriter-quiz-hint>` must be assigned to the `hint` slot and the answer\nmust be assigned to the default slot.",
+          "name": "WebwriterTask",
+          "members": [
+            {
+              "kind": "field",
+              "name": "points",
+              "type": {
+                "text": "number"
+              },
+              "privacy": "private",
+              "default": "1",
+              "attribute": "points",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "requiredWarning",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "score",
+              "type": {
+                "text": "number | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "gradable",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "gradabilityUpdate",
+              "type": {
+                "text": "number"
+              },
+              "privacy": "private",
+              "default": "0"
+            },
+            {
+              "kind": "method",
+              "name": "formatScore",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "score",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "updateGradability",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "QuizHeader",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "TaskResult",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "quiz",
+                  "type": {
+                    "text": "WebwriterQuiz"
+                  }
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "points",
+              "type": {
+                "text": "number"
+              },
+              "default": "1",
+              "fieldName": "points"
+            }
+          ],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-task",
+          "customElement": true,
+          "modulePath": "src/widgets/webwriter-task.ts",
+          "definitionPath": "src/widgets/webwriter-task.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterTask",
+          "declaration": {
+            "name": "WebwriterTask",
+            "module": "src/widgets/webwriter-task.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-task",
+          "declaration": {
+            "name": "WebwriterTask",
+            "module": "src/widgets/webwriter-task.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/webwriter-text.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "An answer where learners type a value into an input field.\n\nIt must be assigned to the default slot of a `<webwriter-task>`.",
+          "name": "WebwriterText",
+          "members": [
+            {
+              "kind": "field",
+              "name": "type",
+              "type": {
+                "text": "TextType"
+              },
+              "default": "\"long-text\"",
+              "description": "The kind of input field learners answer in.\n\n- `long-text`: A multi-line text area.\n- `text`: A single-line text field.\n- `number`: A number field.\n- `date`: A date picker.\n- `time`: A time picker.\n- `datetime-local`: A combined date and time picker.",
+              "attribute": "type",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "placeholder",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The placeholder shown while the field is empty.",
+              "attribute": "placeholder",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "freeText",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether any non-empty answer counts as correct, without comparing it to the solution.",
+              "attribute": "free-text",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "ignoreCase",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether the answer is compared to the solution case-insensitively.",
+              "attribute": "ignore-case",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "correctMessage",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The feedback shown after submitting if the answer is correct.",
+              "attribute": "correct-message",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "wrongMessage",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The feedback shown after submitting if the answer is wrong.",
+              "attribute": "wrong-message",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "solution",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The value counting as correct. It is obfuscated in the markup so that learners cannot read it directly.",
+              "attribute": "solution",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "currentAnswer",
+              "type": {
+                "text": "string | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "graded",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "detailedFeedback",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "input",
+              "type": {
+                "text": "SlTextarea | SlInput"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "isCorrect",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "focus"
+            },
+            {
+              "kind": "method",
+              "name": "checkValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "reset"
+            },
+            {
+              "kind": "method",
+              "name": "checkAnswer",
+              "return": {
+                "type": {
+                  "text": "number"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "detailedFeedback",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "handleChange",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "feedbackState",
+              "type": {
+                "text": "\"correct\" | \"incorrect\" | undefined"
+              },
+              "privacy": "private",
+              "readonly": true
+            }
+          ],
+          "attributes": [
+            {
+              "name": "type",
+              "type": {
+                "text": "TextType"
+              },
+              "default": "\"long-text\"",
+              "description": "The kind of input field learners answer in.\n\n- `long-text`: A multi-line text area.\n- `text`: A single-line text field.\n- `number`: A number field.\n- `date`: A date picker.\n- `time`: A time picker.\n- `datetime-local`: A combined date and time picker.",
+              "fieldName": "type"
+            },
+            {
+              "name": "placeholder",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The placeholder shown while the field is empty.",
+              "fieldName": "placeholder"
+            },
+            {
+              "name": "free-text",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether any non-empty answer counts as correct, without comparing it to the solution.",
+              "fieldName": "freeText"
+            },
+            {
+              "name": "ignore-case",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether the answer is compared to the solution case-insensitively.",
+              "fieldName": "ignoreCase"
+            },
+            {
+              "name": "correct-message",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The feedback shown after submitting if the answer is correct.",
+              "fieldName": "correctMessage"
+            },
+            {
+              "name": "wrong-message",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The feedback shown after submitting if the answer is wrong.",
+              "fieldName": "wrongMessage"
+            },
+            {
+              "name": "solution",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The value counting as correct. It is obfuscated in the markup so that learners cannot read it directly.",
+              "fieldName": "solution"
+            }
+          ],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-text",
+          "customElement": true,
+          "modulePath": "src/widgets/webwriter-text.ts",
+          "definitionPath": "src/widgets/webwriter-text.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterText",
+          "declaration": {
+            "name": "WebwriterText",
+            "module": "src/widgets/webwriter-text.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-text",
+          "declaration": {
+            "name": "WebwriterText",
+            "module": "src/widgets/webwriter-text.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/choice/webwriter-choice-item.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A single option of a `<webwriter-choice>`.\n\nIt must be assigned to the default slot of its parent element. An optional\n`<webwriter-quiz-hint>` may be assigned to its `hint` slot.",
+          "name": "WebwriterChoiceItem",
+          "members": [
+            {
+              "kind": "field",
+              "name": "feedbackSelected",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The feedback shown after submitting if learners selected this option.",
+              "attribute": "feedback-selected",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "feedbackNotSelected",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The feedback shown after submitting if learners did not select this option.",
+              "attribute": "feedback-not-selected",
+              "reflects": true
+            },
+            {
+              "kind": "method",
+              "name": "dispatchSelectEvent",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "handleClick",
+              "privacy": "private"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "feedback-selected",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The feedback shown after submitting if learners selected this option.",
+              "fieldName": "feedbackSelected"
+            },
+            {
+              "name": "feedback-not-selected",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The feedback shown after submitting if learners did not select this option.",
+              "fieldName": "feedbackNotSelected"
+            }
+          ],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-choice-item",
+          "customElement": true,
+          "modulePath": "src/widgets/choice/webwriter-choice-item.ts",
+          "definitionPath": "src/widgets/choice/webwriter-choice-item.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterChoiceItem",
+          "declaration": {
+            "name": "WebwriterChoiceItem",
+            "module": "src/widgets/choice/webwriter-choice-item.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-choice-item",
+          "declaration": {
+            "name": "WebwriterChoiceItem",
+            "module": "src/widgets/choice/webwriter-choice-item.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/choice/webwriter-choice.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "An answer where learners pick one or more options.\n\nThe options must be `<webwriter-choice-item>` elements assigned to the\ndefault slot.",
+          "name": "WebwriterChoice",
+          "members": [
+            {
+              "kind": "field",
+              "name": "mode",
+              "type": {
+                "text": "ChoiceMode"
+              },
+              "default": "\"single\"",
+              "description": "How many options learners may select.\n\n- `single`: Exactly one option can be selected.\n- `multiple`: Any number of options can be selected.",
+              "attribute": "mode",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "layout",
+              "type": {
+                "text": "ChoiceLayout"
+              },
+              "default": "\"list\"",
+              "description": "How the options are arranged.\n\n- `list`: One option per row.\n- `tiles`: A responsive grid of equally sized tiles.",
+              "attribute": "layout",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "randomizeOrder",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false",
+              "description": "If true, the order of options will be randomized for learners.\n\nNote: Randomization occurs only during the first render, so changing this property dynamically will not have any effect.",
+              "attribute": "randomize-order",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "gradingMethod",
+              "type": {
+                "text": "ChoiceGradingMethod"
+              },
+              "default": "\"pass-fail\"",
+              "description": "How the score of this answer is calculated.\n\n- `pass-fail`: Full score only if exactly the correct options are selected.\n- `partial`: Correct selections earn credit, wrong ones subtract from it.",
+              "attribute": "grading-method",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "solution",
+              "type": {
+                "text": "ChoiceSolution"
+              },
+              "default": "{}",
+              "description": "The options counting as correct, as a map from option ID to whether it has to be selected.\nIt is obfuscated in the markup so that learners cannot read it directly.",
+              "attribute": "solution",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "currentAnswer",
+              "type": {
+                "text": "ChoiceSolution"
+              },
+              "privacy": "private",
+              "default": "{}"
+            },
+            {
+              "kind": "field",
+              "name": "graded",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "detailedFeedback",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "items",
+              "type": {
+                "text": "WebwriterChoiceItem[]"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "syncSolutionWithItems",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "randomizeItems",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "selected",
+              "type": {
+                "text": "ChoiceSolution"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "handleReorder",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "{ detail }",
+                  "type": {
+                    "text": "DraggableGridReorderEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleSelect",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "CustomEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "addOption",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "checkValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "checkAnswer",
+              "return": {
+                "type": {
+                  "text": "number"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "detailedFeedback",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "reset"
+            },
+            {
+              "kind": "method",
+              "name": "AddOptionButton",
+              "privacy": "private"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "mode",
+              "type": {
+                "text": "ChoiceMode"
+              },
+              "default": "\"single\"",
+              "description": "How many options learners may select.\n\n- `single`: Exactly one option can be selected.\n- `multiple`: Any number of options can be selected.",
+              "fieldName": "mode"
+            },
+            {
+              "name": "layout",
+              "type": {
+                "text": "ChoiceLayout"
+              },
+              "default": "\"list\"",
+              "description": "How the options are arranged.\n\n- `list`: One option per row.\n- `tiles`: A responsive grid of equally sized tiles.",
+              "fieldName": "layout"
+            },
+            {
+              "name": "randomize-order",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "If true, the order of options will be randomized for learners.\n\nNote: Randomization occurs only during the first render, so changing this property dynamically will not have any effect.",
+              "fieldName": "randomizeOrder"
+            },
+            {
+              "name": "grading-method",
+              "type": {
+                "text": "ChoiceGradingMethod"
+              },
+              "default": "\"pass-fail\"",
+              "description": "How the score of this answer is calculated.\n\n- `pass-fail`: Full score only if exactly the correct options are selected.\n- `partial`: Correct selections earn credit, wrong ones subtract from it.",
+              "fieldName": "gradingMethod"
+            },
+            {
+              "name": "solution",
+              "type": {
+                "text": "ChoiceSolution"
+              },
+              "default": "{}",
+              "description": "The options counting as correct, as a map from option ID to whether it has to be selected.\nIt is obfuscated in the markup so that learners cannot read it directly.",
+              "fieldName": "solution"
+            }
+          ],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-choice",
+          "customElement": true,
+          "modulePath": "src/widgets/choice/webwriter-choice.ts",
+          "definitionPath": "src/widgets/choice/webwriter-choice.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterChoice",
+          "declaration": {
+            "name": "WebwriterChoice",
+            "module": "src/widgets/choice/webwriter-choice.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-choice",
+          "declaration": {
+            "name": "WebwriterChoice",
+            "module": "src/widgets/choice/webwriter-choice.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/choice/webwriter-true-false.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "An answer where learners decide whether a statement is true or false.\n\nIt must be assigned to the default slot of a `<webwriter-task>`.",
+          "name": "WebwriterTrueFalse",
+          "members": [
+            {
+              "kind": "field",
+              "name": "solution",
+              "type": {
+                "text": "TrueFalse"
+              },
+              "default": "\"true\"",
+              "description": "The value counting as correct.\n\n- `true`: The statement is true.\n- `false`: The statement is false.",
+              "attribute": "solution",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "currentAnswer",
+              "type": {
+                "text": "TrueFalse | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "graded",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "showFeedback",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "method",
+              "name": "checkValidity"
+            },
+            {
+              "kind": "method",
+              "name": "reset"
+            },
+            {
+              "kind": "method",
+              "name": "checkAnswer",
+              "parameters": [
+                {
+                  "name": "detailedFeedback",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "selected",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "Button",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "choice",
+                  "type": {
+                    "text": "TrueFalse"
+                  }
+                },
+                {
+                  "name": "label",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "solution",
+              "type": {
+                "text": "TrueFalse"
+              },
+              "default": "\"true\"",
+              "description": "The value counting as correct.\n\n- `true`: The statement is true.\n- `false`: The statement is false.",
+              "fieldName": "solution"
+            }
+          ],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-true-false",
+          "customElement": true,
+          "modulePath": "src/widgets/choice/webwriter-true-false.ts",
+          "definitionPath": "src/widgets/choice/webwriter-true-false.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterTrueFalse",
+          "declaration": {
+            "name": "WebwriterTrueFalse",
+            "module": "src/widgets/choice/webwriter-true-false.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-true-false",
+          "declaration": {
+            "name": "WebwriterTrueFalse",
+            "module": "src/widgets/choice/webwriter-true-false.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/gap/webwriter-gap-item.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A single gap of a `<webwriter-gap>`, whose content is the correct answer.\n\nIt must be placed inside the text assigned to the default slot of its parent\nelement.",
+          "name": "WebwriterGapItem",
+          "members": [
+            {
+              "kind": "field",
+              "name": "slotRef",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "placeholder",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The placeholder shown while the gap is empty. Only applies in `input` mode.",
+              "attribute": "placeholder",
+              "reflects": true
+            },
+            {
+              "kind": "method",
+              "name": "renderEditable",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "renderInput",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "renderDragAndDrop",
+              "privacy": "private"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "placeholder",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The placeholder shown while the gap is empty. Only applies in `input` mode.",
+              "fieldName": "placeholder"
+            }
+          ],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-gap-item",
+          "customElement": true,
+          "modulePath": "src/widgets/gap/webwriter-gap-item.ts",
+          "definitionPath": "src/widgets/gap/webwriter-gap-item.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterGapItem",
+          "declaration": {
+            "name": "WebwriterGapItem",
+            "module": "src/widgets/gap/webwriter-gap-item.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-gap-item",
+          "declaration": {
+            "name": "WebwriterGapItem",
+            "module": "src/widgets/gap/webwriter-gap-item.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/gap/webwriter-gap.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "An answer where learners fill the gaps in a text.\n\nThe text must be assigned to the default slot, with a `<webwriter-gap-item>`\nin place of each gap.",
+          "name": "WebwriterGap",
+          "members": [
+            {
+              "kind": "field",
+              "name": "mode",
+              "type": {
+                "text": "GapMode"
+              },
+              "default": "\"input\"",
+              "description": "How learners fill the gaps.\n\n- `input`: Each gap is a text field learners type into.\n- `drag-and-drop`: The gaps are filled from a shared pool of draggable answers.",
+              "attribute": "mode",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "ignoreCase",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether answers are compared to the solution case-insensitively. Only applies in `input` mode.",
+              "attribute": "ignore-case",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "graded",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "items",
+              "type": {
+                "text": "WebwriterGapItem[]"
+              },
+              "privacy": "private",
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "choices",
+              "type": {
+                "text": "WebwriterGapItem[]"
+              },
+              "privacy": "private",
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "placements",
+              "privacy": "private",
+              "default": "new Map<WebwriterGapItem, WebwriterGapItem>()"
+            },
+            {
+              "kind": "field",
+              "name": "selected",
+              "type": {
+                "text": "WebwriterGapItem | null"
+              },
+              "privacy": "private",
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "observer",
+              "privacy": "private",
+              "default": "new MutationObserver(() => this.syncItems())"
+            },
+            {
+              "kind": "field",
+              "name": "drag",
+              "type": {
+                "text": "{\n\t\tchoice: WebwriterGapItem;\n\t\tpointerId: number;\n\t\tx: number;\n\t\ty: number;\n\t\toffsetX: number;\n\t\toffsetY: number;\n\t\tghost: HTMLElement;\n\t\tmoved: boolean;\n\t} | null"
+              },
+              "privacy": "private",
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "suppressClick",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "syncItems",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "place",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "choice",
+                  "type": {
+                    "text": "WebwriterGapItem"
+                  }
+                },
+                {
+                  "name": "target",
+                  "type": {
+                    "text": "WebwriterGapItem | null"
+                  }
+                }
+              ],
+              "description": "Moves `choice` into the gap `target`, or back into the tray of choices for `null`."
+            },
+            {
+              "kind": "method",
+              "name": "startDrag",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "PointerEvent"
+                  }
+                },
+                {
+                  "name": "choice",
+                  "type": {
+                    "text": "WebwriterGapItem"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "targetAt",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "x",
+                  "type": {
+                    "text": "number"
+                  }
+                },
+                {
+                  "name": "y",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "The gap under the given point, if it belongs to this element. The ghost does not take\npointer events, so it never hides the gap underneath it."
+            },
+            {
+              "kind": "method",
+              "name": "overTray",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "x",
+                  "type": {
+                    "text": "number"
+                  }
+                },
+                {
+                  "name": "y",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "moveDrag",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "endDrag",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "cancelOnEscape",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "cancelDrag",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "preventProseMirrorLineBreaks",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "popupPosition",
+              "type": {
+                "text": "({ left: string } & ({ top: string } | { bottom: string })) | null"
+              },
+              "privacy": "private",
+              "default": "null"
+            },
+            {
+              "kind": "method",
+              "name": "getGapSelectionAndRange",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "[Selection, Range] | []"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "insertGapAtSelection",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "insertGapOnKeyDown",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "checkValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "reset",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "checkAnswer",
+              "return": {
+                "type": {
+                  "text": "number"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "detailedFeedback",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "change",
+              "type": {
+                "text": "Event"
+              },
+              "description": "Dispatched when learners move an answer into or out of a gap. Only in `drag-and-drop` mode."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "mode",
+              "type": {
+                "text": "GapMode"
+              },
+              "default": "\"input\"",
+              "description": "How learners fill the gaps.\n\n- `input`: Each gap is a text field learners type into.\n- `drag-and-drop`: The gaps are filled from a shared pool of draggable answers.",
+              "fieldName": "mode"
+            },
+            {
+              "name": "ignore-case",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether answers are compared to the solution case-insensitively. Only applies in `input` mode.",
+              "fieldName": "ignoreCase"
+            }
+          ],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-gap",
+          "customElement": true,
+          "modulePath": "src/widgets/gap/webwriter-gap.ts",
+          "definitionPath": "src/widgets/gap/webwriter-gap.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterGap",
+          "declaration": {
+            "name": "WebwriterGap",
+            "module": "src/widgets/gap/webwriter-gap.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-gap",
+          "declaration": {
+            "name": "WebwriterGap",
+            "module": "src/widgets/gap/webwriter-gap.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/order/webwriter-order-item.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A single item of a `<webwriter-order>`.\n\nIt must be assigned to the default slot of its parent element. An optional\n`<webwriter-quiz-hint>` may be assigned to its `hint` slot.",
+          "name": "WebwriterOrderItem",
+          "members": [],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-order-item",
+          "customElement": true,
+          "modulePath": "src/widgets/order/webwriter-order-item.ts",
+          "definitionPath": "src/widgets/order/webwriter-order-item.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterOrderItem",
+          "declaration": {
+            "name": "WebwriterOrderItem",
+            "module": "src/widgets/order/webwriter-order-item.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-order-item",
+          "declaration": {
+            "name": "WebwriterOrderItem",
+            "module": "src/widgets/order/webwriter-order-item.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/order/webwriter-order.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "An answer where learners drag items into the correct order.\n\nThe items must be `<webwriter-order-item>` elements assigned to the default\nslot.",
+          "name": "WebwriterOrder",
+          "members": [
+            {
+              "kind": "field",
+              "name": "layout",
+              "type": {
+                "text": "OrderLayout"
+              },
+              "default": "\"list\"",
+              "description": "How the items are arranged.\n\n- `list`: One item per row.\n- `tiles`: A responsive grid of equally sized tiles.",
+              "attribute": "layout",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "direction",
+              "type": {
+                "text": "OrderDirection"
+              },
+              "default": "\"ascending\"",
+              "description": "The direction in which the items are numbered.\n\n- `ascending`: The first item carries the lowest position.\n- `descending`: The first item carries the highest position.",
+              "attribute": "direction",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "numberingStyle",
+              "type": {
+                "text": "OrderNumberingStyle"
+              },
+              "default": "\"numeric\"",
+              "description": "How the position of each item is labelled.\n\n- `none`: No position is shown.\n- `numeric`: Arabic numerals (1., 2., 3., ...).\n- `alphabetic`: Latin letters (A., B., C., ...).\n- `roman`: Roman numerals (I., II., III., ...).",
+              "attribute": "numbering-style",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "gradingMethod",
+              "type": {
+                "text": "OrderGradingMethod"
+              },
+              "default": "\"pass-fail\"",
+              "description": "How the score of this answer is calculated.\n\n- `pass-fail`: Full score only if every item is in its correct position.\n- `partial-position`: Credit for each item in its correct position.\n- `partial-sequence`: Credit for each pair of adjacent items in the correct order.",
+              "attribute": "grading-method",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "solution",
+              "type": {
+                "text": "OrderSolution"
+              },
+              "default": "[]",
+              "description": "The IDs of the items in their correct order. It is obfuscated in the markup so that learners cannot read it directly.",
+              "attribute": "solution",
+              "reflects": true
+            },
+            {
+              "kind": "method",
+              "name": "randomizeItems",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "checkValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "reset",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "checkAnswer",
+              "return": {
+                "type": {
+                  "text": "number"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "detailedFeedback",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "refreshItems",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "handleReorder",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "{ detail }",
+                  "type": {
+                    "text": "DraggableGridReorderEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "addOption",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "AddOptionButton",
+              "privacy": "private"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "layout",
+              "type": {
+                "text": "OrderLayout"
+              },
+              "default": "\"list\"",
+              "description": "How the items are arranged.\n\n- `list`: One item per row.\n- `tiles`: A responsive grid of equally sized tiles.",
+              "fieldName": "layout"
+            },
+            {
+              "name": "direction",
+              "type": {
+                "text": "OrderDirection"
+              },
+              "default": "\"ascending\"",
+              "description": "The direction in which the items are numbered.\n\n- `ascending`: The first item carries the lowest position.\n- `descending`: The first item carries the highest position.",
+              "fieldName": "direction"
+            },
+            {
+              "name": "numbering-style",
+              "type": {
+                "text": "OrderNumberingStyle"
+              },
+              "default": "\"numeric\"",
+              "description": "How the position of each item is labelled.\n\n- `none`: No position is shown.\n- `numeric`: Arabic numerals (1., 2., 3., ...).\n- `alphabetic`: Latin letters (A., B., C., ...).\n- `roman`: Roman numerals (I., II., III., ...).",
+              "fieldName": "numberingStyle"
+            },
+            {
+              "name": "grading-method",
+              "type": {
+                "text": "OrderGradingMethod"
+              },
+              "default": "\"pass-fail\"",
+              "description": "How the score of this answer is calculated.\n\n- `pass-fail`: Full score only if every item is in its correct position.\n- `partial-position`: Credit for each item in its correct position.\n- `partial-sequence`: Credit for each pair of adjacent items in the correct order.",
+              "fieldName": "gradingMethod"
+            },
+            {
+              "name": "solution",
+              "type": {
+                "text": "OrderSolution"
+              },
+              "default": "[]",
+              "description": "The IDs of the items in their correct order. It is obfuscated in the markup so that learners cannot read it directly.",
+              "fieldName": "solution"
+            }
+          ],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-order",
+          "customElement": true,
+          "modulePath": "src/widgets/order/webwriter-order.ts",
+          "definitionPath": "src/widgets/order/webwriter-order.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterOrder",
+          "declaration": {
+            "name": "WebwriterOrder",
+            "module": "src/widgets/order/webwriter-order.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-order",
+          "declaration": {
+            "name": "WebwriterOrder",
+            "module": "src/widgets/order/webwriter-order.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/pairing/webwriter-pairing-item.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A single item of a `<webwriter-pairing>`.\n\nIt must be a child of its parent element.",
+          "name": "WebwriterPairing",
+          "members": [],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-pairing-item",
+          "customElement": true,
+          "modulePath": "src/widgets/pairing/webwriter-pairing-item.ts",
+          "definitionPath": "src/widgets/pairing/webwriter-pairing.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterPairing",
+          "declaration": {
+            "name": "WebwriterPairing",
+            "module": "src/widgets/pairing/webwriter-pairing-item.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-pairing-item",
+          "declaration": {
+            "name": "WebwriterPairing",
+            "module": "src/widgets/pairing/webwriter-pairing-item.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/pairing/webwriter-pairing.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "An answer where learners match items into pairs.\n\nThe items must be `<webwriter-pairing-item>` children of this element.",
+          "name": "WebwriterPairing",
+          "members": [
+            {
+              "kind": "field",
+              "name": "mode",
+              "type": {
+                "text": "PairingMode"
+              },
+              "default": "\"pairing\"",
+              "description": "How learners match the items.\n\n- `pairing`: All items are visible and learners drag them together.\n- `memory`: The items are face down and learners uncover two at a time.",
+              "attribute": "mode",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "solution",
+              "type": {
+                "text": "[string, string][]"
+              },
+              "default": "[]",
+              "description": "The pairs counting as correct, as tuples of the two item IDs. It is obfuscated in the markup so that learners cannot read it directly.",
+              "attribute": "solution",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "graded",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "detailedFeedback",
+              "type": {
+                "text": "boolean"
+              },
+              "privacy": "private",
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "showFeedback",
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "pairIndex",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "itemId",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Index of the pair an item belongs to, or -1 if it belongs to none."
+            },
+            {
+              "kind": "method",
+              "name": "addPair",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "removePair",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "a",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "b",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderAuthoringView",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "pairingQuiz",
+              "type": {
+                "text": "PairingQuizState | null"
+              },
+              "privacy": "private",
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "pairingDragState",
+              "type": {
+                "text": "PairingDragState | null"
+              },
+              "privacy": "private",
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "pairingSettleTimeout",
+              "type": {
+                "text": "ReturnType<typeof setTimeout> | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "resetPairingQuiz",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "renderPairingView",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "renderPairingCard",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "id",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "variant",
+                  "default": "\"\""
+                },
+                {
+                  "name": "draggable",
+                  "default": "true"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "pairingCards",
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "animatePairingCard",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "card",
+                  "type": {
+                    "text": "HTMLElement"
+                  }
+                },
+                {
+                  "name": "from",
+                  "type": {
+                    "text": "DOMRect"
+                  }
+                },
+                {
+                  "name": "duration",
+                  "default": "PAIRING_SETTLE_MS"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "flipPairingCards",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "from",
+                  "type": {
+                    "text": "Map<string, DOMRect>"
+                  }
+                },
+                {
+                  "name": "droppedCardId",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "finishPairingSettle",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "pairingDropCell",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "PairingDragState"
+                  }
+                },
+                {
+                  "name": "clientX",
+                  "type": {
+                    "text": "number"
+                  }
+                },
+                {
+                  "name": "clientY",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "applyPairingDrop",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "PairingDragState"
+                  }
+                },
+                {
+                  "name": "cell",
+                  "type": {
+                    "text": "HTMLElement"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "requestPairingAnimationFrame",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "autoScrollPairing",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "PairingDragState"
+                  }
+                },
+                {
+                  "name": "deltaTime",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "onPairingAnimationFrame",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "time",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "onPairingPointerDown",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "PointerEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "onPairingPointerMove",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "PointerEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "onPairingPointerEnd",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "PointerEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "memoryGame",
+              "type": {
+                "text": "MemoryGameState | null"
+              },
+              "privacy": "private",
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "flipBackTimeout",
+              "type": {
+                "text": "ReturnType<typeof setTimeout> | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "resetMemoryGame",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "flipMemoryItem",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "id",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderMemoryGame",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "checkValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "checkAnswer",
+              "return": {
+                "type": {
+                  "text": "number"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "detailedFeedback",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "reset",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "mode",
+              "type": {
+                "text": "PairingMode"
+              },
+              "default": "\"pairing\"",
+              "description": "How learners match the items.\n\n- `pairing`: All items are visible and learners drag them together.\n- `memory`: The items are face down and learners uncover two at a time.",
+              "fieldName": "mode"
+            },
+            {
+              "name": "solution",
+              "type": {
+                "text": "[string, string][]"
+              },
+              "default": "[]",
+              "description": "The pairs counting as correct, as tuples of the two item IDs. It is obfuscated in the markup so that learners cannot read it directly.",
+              "fieldName": "solution"
+            }
+          ],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-pairing-item",
+          "customElement": true,
+          "modulePath": "src/widgets/pairing/webwriter-pairing.ts",
+          "definitionPath": "src/widgets/pairing/webwriter-pairing.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterPairing",
+          "declaration": {
+            "name": "WebwriterPairing",
+            "module": "src/widgets/pairing/webwriter-pairing.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-pairing",
+          "declaration": {
+            "name": "WebwriterPairing",
+            "module": "src/widgets/pairing/webwriter-pairing.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/widgets/speech/webwriter-speech.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "An answer where learners record a spoken response.\n\nIt must be assigned to the default slot of a `<webwriter-task>`.",
+          "name": "WebwriterSpeech",
+          "members": [
+            {
+              "kind": "field",
+              "name": "src",
+              "type": {
+                "text": "string | null"
+              },
+              "default": "null",
+              "description": "The recording of the learner as a data URL, or `null` if nothing was recorded yet.",
+              "attribute": "src",
+              "reflects": true
+            },
+            {
+              "kind": "method",
+              "name": "reset"
+            },
+            {
+              "kind": "method",
+              "name": "checkValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "src",
+              "type": {
+                "text": "string | null"
+              },
+              "default": "null",
+              "description": "The recording of the learner as a data URL, or `null` if nothing was recorded yet.",
+              "fieldName": "src"
+            }
+          ],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "webwriter-speech",
+          "customElement": true,
+          "modulePath": "src/widgets/speech/webwriter-speech.ts",
+          "definitionPath": "src/widgets/speech/webwriter-speech.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterSpeech",
+          "declaration": {
+            "name": "WebwriterSpeech",
+            "module": "src/widgets/speech/webwriter-speech.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-speech",
+          "declaration": {
+            "name": "WebwriterSpeech",
+            "module": "src/widgets/speech/webwriter-speech.ts"
+          }
+        }
+      ]
+    }
+  ]
+}

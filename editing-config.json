@@ -1,0 +1,106 @@
+{
+	"./widgets/webwriter-quiz": {
+		"content": "webwriter-task*"
+	},
+	"./widgets/webwriter-quiz-hint": {
+		"group": "containerinline",
+		"defining": true,
+		"isolating": true,
+		"content": "p+",
+		"uninsertable": true
+	},
+	"./widgets/webwriter-task": {
+		"isolating": true,
+		"content": "webwriter-task-prompt answer",
+		"uninsertable": true
+	},
+	"./widgets/webwriter-task-prompt": {
+		"group": "",
+		"defining": true,
+		"content": "webwriter-quiz-hint?  (p | flow)+",
+		"uninsertable": true
+	},
+	"./widgets/webwriter-true-false": {
+		"group": "answer",
+		"isolating": true,
+		"uninsertable": true
+	},
+	"./widgets/webwriter-choice": {
+		"group": "answer",
+		"uninsertable": true,
+		"content": "webwriter-choice-item+"
+	},
+	"./widgets/webwriter-choice-item": {
+		"selectable": false,
+		"draggable": false,
+		"isolating": false,
+		"content": "webwriter-quiz-hint? (p | flow)+",
+		"uninsertable": true
+	},
+	"./widgets/webwriter-order": {
+		"group": "answer",
+		"uninsertable": true,
+		"content": "webwriter-order-item+"
+	},
+	"./widgets/webwriter-order-item": {
+		"selectable": false,
+		"draggable": false,
+		"isolating": false,
+		"content": "webwriter-quiz-hint? (p | flow)+",
+		"uninsertable": true
+	},
+	"./widgets/webwriter-speech": {
+		"group": "answer",
+		"uninsertable": true
+	},
+	"./widgets/webwriter-text": {
+		"group": "answer",
+		"isolating": true,
+		"uninsertable": true
+	},
+	"./widgets/webwriter-gap": {
+		"group": "answer",
+		"isolating": true,
+		"content": "(p | flow)+",
+		"uninsertable": true
+	},
+	"./widgets/webwriter-mark": {
+		"group": "answer",
+		"defining": true,
+		"isolating": true,
+		"content": "text*",
+		"marks": "",
+		"uninsertable": true
+	},
+	"./widgets/webwriter-pairing": {
+		"group": "answer",
+		"isolating": true,
+		"content": "webwriter-pairing-item*",
+		"uninsertable": true
+	},
+	"./widgets/webwriter-pairing-item": {
+		"group": "",
+		"isolating": true,
+		"content": "(p | picture)",
+		"uninsertable": true,
+		"propagateEvents": [
+			"mousedown",
+			"keydown",
+			"keypress",
+			"keyup",
+			"beforeinput",
+			"input",
+			"compositionstart",
+			"compositionupdate",
+			"compositionend"
+		]
+	},
+	"./widgets/webwriter-gap-item": {
+		"group": "phrasing",
+		"inline": true,
+		"isolating": false,
+		"content": "text*",
+		"marks": "",
+		"uninsertable": true
+	}
+}

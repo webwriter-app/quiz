@@ -1,282 +1,320 @@
-import {css, html, PropertyValues} from "lit"
-import {LitElementWw, option} from "@webwriter/lit"
-import {customElement, property, query, queryAssignedElements} from "lit/decorators.js"
+import { msg } from "@lit/localize";
+import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
+import SlDialog from "@shoelace-style/shoelace/dist/components/dialog/dialog.component.js";
+import SlDropdown from "@shoelace-style/shoelace/dist/components/dropdown/dropdown.component.js";
+import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
+import SlProgressBar from "@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.component.js";
+import { LitElementWw, type OptionDeclaration } from "@webwriter/lit";
+import AddIcon from "bootstrap-icons/icons/plus-lg.svg";
+import { css, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
+import { getQuizTypes, onQuizTypesChanged, type IWebWriterQuizType, type QuizType } from "../api";
+import type { WebwriterTask } from "./webwriter-task";
 
-import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js"
-import SlButtonGroup from "@shoelace-style/shoelace/dist/components/button-group/button-group.component.js"
-import SlDropdown from "@shoelace-style/shoelace/dist/components/dropdown/dropdown.component.js"
-import SlMenu from "@shoelace-style/shoelace/dist/components/menu/menu.component.js"
-import SlMenuItem from "@shoelace-style/shoelace/dist/components/menu-item/menu-item.component.js"
-import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js"
-import IconUIChecksGrid from "bootstrap-icons/icons/ui-checks-grid.svg"
-import Icon123 from "bootstrap-icons/icons/123.svg"
-import IconCardText from "bootstrap-icons/icons/card-text.svg"
-import IconHighlighter from "bootstrap-icons/icons/highlighter.svg"
-import IconSubtract from "bootstrap-icons/icons/subtract.svg"
-import IconBodyText from "bootstrap-icons/icons/body-text.svg"
-import IconMic from "bootstrap-icons/icons/mic.svg"
-import IconImage from "bootstrap-icons/icons/image.svg"
-import IconSearch from "bootstrap-icons/icons/search.svg"
-import IconGrid3x3Gap from "bootstrap-icons/icons/grid-3x3-gap.svg"
-
-import "@shoelace-style/shoelace/dist/themes/light.css"
-import type { WebwriterTask } from "./webwriter-task.js"
-
-import LOCALIZE from "../../localization/generated"
-import {msg} from "@lit/localize"
-
-
-function shuffle<T>(a: T[]) {
-  for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-declare global {interface HTMLElementTagNameMap {
-  "webwriter-quiz": WebwriterQuiz;
-}}
-
+/**
+ * A quiz groups multiple `<webwriter-task>` elements into one exercise that is
+ * submitted, graded and reset as a whole.
+ *
+ * The tasks must be assigned to the default slot.
+ */
 @customElement("webwriter-quiz")
 export class WebwriterQuiz extends LitElementWw {
+	/** @internal */
+	get dynamicOptions(): Record<string, OptionDeclaration> {
+		return {
+			"detailed-feedback": { type: "boolean", label: { _: msg("Show detailed feedback") } },
+			"confirm-submit": { type: "boolean", label: { _: msg("Require confirmation before submitting") } },
+			"confirm-reset": { type: "boolean", label: { _: msg("Require confirmation before resetting") } },
+			"hide-points": { type: "boolean", label: { _: msg("Hide points") } },
+		};
+	}
 
-  localize = LOCALIZE
+	/** @internal */
+	static scopedElements = {
+		"sl-button": SlButton,
+		"sl-dialog": SlDialog,
+		"sl-icon": SlIcon,
+		"sl-dropdown": SlDropdown,
+		"sl-progress-bar": SlProgressBar,
+	};
 
-  get answerTypes() {
-    return {
-      "webwriter-choice": {
-        label: msg("Choice"),
-        icon: IconUIChecksGrid
-      },
-      "webwriter-order": {
-        label: msg("Order"),
-        icon: Icon123
-      },
-      "webwriter-text": {
-        label: msg("Text"),
-        icon: IconCardText
-      },
-      "webwriter-mark": {
-        label: msg("Mark"),
-        icon: IconHighlighter
-      },/*
-      "webwriter-pairing": {
-        label: this.msg("Pairing"),
-        icon: IconSubtract
-      },
-      "webwriter-cloze": {
-        label: this.msg("Cloze"),
-        icon: IconBodyText
-      },*/
-      "webwriter-speech": {
-        label: msg("Speech"),
-        //advanced: true,
-        icon: IconMic
-      },
-      /*"webwriter-wordsearch": {
-        label: this.msg("Word Search"),
-        advanced: true,
-        icon: IconSearch
-      },
-      "webwriter-memory": {
-        label: this.msg("Memory"),
-        advanced: true,
-        icon: IconGrid3x3Gap
-      }*/
-    }
-  }
+	static styles = css`
+		:host {
+			container-type: inline-size;
+		}
 
-  static scopedElements = {
-    "sl-button": SlButton,
-    "sl-button-group": SlButtonGroup,
-    "sl-icon": SlIcon,
-    "sl-dropdown": SlDropdown,
-    "sl-menu": SlMenu,
-    "sl-menu-item": SlMenuItem,
-  }
+		.header-placeholder {
+			font-weight: bold;
+			margin-bottom: var(--sl-spacing-x-small);
+		}
 
-  addTask(answerTypeName: string) {
-    const task = this.ownerDocument.createElement("webwriter-task") as WebwriterTask
-    task.setAttribute("counter", this.counter)
-    const prompt = this.ownerDocument.createElement("webwriter-task-prompt")
-    const p = this.ownerDocument.createElement("p")
-    prompt.append(p)
-    prompt.slot = "prompt"
-    const answer = this.ownerDocument.createElement(answerTypeName)
-    task.appendChild(prompt)
-    task.appendChild(answer)
-    this.appendChild(task)
-    document.getSelection().setBaseAndExtent(p, 0, p, 0)
-  }
+		::slotted(webwriter-task:not(:last-child)) {
+			margin-bottom: var(--sl-spacing-2x-large);
+		}
 
-  static styles = css`
-    :host {
-      border-top: 1px solid darkgray;
-      border-bottom: 1px solid darkgray;
-      padding: 1ch;
-      display: flex !important;
-      flex-direction: column;
-      gap: 2rem;
-      counter-reset: task;
-    }
+		.insert-task-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+			gap: var(--sl-spacing-small);
 
-    :host(:not([contenteditable=true]):not([contenteditable=""])) .author-only {
-      display: none;
-    }
+			sl-button::part(base) {
+				justify-content: flex-start;
+			}
+		}
 
-    :host(:is([contenteditable=true], [contenteditable=""])) .user-only {
-      display: none;
-    }
+		.add-question {
+			margin-top: var(--sl-spacing-small);
 
-    :host(:is([contenteditable=true], [contenteditable=""])) ::slotted(*) {
-      order: unset !important;
-    }
+			display: flex;
+			justify-content: center;
 
-    sl-button-group::part(base) {
-      display: flex;
-    }
+			sl-dropdown::part(panel) {
+				background-color: var(--sl-color-neutral-0);
+				/* Ensure that panel follows the rounded corners of the button */
+				border-radius: calc(var(--sl-input-border-radius-medium) + var(--sl-spacing-x-small));
+			}
 
-    sl-button-group > *:not(sl-dropdown) {
-      flex-grow: 1;
-    }
+			.dropdown-container {
+				width: 100cqw;
+				box-sizing: border-box;
+				padding: var(--sl-spacing-x-small);
+			}
+		}
 
-    sl-dropdown[data-empty] {
-      display: none;
-    }
+		.actions {
+			margin-top: 1em;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
 
-    sl-button:not([caret])::part(label) {
-      padding: 0;
-      display: flex;
-      flex-direction: row;
-      width: 100%;
-      justify-content: space-evenly;
-      align-items: center;
-    }
+		.total-result {
+			display: flex;
+			gap: var(--sl-spacing-small);
+			align-items: center;
 
-    sl-icon {
-      width: 18px;
-      height: 18px;
-    }
+			sl-progress-bar {
+				width: 300px;
+			}
+		}
+	`;
 
-    sl-menu::part(menu) {
-      z-index: 10000;
-    }
+	/**
+	 * Whether learners see per-answer feedback and the solution after submitting.
+	 */
+	@property({ type: Boolean, attribute: "detailed-feedback", reflect: true })
+	accessor detailedFeedback: boolean = false;
 
-    .user-actions {
-      & #submit {
-        flex-grow: 3;
-      }
+	/**
+	 * Whether learners have to confirm a dialog before submitting.
+	 */
+	@property({ type: Boolean, attribute: "confirm-submit", reflect: true })
+	accessor confirmSubmit: boolean = false;
 
-      & #reset {
-        flex-grow: 1;
-      }
-    }
-  `
-  
-  @property({type: Boolean, attribute: true, reflect: true})
-  @option({type: Boolean, label: {"en": "Random Task Order"}})
-  accessor randomOrder = false
+	/**
+	 * Whether learners have to confirm a dialog before resetting.
+	 */
+	@property({ type: Boolean, attribute: "confirm-reset", reflect: true })
+	accessor confirmReset: boolean = false;
 
-  get counter(): "number" | "roman" | "roman-capitalized" | "alphabetical" | "alphabetical-capitalized" {
-    return this.tasks[0]?.counter
-  }
+	/**
+	 * Whether the points of each task and the total score are hidden.
+	 */
+	@property({ type: Boolean, attribute: "hide-points", reflect: true })
+	accessor hidePoints: boolean = false;
 
-  @property({attribute: true}) //@ts-ignore
-  @option({
-    type: "select",
-    label: {
-      "en": "Counter"
-    },
-    options: [
-      {value: undefined, label: {"en": "None"}},
-      {value: "number", label: {"en": "1. 2. 3."}},
-      {value: "roman", label: {"en": "i. ii. iii."}},
-      {value: "roman-capitalized", label: {"en": "I. II. III."}},
-      {value: "alphabetical", label: {"en": "a. b. c."}},
-      {value: "alphabetical-capitalized", label: {"en": "A. B. C."}},
-    ]
-  })
-  set counter(value) {
-    this.tasks.forEach(el => el.counter = value)
-  }
+	@state() private accessor quizTypes: readonly QuizType[] = getQuizTypes();
 
-  shuffleTasks() {
-    const n = this.tasks.length
-    const nums = shuffle([...(new Array(n)).keys()])
-    this.tasks.forEach((el, i) => el.style.order = String(nums[i]))
-  }
+	@state() private accessor totalResult: { score: number; maximum: number } | undefined;
 
-  handleSubmit(e: Event) {
-    this.submitted = true
-    this.dispatchEvent(new Event("submit"))
-    this.tasks.forEach(task => task.handleSubmit())
-  }
+	@state() private accessor confirmationAction: "submit" | "reset" | undefined;
 
-  handleReset = () => {
-    this.tasks.forEach(task => task.handleReset())
-    this.requestUpdate()
-    this.submitted = false
-  }
+	private unsubscribe?: () => void;
 
-  observer: MutationObserver
+	private addQuestionDropdownRef = createRef<SlDropdown>();
 
-  connectedCallback(): void {
-    super.connectedCallback()
-    this.observer = new MutationObserver(() => {
-      if(!this.contentEditable && this.randomOrder) {
-        this.shuffleTasks()
-      }
-    })
-    this.observer.observe(this, {childList: true})
-  }
+	connectedCallback() {
+		super.connectedCallback();
+		this.unsubscribe = onQuizTypesChanged(types => {
+			this.quizTypes = [...types];
+		});
+	}
 
-  disconnectedCallback(): void {
-    super.disconnectedCallback()
-    this.observer.disconnect()
-  }
+	disconnectedCallback() {
+		super.disconnectedCallback();
+		this.unsubscribe?.();
+		this.quizTypes = [];
+	}
 
-  @query("slot")
-  accessor slotEl: HTMLSlotElement
+	protected updated(changedProperties: Map<PropertyKey, unknown>) {
+		if (changedProperties.has("hidePoints")) {
+			this.getTasks().forEach(task => task.requestUpdate?.());
+		}
+	}
 
-  @queryAssignedElements()
-  accessor tasks: WebwriterTask[]
+	private insertQuizType(quizType: QuizType) {
+		const task = document.createElement("webwriter-task");
 
-  @property({type: Boolean, attribute: true, reflect: true})
-  accessor submitted = false
+		const prompt = document.createElement("webwriter-task-prompt");
+		prompt.appendChild(document.createElement("p"));
+		task.appendChild(prompt);
+		const quiz = quizType.createInstance();
+		task.appendChild(quiz);
+		this.appendChild(task);
 
-  get isChanged() {
-    return this.tasks.some(task => task.isChanged)
-  }
+		this.addQuestionDropdownRef.value?.hide();
+		this.requestUpdate();
+	}
 
-  render() {
-    const basicAnswerTypes = Object.keys(this.answerTypes).filter(k => !this.answerTypes[k]?.advanced)
-    const otherAnswerTypes = Object.keys(this.answerTypes).filter(k => this.answerTypes[k]?.advanced)
-    return html`
-      <slot ?inert=${this.submitted} @ww-answer-change=${() => this.requestUpdate()}></slot>
-        <sl-button-group class="user-only user-actions">
-          <sl-button id="submit" @click=${this.handleSubmit}>${msg("Submit")}</sl-button>
-          <sl-button ?disabled=${!this.isChanged} id="reset" @click=${this.handleReset}>${msg("Reset")}</sl-button>
-        </sl-button-group>
-      <sl-button-group class="author-only">
-        ${basicAnswerTypes.map(k => html`
-          <sl-button @click=${() => this.addTask(k)}>
-            <sl-icon src=${this.answerTypes[k]?.icon}></sl-icon>
-            ${this.answerTypes[k].label}
-          </sl-button>
-        `)}
-        <sl-dropdown data-empty=${!otherAnswerTypes.length} placement="bottom-end" hoist>
-          <sl-button slot="trigger" caret></sl-button>
-          <sl-menu>
-            ${otherAnswerTypes.map(k => html`
-            <sl-menu-item @click=${() => this.addTask(k)}>
-              <sl-icon src=${this.answerTypes[k]?.icon}></sl-icon>
-              ${this.answerTypes[k].label}
-            </sl-menu-item>
-            `)}
-          </sl-menu>
-        </sl-dropdown>
-      </sl-button-group>
-      `
-  }
+	private InsertQuestionGrid() {
+		return html`<div class="insert-task-grid">
+			${this.quizTypes.map(
+				quizType =>
+					html`<sl-button @click=${() => this.insertQuizType(quizType)}>
+						<sl-icon src=${quizType.icon ?? ""} slot="prefix"></sl-icon>
+						${quizType.getName()}
+					</sl-button>`,
+			)}
+		</div>`;
+	}
+
+	private getTasks() {
+		return Array.from(this.children).filter((child): child is WebwriterTask => child.tagName === "WEBWRITER-TASK");
+	}
+
+	private getTaskApi(task: WebwriterTask): IWebWriterQuizType | undefined {
+		return Array.from(task.children).find(
+			(child): child is HTMLElement & IWebWriterQuizType =>
+				typeof (child as Partial<IWebWriterQuizType>).checkValidity === "function",
+		);
+	}
+
+	private getTaskPoints(task: WebwriterTask) {
+		const points = Number(task.getAttribute("points") ?? 1);
+		return Number.isFinite(points) && points > 0 ? points : 1;
+	}
+
+	private formatScore(score: number) {
+		return Number(score.toFixed(2));
+	}
+
+	private getResultPercentage(result: { score: number; maximum: number }) {
+		if (result.maximum <= 0) return 0;
+		return (result.score / result.maximum) * 100;
+	}
+
+	private resetAnswers() {
+		for (const task of this.getTasks()) {
+			this.getTaskApi(task)?.reset();
+			task.resetFeedback();
+		}
+		this.totalResult = undefined;
+	}
+
+	private submit() {
+		const tasksWithApi = this.getTasks().map(task => ({
+			task,
+			api: this.getTaskApi(task),
+		}));
+		const validities = tasksWithApi.map(({ task, api }) => {
+			const valid = api?.checkValidity() ?? false;
+			task.showRequiredWarning(!valid);
+			task.showScore(undefined);
+			return valid;
+		});
+
+		this.totalResult = undefined;
+		if (validities.some(valid => !valid)) return;
+
+		let score = 0;
+		let maximum = 0;
+		for (const { task, api } of tasksWithApi) {
+			const answerScore = api?.checkAnswer?.(this.detailedFeedback);
+			if (answerScore === undefined) continue;
+
+			const points = this.getTaskPoints(task);
+			const taskScore = Math.max(0, Math.min(1, answerScore)) * points;
+			task.showScore(taskScore);
+			score += taskScore;
+			maximum += points;
+		}
+		this.totalResult = { score, maximum };
+	}
+
+	private ConfirmationDialog() {
+		const isSubmit = this.confirmationAction === "submit";
+
+		const cancel = () => (this.confirmationAction = undefined);
+		const confirm = () => {
+			const action = this.confirmationAction;
+			this.confirmationAction = undefined;
+			if (action === "submit") this.submit();
+			else if (action === "reset") this.resetAnswers();
+		};
+
+		return html`<sl-dialog
+			label=${isSubmit ? msg("Submit answers?") : msg("Reset answers?")}
+			?open=${this.confirmationAction !== undefined}
+			@sl-request-close=${cancel}
+			@sl-after-hide=${cancel}
+		>
+			${isSubmit ? msg("Submit your answers for evaluation?") : msg("Reset all answers and start over?")}
+			<sl-button slot="footer" @click=${cancel}>${msg("Cancel")}</sl-button>
+			<sl-button slot="footer" variant=${isSubmit ? "primary" : "danger"} @click=${confirm}>
+				${isSubmit ? msg("Submit") : msg("Reset answers")}
+			</sl-button>
+		</sl-dialog>`;
+	}
+
+	render() {
+		if (!this.isContentEditable) {
+			return html`<slot></slot>
+
+				<div class="actions">
+					${this.totalResult
+						? html`<div class="total-result">
+								<sl-progress-bar .value=${this.getResultPercentage(this.totalResult)}></sl-progress-bar>
+								<strong
+									>${this.formatScore(this.totalResult.score)} / ${this.formatScore(this.totalResult.maximum)}</strong
+								>
+							</div>`
+						: html`<sl-button
+								variant="primary"
+								@click=${() => (this.confirmSubmit ? (this.confirmationAction = "submit") : this.submit())}
+							>
+								${msg("Submit")}
+							</sl-button>`}
+					<sl-button @click=${() => (this.confirmReset ? (this.confirmationAction = "reset") : this.resetAnswers())}>
+						${msg("Reset answers")}
+					</sl-button>
+				</div>
+
+				${this.ConfirmationDialog()}`;
+		}
+
+		if (this.children.length > 0) {
+			return html`<slot
+					@slotchange=${() => {
+						// Update numbering in the quiz header in case the order changed
+						Array.from(this.children)
+							.filter(c => c.tagName === "WEBWRITER-TASK")
+							.forEach(t => (t as WebwriterTask).requestUpdate?.());
+						this.requestUpdate();
+					}}
+				></slot>
+				<div class="add-question">
+					<sl-dropdown placement="bottom" distance="4" ${ref(this.addQuestionDropdownRef)}>
+						<sl-button slot="trigger" caret>
+							<sl-icon slot="prefix" src=${AddIcon}></sl-icon>
+							${msg("Add Question")}
+						</sl-button>
+						<div class="dropdown-container">${this.InsertQuestionGrid()}</div>
+					</sl-dropdown>
+				</div>`;
+		} else {
+			return html`<div class="header-placeholder">${msg("Question 1")}</div>
+				${this.InsertQuestionGrid()}`;
+		}
+	}
 }

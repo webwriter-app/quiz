@@ -1,432 +1,374 @@
-import {html, css, RenderOptions} from "lit"
-import {action, LitElementWw} from "@webwriter/lit"
-import {customElement, eventOptions, property} from "lit/decorators.js"
-import {styleMap} from "lit/directives/style-map.js"
-import "@shoelace-style/shoelace/dist/themes/light.css"
+import { msg } from "@lit/localize";
+import SlTooltip from "@shoelace-style/shoelace/dist/components/tooltip/tooltip.component.js";
+import { action, LitElementWw, type OptionDeclaration } from "@webwriter/lit";
+import HighlighterIcon from "bootstrap-icons/icons/highlighter.svg";
+import { css, html, type PropertyValues } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
+import { styleMap } from "lit/directives/style-map.js";
+import { name as packageId } from "../../package.json";
+import { IWebWriterQuizType, registerQuizType } from "../api";
+import { encryptedProperty, encryptPlaintextAttributes } from "../lib/encrypted-property";
 
-import SlIconButton from "@shoelace-style/shoelace/dist/components/icon-button/icon-button.component.js"
-
-import LOCALIZE from "../../localization/generated"
-import {msg} from "@lit/localize"
-
-/**
- * @param {!Node} node
- * @param {boolean=} optimized
- * @return {string}
- */
-export const xPath = function (node, optimized=false) {
-    if (node.nodeType === Node.DOCUMENT_NODE) {
-        return '/';
-    }
-
-    const steps = [];
-    let contextNode = node;
-    while (contextNode) {
-        const step = _xPathValue(contextNode, optimized);
-        if (!step) {
-            break;
-        }  // Error - bail out early.
-        steps.push(step);
-        if (step.optimized) {
-            break;
-        }
-        contextNode = contextNode.parentNode;
-    }
-
-    steps.reverse();
-    return (steps.length && steps[0].optimized ? '' : '/') + steps.join('/');
-};
-
-/**
- * @param {!Node} node
- * @param {boolean=} optimized
- * @return {?Step}
- */
-const _xPathValue = function (node, optimized) {
-    let ownValue;
-    const ownIndex = _xPathIndex(node);
-    if (ownIndex === -1) {
-        return null;
-    }  // Error.
-
-    switch (node.nodeType) {
-        case Node.ELEMENT_NODE:
-            if (optimized && node.getAttribute('id')) {
-                return new Step('//*[@id="' + node.getAttribute('id') + '"]', true);
-            }
-            ownValue = node.localName;
-            break;
-        case Node.ATTRIBUTE_NODE:
-            ownValue = '@' + node.nodeName;
-            break;
-        case Node.TEXT_NODE:
-        case Node.CDATA_SECTION_NODE:
-            ownValue = 'text()';
-            break;
-        case Node.PROCESSING_INSTRUCTION_NODE:
-            ownValue = 'processing-instruction()';
-            break;
-        case Node.COMMENT_NODE:
-            ownValue = 'comment()';
-            break;
-        case Node.DOCUMENT_NODE:
-            ownValue = '';
-            break;
-        default:
-            ownValue = '';
-            break;
-    }
-
-    if (ownIndex > 0) {
-        ownValue += '[' + ownIndex + ']';
-    }
-
-    return new Step(ownValue, node.nodeType === Node.DOCUMENT_NODE);
-};
-
-/**
- * @param {!Node} node
- * @return {number}
- */
-const _xPathIndex = function (node) {
-    // Returns -1 in case of error, 0 if no siblings matching the same expression,
-    // <XPath index among the same expression-matching sibling nodes> otherwise.
-    function areNodesSimilar(left, right) {
-        if (left === right) {
-            return true;
-        }
-
-        if (left.nodeType === Node.ELEMENT_NODE && right.nodeType === Node.ELEMENT_NODE) {
-            return left.localName === right.localName;
-        }
-
-        if (left.nodeType === right.nodeType) {
-            return true;
-        }
-
-        // XPath treats CDATA as text nodes.
-        const leftType = left.nodeType === Node.CDATA_SECTION_NODE ? Node.TEXT_NODE : left.nodeType;
-        const rightType = right.nodeType === Node.CDATA_SECTION_NODE ? Node.TEXT_NODE : right.nodeType;
-        return leftType === rightType;
-    }
-
-    const siblings = node.parentNode ? node.parentNode.children : null;
-    if (!siblings) {
-        return 0;
-    }  // Root node - no siblings.
-    let hasSameNamedElements;
-    for (let i = 0; i < siblings.length; ++i) {
-        if (areNodesSimilar(node, siblings[i]) && siblings[i] !== node) {
-            hasSameNamedElements = true;
-            break;
-        }
-    }
-    if (!hasSameNamedElements) {
-        return 0;
-    }
-    let ownIndex = 1;  // XPath indices start with 1.
-    for (let i = 0; i < siblings.length; ++i) {
-        if (areNodesSimilar(node, siblings[i])) {
-            if (siblings[i] === node) {
-                return ownIndex;
-            }
-            ++ownIndex;
-        }
-    }
-    return -1;  // An error occurred: |node| not found in parent's children.
-};
-
-/**
- * @unrestricted
- */
-const Step = class {
-    constructor(readonly value: string, readonly optimized=false) {}
-    
-    toString() {
-        return this.value;
-    }
-};
-
-function getCaretPositionFromPoint(e: PointerEvent) {
-  let range: Range | null;
-  let textNode: Text;
-  let offset: number;
-
-  if ((document as any).caretPositionFromPoint) {
-    range = (document as any).caretPositionFromPoint(e.clientX, e.clientY);
-    textNode = (range as any).offsetNode;
-    offset = (range as any).offset;
-    return {textNode, offset}
-  } else if (document.caretRangeFromPoint) {
-    // Use WebKit-proprietary fallback method
-    range = document.caretRangeFromPoint(e.clientX, e.clientY);
-    textNode = range.startContainer as Text;
-    offset = range.startOffset;
-    return {textNode, offset}
-  } else {
-    throw Error("Both 'caretPositionFromPoint' and 'caretRangeFromPoint' are unsupported")
-  }
+declare global {
+	interface HTMLElementTagNameMap {
+		"webwriter-mark": WebWriterMark;
+	}
 }
 
-const toAttributeRange = (ranges: SerializableRange[]) => {
-  return JSON.stringify(ranges)
+export type MarkGradingMethod = "pass-fail" | "partial";
+
+registerQuizType({
+	packageId,
+	widgetPosition: 20,
+	id: "webwriter-mark",
+	getName: () => msg("Mark"),
+	icon: HighlighterIcon,
+	createInstance: () => document.createElement("webwriter-mark"),
+});
+
+type WordSegment = { node: Text; start: number; end: number };
+type HighlightGroup = "marked" | "correct" | "missed" | "wrong";
+
+function rangesOverlap(a: Range, b: Range): boolean {
+	return a.compareBoundaryPoints(Range.END_TO_START, b) < 0 && a.compareBoundaryPoints(Range.START_TO_END, b) > 0;
 }
 
-const fromAttributeRange = (attr?: string) => {
-  if(!attr) {
-    return []
-  }
-  const ranges = JSON.parse(attr) as {startContainer: string, startOffset: number, endContainer?: string, endOffset: number}[]
-  return ranges.map(range => new SerializableRange(range))
-}
-
-type SerializableRangeLike = SerializableRange | {startContainer: string, startOffset: number, endContainer?: string, endOffset: number}
-
-class SerializableRange extends Range {
-
-  constructor(value?: string | SerializableRangeLike) {
-    super()
-    if(value instanceof SerializableRange) {
-      return value
-    }
-    else if(value) {
-      const {startContainer, startOffset, endContainer, endOffset} = typeof value === "string"? JSON.parse(value) as {startContainer: string, startOffset: number, endContainer?: string, endOffset: number}: value
-      const startNode = document.evaluate(startContainer, document, null, 9, null).singleNodeValue
-      startNode && this.setStart(startNode, startOffset)
-      const endNode = document.evaluate(endContainer ?? startContainer, document, null, 9, null).singleNodeValue
-      endNode && this.setEnd(endNode, endOffset)
-    }
-  }
-
-  toJSON() {
-    return this.startContainer === this.endContainer
-      ? {
-        startContainer: xPath(this.startContainer),
-        startOffset: this.startOffset,
-        endOffset: this.endOffset
-      }
-      : {
-        startContainer: xPath(this.startContainer),
-        startOffset: this.startOffset,
-        endContainer: xPath(this.endContainer),
-        endOffset: this.endOffset
-      }
-  }
-
-  toString() {
-    return JSON.stringify(this.toJSON())
-  }
-}
-
-declare global {interface HTMLElementTagNameMap {
-  "webwriter-mark": WebwriterMark;
-}}
-
+/**
+ * An answer where learners mark the words of a text that fit the question.
+ *
+ * The text must be assigned to the default slot; the element itself must be
+ * assigned to the default slot of a `<webwriter-task>`.
+ */
 @customElement("webwriter-mark")
-export class WebwriterMark extends LitElementWw {
+export class WebWriterMark extends LitElementWw implements IWebWriterQuizType {
+	/** @internal */
+	get dynamicOptions(): Record<string, OptionDeclaration> {
+		return {
+			"grading-method": {
+				type: "select",
+				options: [
+					{ value: "pass-fail", label: { _: msg("Pass/Fail") } },
+					{ value: "partial", label: { _: msg("Partial Credit") } },
+				],
+				label: { _: msg("Grading Method") },
+			},
+		};
+	}
 
-  localize = LOCALIZE
+	/** @internal */
+	static scopedElements = {
+		"sl-tooltip": SlTooltip,
+	};
 
-  static shadowRootOptions = {...LitElementWw.shadowRootOptions, delegatesFocus: false}
+	private static segmenter = new Intl.Segmenter(undefined, { granularity: "word" });
 
-  // @ts-ignore: Experimental API
-  static highlightValue = new Highlight()
+	// Since highlights are document-level, we should share them across all instances of this widget.
+	private static highlights: Record<HighlightGroup, Highlight> = {
+		marked: new Highlight(),
+		correct: new Highlight(),
+		missed: new Highlight(),
+		wrong: new Highlight(),
+	};
 
-  // @ts-ignore: Experimental API
-  static highlightSolution = new Highlight()
+	static {
+		for (const [group, highlight] of Object.entries(this.highlights)) {
+			CSS.highlights.set(`webwriter-mark-${group}`, highlight);
+		}
+	}
 
-  static {
-    // @ts-ignore: Experimental API
-    CSS.highlights.set("webwriter-mark-solution", this.highlightSolution)
-    // @ts-ignore: Experimental API
-    CSS.highlights.set("webwriter-mark-value", this.highlightValue)
-  }
-  
-  static scopedElements = {
-    "sl-icon-button": SlIconButton
-  }
+	static styles = css`
+		:host {
+			display: block;
+			min-height: 1rem;
+			position: relative;
+		}
 
-  static styles = css`
-    :host {
-      min-height: 1rem;
-      position: relative;
-    }
+		slot {
+			display: block;
+			cursor: text;
+		}
 
-    slot {
-      display: block;
-      cursor: text;
-    }
+		:host(:not([contenteditable="true"]):not([contenteditable=""])) slot {
+			cursor: pointer;
+			user-select: none;
+		}
 
-    :host(:not([contenteditable=true]):not([contenteditable=""])) slot {
-      cursor: pointer;
-      user-select: none;
-    }
+		slot[data-empty]::after {
+			content: var(--ww-placeholder);
+			position: absolute;
+			left: 0;
+			top: 0;
+			color: darkgray;
+			pointer-events: none;
+			user-select: none;
+		}
 
-    #highlight {
-      position: absolute;
-      right: 0;
-      top: 0;
-      background: rgba(255, 255, 255, 0.85)
-    }
+		:host ::highlight(webwriter-mark-marked) {
+			background-color: var(--sl-color-primary-200);
+		}
 
-    slot[data-empty]:after {
-      content: var(--ww-placeholder);
-      position: absolute;
-      left: 0;
-      top: 0;
-      color: darkgray;
-      pointer-events: none;
-      user-select: none;
-    }
+		:host ::highlight(webwriter-mark-correct) {
+			background-color: var(--sl-color-success-200);
+		}
 
-    #highlight::part(base):hover {
-      background: yellow;
-    }
+		:host ::highlight(webwriter-mark-missed) {
+			background-color: var(--sl-color-warning-200);
+			text-decoration: underline dashed;
+		}
 
-    :host ::highlight(webwriter-mark-value) {
-      background-color: yellow;
-    }
+		:host ::highlight(webwriter-mark-wrong) {
+			background-color: var(--sl-color-danger-200);
+			text-decoration: line-through;
+		}
 
-    :host ::highlight(webwriter-mark-solution) {
-      background-color: #79b521;
-    }
+		.enter-anchor {
+			position: absolute;
+		}
+	`;
 
-    #highlight[data-highlighting]::part(base) {
-      background-color: lightyellow;
-    }
+	/**
+	 * How the score of this answer is calculated.
+	 *
+	 * - `pass-fail`: Full score only if exactly the correct words are marked.
+	 * - `partial`: Correctly marked words earn credit, wrong ones subtract from it.
+	 */
+	@property({ type: String, attribute: "grading-method", reflect: true })
+	accessor gradingMethod: MarkGradingMethod = "pass-fail";
 
-    :host(:has(#highlight[data-highlighting])) ::selection {
-      background: lightyellow !important;
-    }
+	/**
+	 * The indices of the word-like segments counting as correct. It is obfuscated in the markup so that learners cannot read it directly.
+	 */
+	@property({ type: Array, attribute: "solution", reflect: true, converter: encryptedProperty })
+	accessor solution: number[] = [];
 
-    :host([highlighting]) #highlight::part(base) {
-      background: yellow;
-    }
-  `
+	@state() private accessor currentAnswer: number[] = [];
+	@state() private accessor graded: boolean = false;
+	@state() private accessor detailedFeedback: boolean = false;
 
-  @property({type: Boolean, attribute: true, reflect: true})
-  accessor highlighting = false
+	private renderedRanges: Record<HighlightGroup, Range[]> = {
+		marked: [],
+		correct: [],
+		missed: [],
+		wrong: [],
+	};
 
-  #solution: SerializableRange[] = []
+	private observer = new MutationObserver(records => this.handleMutation(records));
 
-  get solution(): SerializableRange[] {
-    return this.#solution
-  }
+	private enterTooltipRef = createRef<SlTooltip>();
+	private enterAnchorRef = createRef<HTMLDivElement>();
 
-  @property({attribute: false})
-  set solution(value: SerializableRangeLike[]) {
-    this.#updateHighlight("solution", value.map(v => new SerializableRange(v)))
-    this.requestUpdate("solution")
-  }
+	protected firstUpdated(changed: PropertyValues): void {
+		super.firstUpdated(changed);
+		encryptPlaintextAttributes(this);
+	}
 
-  #value: SerializableRange[] = []
+	connectedCallback(): void {
+		super.connectedCallback();
+		this.observer.observe(this, { childList: true, characterData: true, subtree: true });
+		document.addEventListener("keydown", this.handleKeyDown, { capture: true });
+		document.addEventListener("selectionchange", this.handleSelectionChange);
+		this.requestUpdate();
+	}
 
-  get value(): SerializableRange[] {
-    return this.#value
-  }
+	disconnectedCallback(): void {
+		super.disconnectedCallback();
+		this.observer.disconnect();
+		document.removeEventListener("keydown", this.handleKeyDown, { capture: true });
+		document.removeEventListener("selectionchange", this.handleSelectionChange);
+		for (const group of Object.keys(this.renderedRanges) as HighlightGroup[]) this.setHighlight(group, []);
+	}
 
-  @property({attribute: true, reflect: true, converter: {toAttribute: toAttributeRange, fromAttribute: fromAttributeRange}})
-  set value(value: SerializableRangeLike[]) {
-    this.#updateHighlight("value", value.map(v => new SerializableRange(v)))
-    this.requestUpdate("value")
-  }
+	private getWordSegments(): WordSegment[] {
+		const segments: WordSegment[] = [];
+		const walker = document.createTreeWalker(this, NodeFilter.SHOW_TEXT);
+		for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+			for (const segment of WebWriterMark.segmenter.segment((node as Text).data)) {
+				if (segment.isWordLike) {
+					segments.push({
+						node: node as Text,
+						start: segment.index,
+						end: segment.index + segment.segment.length,
+					});
+				}
+			}
+		}
+		return segments;
+	}
 
-  #updateHighlight(key: "value" | "solution", value: SerializableRange[]) {
-    const prev = this[key]
-    const finalValue = value.filter(range => {
-      const isContained = value.some(otherRange => {
-        if(range === otherRange) {
-          return
-        }
-        const startsWithin = range.compareBoundaryPoints(Range.START_TO_START, otherRange) > -1
-        const endsWithin = range.compareBoundaryPoints(Range.END_TO_END, otherRange) <= 0
-        return startsWithin && endsWithin
-      })
-      return !isContained && !range.collapsed
-    })
-    if(key === "value") {
-      this.#value = finalValue
-    }
-    else {
-      this.#solution = finalValue
-    }
-    const highlight = WebwriterMark[key === "value"? "highlightValue": "highlightSolution"]
-    for(const range of prev) {
-      highlight.delete(range)
-    }
-    for(const range of value) {
-      highlight.add(range)
-    }
-  }
+	private toRange({ node, start, end }: WordSegment): Range {
+		const range = new Range();
+		range.setStart(node, start);
+		range.setEnd(node, end);
+		return range;
+	}
 
-  observer: MutationObserver
+	private setHighlight(group: HighlightGroup, ranges: Range[]) {
+		const highlight = WebWriterMark.highlights[group];
+		for (const range of this.renderedRanges[group]) highlight.delete(range);
+		for (const range of ranges) highlight.add(range);
+		this.renderedRanges[group] = ranges;
+	}
 
-  segments: Intl.SegmentData[] = []
+	private renderHighlights() {
+		const segments = this.getWordSegments();
+		const toRanges = (indices: number[]) => indices.filter(i => segments[i]).map(i => this.toRange(segments[i]));
 
-  connectedCallback(): void {
-    super.connectedCallback()
-    const segmenter = new Intl.Segmenter(undefined, {granularity: "word"})
-    this.segments = [...segmenter.segment(this.textContent)]
-    this.observer = new MutationObserver(() => {
-      this.value = this.value
-      this.segments = [...segmenter.segment(this.textContent)]
-    })
-    this.observer.observe(this, {characterData: true, childList: true, subtree: true})
-  }
+		const showFeedback = this.graded && this.detailedFeedback && !this.isContentEditable;
+		const marked = this.isContentEditable ? this.solution : this.currentAnswer;
+		const solution = new Set(this.solution);
+		const answer = new Set(this.currentAnswer);
 
-  disconnectedCallback(): void {
-    super.disconnectedCallback()
-    this.observer?.disconnect()
-  }
+		this.setHighlight("marked", showFeedback ? [] : toRanges(marked));
+		this.setHighlight("correct", showFeedback ? toRanges(this.currentAnswer.filter(i => solution.has(i))) : []);
+		this.setHighlight("missed", showFeedback ? toRanges(this.solution.filter(i => !answer.has(i))) : []);
+		this.setHighlight("wrong", showFeedback ? toRanges(this.currentAnswer.filter(i => !solution.has(i))) : []);
+	}
 
-  @eventOptions({passive: true})
-  @action({label: {_: "Toggle Highlight"}})
-  handleHighlight(e?: PointerEvent) {
-    if(e && this.isContentEditable && e.type === "click") {
-      return
-    }
-    else if(e && !this.isContentEditable && e.type === "contextmenu") {
-      return
-    }
-    // convert click to caret position
+	protected updated(): void {
+		this.renderHighlights();
+	}
 
-    const {textNode, offset} = e
-      ? getCaretPositionFromPoint(e)
-      : {textNode: document.getSelection().anchorNode, offset: document.getSelection().anchorOffset}
-    // convert caret position to segment range
-    const segment = this.segments.filter(seg => seg.isWordLike).find(({index, segment}) => index <= offset && offset <= index + segment.length)
-    // add or remove segment range from highlights
-    if(segment) {
-      const range = new SerializableRange()
-      const start = segment.index
-      const end = segment.index + segment.segment.length
-      range.setStart(textNode, start)
-      range.setEnd(textNode, end)
-      const key = this.isContentEditable? "solution": "value"
-      const sameRange = this[key].find(r => r.startContainer === textNode && r.endContainer === textNode && r.startOffset === start && r.endOffset == end)
-      if(sameRange) {
-        this[key] = this[key].filter(r => r !== sameRange)
-      }
-      else {
-        this[key] = [...this[key], range]
-      }
-      this.dispatchEvent(new CustomEvent("ww-answer-change", {
-        bubbles: true,
-        composed: true
-      }))
-    }
-  }
+	private handleMutation(records: MutationRecord[]) {
+		if (this.isContentEditable) {
+			const liveRanges = this.renderedRanges.marked.filter(range => !range.collapsed);
+			const solution = this.getWordSegments()
+				.map((segment, index) => (liveRanges.some(range => rangesOverlap(range, this.toRange(segment))) ? index : -1))
+				.filter(index => index !== -1);
+			const changed =
+				solution.length !== this.solution.length || solution.some((index, i) => index !== this.solution[i]);
+			if (changed) this.solution = solution;
+		}
+		// Redraw the normalized highlight ranges and refresh the placeholder state
+		this.requestUpdate();
+	}
 
-  reset() {
-    this.value = this.solution = []
-  }
+	private toggleIndices(current: number[], indices: number[]): number[] {
+		const result = new Set(current);
+		for (const index of indices) {
+			if (result.has(index)) result.delete(index);
+			else result.add(index);
+		}
+		return [...result].sort((a, b) => a - b);
+	}
 
-  reportSolution() {}
+	private toggleSolutionMarking(point: CaretPosition | null): boolean {
+		const segments = this.getWordSegments();
+		const selection = document.getSelection();
+		const selectionRange = selection?.rangeCount ? selection.getRangeAt(0) : null;
 
+		let indices: number[];
+		if (selectionRange && !selectionRange.collapsed && this.contains(selectionRange.commonAncestorContainer)) {
+			indices = segments
+				.map((segment, index) => (rangesOverlap(selectionRange, this.toRange(segment)) ? index : -1))
+				.filter(index => index !== -1);
+		} else {
+			const node = point ? point.offsetNode : selection?.anchorNode;
+			const offset = point ? point.offset : (selection?.anchorOffset ?? 0);
+			const index = segments.findIndex(
+				segment => segment.node === node && segment.start <= offset && offset <= segment.end,
+			);
+			indices = index === -1 ? [] : [index];
+		}
 
-  render() {
-    return html`
-      <slot style=${styleMap({"--ww-placeholder": `"${msg("Text to Highlight")}"`})} ?data-empty=${!this.textContent} @click=${this.handleHighlight} @contextmenu=${this.handleHighlight}></slot>
-    `
-  }
+		if (indices.length === 0) return false;
+		this.solution = this.toggleIndices(this.solution, indices);
+		return true;
+	}
+
+	/** @internal */
+	@action({ label: { _: msg("Toggle Marking at Position") } })
+	toggleMarkingAtPosition() {
+		if (!this.isContentEditable) return;
+		this.toggleSolutionMarking(null);
+	}
+
+	private handleContextMenu(event: MouseEvent) {
+		if (!this.isContentEditable) return;
+		const point = document.caretPositionFromPoint(event.clientX, event.clientY);
+		if (this.toggleSolutionMarking(point)) event.preventDefault();
+	}
+
+	private handleClick(event: MouseEvent) {
+		if (this.isContentEditable || this.graded) return;
+		const point = document.caretPositionFromPoint(event.clientX, event.clientY);
+		if (!point) return;
+		const segments = this.getWordSegments();
+		const index = segments.findIndex(
+			segment => segment.node === point.offsetNode && segment.start <= point.offset && point.offset <= segment.end,
+		);
+		if (index === -1) return;
+		this.currentAnswer = this.toggleIndices(this.currentAnswer, [index]);
+	}
+
+	private handleKeyDown = (event: KeyboardEvent) => {
+		if (!this.isContentEditable) return;
+		const selection = document.getSelection();
+
+		// As ProseMirror re-creates the DOM on a line break, we cannot support multi-line highlights.
+		// Therefore, we show a tooltip when the user presses Enter in the widget to inform them about this limitation.
+		if (event.key === "Enter" && selection?.focusNode?.parentElement === this) {
+			event.preventDefault();
+			const range = document.createRange();
+			range.setStart(selection.focusNode, selection.focusOffset); // = cursor position
+			range.collapse(true);
+			const cursorRect = range.getBoundingClientRect();
+			const thisRect = this.shadowRoot!.host.getBoundingClientRect();
+			this.enterAnchorRef.value!.style.left = `${cursorRect.left - thisRect.left}px`;
+			this.enterAnchorRef.value!.style.top = `${cursorRect.bottom - thisRect.top}px`;
+			this.enterTooltipRef.value!.show();
+		} else {
+			this.enterTooltipRef.value!.hide();
+		}
+	};
+
+	private handleSelectionChange = () => {
+		this.enterTooltipRef.value!.hide();
+	};
+
+	checkValidity(): boolean {
+		return this.currentAnswer.length > 0;
+	}
+
+	checkAnswer(detailedFeedback: boolean): number {
+		this.graded = true;
+		this.detailedFeedback = detailedFeedback;
+
+		const solution = new Set(this.solution);
+		const selected = new Set(this.currentAnswer);
+		const selectedCorrect = selected.intersection(solution);
+		const selectedWrong = selected.difference(solution);
+
+		if (solution.size === 0) return 0;
+		if (this.gradingMethod === "pass-fail") {
+			return selectedWrong.size === 0 && selectedCorrect.size === solution.size ? 1 : 0;
+		} else {
+			return Math.max(0, selectedCorrect.size - selectedWrong.size) / solution.size;
+		}
+	}
+
+	reset(): void {
+		this.currentAnswer = [];
+		this.graded = false;
+		this.detailedFeedback = false;
+	}
+
+	render() {
+		return html` <slot
+				style=${styleMap({
+					"--ww-placeholder": `"${msg("Text to Highlight")}"`,
+				})}
+				?data-empty=${!this.textContent}
+				@click=${this.handleClick}
+				@contextmenu=${this.handleContextMenu}
+			></slot>
+			<sl-tooltip
+				${ref(this.enterTooltipRef)}
+				content=${msg("Multiple lines are not supported")}
+				trigger="manual"
+				placement="bottom"
+			>
+				<div ${ref(this.enterAnchorRef)} class="enter-anchor"></div>
+			</sl-tooltip>`;
+	}
 }
