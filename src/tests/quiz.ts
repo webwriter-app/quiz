@@ -35,8 +35,9 @@ function report(detail: object) {
 	window.dispatchEvent(new CustomEvent("test-update", { detail }));
 }
 
-async function nextFrame() {
-	await new Promise(requestAnimationFrame);
+async function settleUpdates() {
+	// WebWriter runs package tests in an offscreen frame that may skip animation frames.
+	await new Promise(resolve => setTimeout(resolve, 0));
 }
 
 async function authoring(fixture: HTMLElement) {
@@ -86,7 +87,7 @@ async function languages(fixture: HTMLElement) {
 	assert(german.shadowRoot!.textContent.includes("Abgeben"), "Render German learner labels");
 	assert(french.shadowRoot!.textContent.includes("Envoyer"), "Render French learner labels");
 	fixture.lang = "en-GB";
-	await nextFrame();
+	await settleUpdates();
 	assert(german.shadowRoot!.textContent.includes("Submit"), "Respond to a language change on the ancestor");
 	assert(french.shadowRoot!.textContent.includes("Envoyer"), "Keep the other widget's language");
 }
@@ -100,16 +101,16 @@ async function titleVisibility(fixture: HTMLElement) {
 	task.append(prompt, document.createElement("webwriter-true-false"));
 	quiz.append(task);
 	fixture.append(quiz);
-	await nextFrame();
+	await settleUpdates();
 	assert(task.shadowRoot!.querySelector(".title")?.textContent === "Question 1", "Show titles by default");
 	quiz.setAttribute("hide-question-title", "");
 	quiz.setAttribute("hide-points", "");
-	await nextFrame();
+	await settleUpdates();
 	assert(!task.shadowRoot!.querySelector(".quiz-header"), "Hide the title and points without leaving an empty header");
 	assert(task.shadowRoot!.querySelector<HTMLSlotElement>('slot[name="prompt"]')!.assignedElements()[0] === prompt,
 		"The authored prompt must still be rendered");
 	quiz.removeAttribute("hide-question-title");
-	await nextFrame();
+	await settleUpdates();
 	assert(task.shadowRoot!.querySelector(".title"), "Restore the title when clearing the option");
 }
 
@@ -158,7 +159,7 @@ async function learnerChoice(fixture: HTMLElement) {
 	await choice.updateComplete;
 	assert(choice.outerHTML === authored, "Shuffling and grading must leave authored choices intact");
 	choice.querySelector("#first")!.remove();
-	await nextFrame();
+	await settleUpdates();
 	assert(choice.shadowRoot!.querySelector("slot")!.assignedElements().length === 1, "Use current items after a DOM change");
 }
 
