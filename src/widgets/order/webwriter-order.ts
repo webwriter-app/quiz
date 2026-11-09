@@ -1,18 +1,18 @@
-import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
 import { type OptionDeclaration } from "@webwriter/lit";
 import ArrowDownUpIcon from "bootstrap-icons/icons/arrow-down-up.svg";
 import PlusIcon from "bootstrap-icons/icons/plus.svg";
 import { css, html, nothing, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { name as packageId } from "../../../package.json";
-import { IWebWriterQuizType, registerQuizType } from "../../api";
+import { registerQuizType } from "../../api";
 import { DraggableGrid, DraggableGridReorderEvent } from "../../lib/draggable-grid";
 import { encryptedProperty, encryptPlaintextAttributes } from "../../lib/encrypted-property";
 import { QuizItems } from "../../lib/quiz-items";
 import { commonStyles } from "../../lib/utils";
 import { mutateWithStableSelection } from "../../lib/webwriter-quirks";
 import type { WebwriterOrderItem } from "./webwriter-order-item";
-import { QuizElement, messageFor } from "../../lib/localization";
+import { messageFor } from "../../lib/localization";
+import { WebwriterTask } from "../webwriter-task";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -32,7 +32,13 @@ registerQuizType({
 	id: "webwriter-order",
 	getName: locale => messageFor(locale)("Order"),
 	icon: ArrowDownUpIcon,
-	createInstance: () => document.createElement("webwriter-order"),
+	createInstance: () => {
+		const task = document.createElement("webwriter-order");
+		const item = document.createElement("webwriter-order-item");
+		item.append(document.createElement("p"));
+		task.append(item);
+		return task;
+	},
 });
 
 /**
@@ -42,12 +48,13 @@ registerQuizType({
  * slot.
  */
 @customElement("webwriter-order")
-export class WebwriterOrder extends QuizElement implements IWebWriterQuizType {
-	static shadowRootOptions: ShadowRootInit = { ...QuizElement.shadowRootOptions, slotAssignment: "manual" };
+export class WebwriterOrder extends WebwriterTask {
+	static shadowRootOptions: ShadowRootInit = { ...WebwriterTask.shadowRootOptions, slotAssignment: "manual" };
 
 	/** @internal */
 	get actions() {
 		return {
+			...super.actions,
 			addOption: { label: { _: this.msg("Add Option") } },
 		};
 	}
@@ -55,6 +62,7 @@ export class WebwriterOrder extends QuizElement implements IWebWriterQuizType {
 	/** @internal */
 	get options(): Record<string, OptionDeclaration> {
 		return {
+			...super.options,
 			"layout": {
 				type: "select",
 				label: { _: this.msg("Layout") },
@@ -99,11 +107,12 @@ export class WebwriterOrder extends QuizElement implements IWebWriterQuizType {
 
 	/** @internal */
 	static scopedElements = {
+		...WebwriterTask.scopedElements,
 		"draggable-grid": DraggableGrid,
-		"sl-icon": SlIcon,
 	};
 
 	static styles = [
+		WebwriterTask.styles,
 		commonStyles,
 		css`
 			.container-list {
@@ -275,7 +284,7 @@ export class WebwriterOrder extends QuizElement implements IWebWriterQuizType {
 		`;
 	}
 
-	render() {
+	protected renderAnswer() {
 		return html`<draggable-grid
 			class="container-${this.layout}"
 			?vertical=${this.layout === "list"}

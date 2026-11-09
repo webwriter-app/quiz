@@ -5,9 +5,10 @@ import TextParagraphIcon from "bootstrap-icons/icons/text-paragraph.svg";
 import { css, html, nothing, type PropertyValues } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import { name as packageId } from "../../package.json";
-import { registerQuizType, type IWebWriterQuizType } from "../api";
+import { registerQuizType } from "../api";
 import { encryptedProperty, encryptPlaintextAttributes } from "../lib/encrypted-property";
-import { QuizElement, messageFor } from "../lib/localization";
+import { messageFor } from "../lib/localization";
+import { WebwriterTask } from "./webwriter-task";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -28,19 +29,18 @@ registerQuizType({
 
 /**
  * An answer where learners type a value into an input field.
- *
- * It must be assigned to the default slot of a `<webwriter-task>`.
  */
 @customElement("webwriter-text")
-export class WebwriterText extends QuizElement implements IWebWriterQuizType {
+export class WebwriterText extends WebwriterTask {
 	/** @internal */
 	static scopedElements = {
+		...WebwriterTask.scopedElements,
 		// Shoelace's autocorrect type predates the boolean HTMLElement property.
 		"sl-textarea": SlTextarea as unknown as CustomElementConstructor,
 		"sl-input": SlInput as unknown as CustomElementConstructor,
 	};
 
-	static styles = css`
+	static styles = [WebwriterTask.styles, css`
 		:host {
 			display: block;
 			width: 100%;
@@ -96,7 +96,7 @@ export class WebwriterText extends QuizElement implements IWebWriterQuizType {
 		.solution {
 			margin-top: var(--sl-spacing-x-small);
 		}
-	`;
+	`];
 
 	/**
 	 * The kind of input field learners answer in.
@@ -145,6 +145,7 @@ export class WebwriterText extends QuizElement implements IWebWriterQuizType {
 	get options(): Record<string, OptionDeclaration> {
 		const isText = this.type === "long-text" || this.type === "text";
 		const options: Record<string, OptionDeclaration> = {
+			...super.options,
 			type: {
 				type: "select",
 				label: { _: this.msg("Type") },
@@ -256,7 +257,7 @@ export class WebwriterText extends QuizElement implements IWebWriterQuizType {
 		return this.isCorrect() ? "correct" : "incorrect";
 	}
 
-	render() {
+	protected renderAnswer() {
 		const value = this.value;
 		const state = this.feedbackState;
 		const message = state === "correct" ? this.correctMessage : this.wrongMessage;

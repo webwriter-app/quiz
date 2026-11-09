@@ -1,6 +1,6 @@
 {
 	"./widgets/webwriter-quiz": {
-		"content": "webwriter-task*"
+		"content": "quiz-task*"
 	},
 	"./widgets/webwriter-quiz-hint": {
 		"group": "containerinline",
@@ -8,25 +8,16 @@
 		"content": "p+",
 		"uninsertable": true
 	},
-	"./widgets/webwriter-task": {
-		"isolating": true,
-		"content": "webwriter-task-prompt answer",
-		"uninsertable": true
-	},
-	"./widgets/webwriter-task-prompt": {
-		"group": "",
-		"content": "webwriter-quiz-hint?  (p | flow)+",
-		"uninsertable": true
-	},
 	"./widgets/webwriter-true-false": {
-		"group": "answer",
+		"group": "quiz-task",
 		"isolating": true,
-		"uninsertable": true
+		"uninsertable": true,
+		"content": "webwriter-quiz-hint? p"
 	},
 	"./widgets/webwriter-choice": {
-		"group": "answer",
+		"group": "quiz-task",
 		"uninsertable": true,
-		"content": "webwriter-choice-item+"
+		"content": "webwriter-quiz-hint? p webwriter-choice-item+"
 	},
 	"./widgets/webwriter-choice-item": {
 		"isolating": false,
@@ -34,9 +25,9 @@
 		"uninsertable": true
 	},
 	"./widgets/webwriter-order": {
-		"group": "answer",
+		"group": "quiz-task",
 		"uninsertable": true,
-		"content": "webwriter-order-item+"
+		"content": "webwriter-quiz-hint? p webwriter-order-item+"
 	},
 	"./widgets/webwriter-order-item": {
 		"isolating": false,
@@ -44,31 +35,33 @@
 		"uninsertable": true
 	},
 	"./widgets/webwriter-speech": {
-		"group": "answer",
-		"uninsertable": true
+		"group": "quiz-task",
+		"uninsertable": true,
+		"content": "webwriter-quiz-hint? p"
 	},
 	"./widgets/webwriter-text": {
-		"group": "answer",
+		"group": "quiz-task",
 		"isolating": true,
-		"uninsertable": true
+		"uninsertable": true,
+		"content": "webwriter-quiz-hint? p"
 	},
 	"./widgets/webwriter-gap": {
-		"group": "answer",
+		"group": "quiz-task",
 		"isolating": true,
-		"content": "(p | flow)+",
+		"content": "webwriter-quiz-hint? p (p | flow)+",
 		"uninsertable": true
 	},
 	"./widgets/webwriter-mark": {
-		"group": "answer",
+		"group": "quiz-task",
 		"isolating": true,
-		"content": "text*",
+		"content": "webwriter-quiz-hint? p p",
 		"marks": "",
 		"uninsertable": true
 	},
 	"./widgets/webwriter-pairing": {
-		"group": "answer",
+		"group": "quiz-task",
 		"isolating": true,
-		"content": "webwriter-pairing-item*",
+		"content": "webwriter-quiz-hint? p webwriter-pairing-item*",
 		"uninsertable": true
 	},
 	"./widgets/webwriter-pairing-item": {

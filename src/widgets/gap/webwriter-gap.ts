@@ -5,9 +5,10 @@ import type { WebwriterGapItem } from "./webwriter-gap-item";
 import { customElement, property, state } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 import { name as packageId } from "../../../package.json";
-import { IWebWriterQuizType, registerQuizType } from "../../api";
+import { registerQuizType } from "../../api";
 import { randomizeArray } from "../../lib/utils";
-import { QuizElement, messageFor } from "../../lib/localization";
+import { messageFor } from "../../lib/localization";
+import { WebwriterTask } from "../webwriter-task";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -23,7 +24,11 @@ registerQuizType({
 	id: "webwriter-gap",
 	getName: locale => messageFor(locale)("Gap"),
 	icon: InputCursorIcon,
-	createInstance: () => document.createElement("webwriter-gap"),
+	createInstance: () => {
+		const task = document.createElement("webwriter-gap");
+		task.append(document.createElement("p"));
+		return task;
+	},
 });
 
 /**
@@ -33,10 +38,11 @@ registerQuizType({
  * in place of each gap.
  */
 @customElement("webwriter-gap")
-export class WebwriterGap extends QuizElement implements IWebWriterQuizType {
+export class WebwriterGap extends WebwriterTask {
 	/** @internal */
 	get actions() {
 		const options: Record<string, ActionDeclaration> = {
+			...super.actions,
 			insertGapAtSelection: { label: { _: this.msg("Insert gap at selection") } },
 		};
 		return options;
@@ -45,6 +51,7 @@ export class WebwriterGap extends QuizElement implements IWebWriterQuizType {
 	/** @internal */
 	get options(): Record<string, OptionDeclaration> {
 		const options: Record<string, OptionDeclaration> = {
+			...super.options,
 			mode: {
 				type: "select",
 				label: { _: this.msg("Mode") },
@@ -60,15 +67,12 @@ export class WebwriterGap extends QuizElement implements IWebWriterQuizType {
 		return options;
 	}
 
-	/** @internal */
-	static scopedElements = {};
-
-	static styles = css`
+	static styles = [WebwriterTask.styles, css`
 		:host {
 			display: block !important;
 		}
 
-		slot {
+		slot:not([name]) {
 			display: block;
 			cursor: text;
 			width: 100%;
@@ -116,10 +120,10 @@ export class WebwriterGap extends QuizElement implements IWebWriterQuizType {
 			cursor: grabbing;
 		}
 
-		::slotted(*) {
+		slot:not([name])::slotted(*) {
 			line-height: 2.3;
 		}
-	`;
+	`];
 
 	/**
 	 * How learners fill the gaps.
@@ -158,7 +162,7 @@ export class WebwriterGap extends QuizElement implements IWebWriterQuizType {
 
 	private syncItems = () => {
 		const items = Array.from(this.querySelectorAll<WebwriterGapItem>("webwriter-gap-item"))
-			.filter(item => item.closest("webwriter-gap") === this);
+			.filter(item => item.closest("webwriter-gap") === this && this.isAnswerContent(item));
 		if (items.length === this.items.length && items.every((item, i) => item === this.items[i])) return;
 
 		this.cancelDrag();
@@ -302,7 +306,7 @@ export class WebwriterGap extends QuizElement implements IWebWriterQuizType {
 		if (!commonNode) return [];
 
 		// Require selection to be inside this gap element
-		if (commonNode.closest("webwriter-gap") !== this) return [];
+		if (commonNode.closest("webwriter-gap") !== this || !this.isAnswerContent(commonNode)) return [];
 		// Require selection to not be inside an already existing gap item
 		if (commonNode.closest("webwriter-gap-item")) return [];
 
@@ -394,7 +398,7 @@ export class WebwriterGap extends QuizElement implements IWebWriterQuizType {
 		return this.items.length ? correctCount / this.items.length : 1;
 	}
 
-	render() {
+	protected renderAnswer() {
 		const placed = new Set(this.placements.values());
 		return html`<div>
 			<!-- Holds the drag ghost, which is placed imperatively and must survive re-renders. -->

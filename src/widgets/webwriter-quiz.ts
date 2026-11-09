@@ -1,16 +1,20 @@
+import { str } from "@lit/localize";
 import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
 import SlDialog from "@shoelace-style/shoelace/dist/components/dialog/dialog.component.js";
+import SlDropdown from "@shoelace-style/shoelace/dist/components/dropdown/dropdown.component.js";
+import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
 import SlProgressBar from "@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.component.js";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import type { ActionDeclaration, OptionDeclaration } from "@webwriter/lit";
+import AddIcon from "bootstrap-icons/icons/plus-lg.svg";
 import { css, html, nothing, type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { onQuizTypesChanged, type IWebWriterQuizType, type QuizType } from "../api";
+import { createRef, ref } from "lit/directives/ref.js";
+import { isQuizTask, onQuizTypesChanged, type QuizType } from "../api";
 import { QuizElement } from "../lib/localization";
-import type { WebwriterTask } from "./webwriter-task";
 
 /**
- * A quiz groups multiple `<webwriter-task>` elements into one exercise that is
+ * A quiz groups multiple question elements into one exercise that is
  * submitted, graded and reset as a whole.
  *
  * The tasks must be assigned to the default slot.
@@ -46,6 +50,8 @@ export class WebwriterQuiz extends QuizElement {
 	static scopedElements = {
 		"sl-button": SlButton,
 		"sl-dialog": SlDialog,
+		"sl-dropdown": SlDropdown,
+		"sl-icon": SlIcon,
 		"sl-progress-bar": SlProgressBar,
 	};
 
@@ -56,8 +62,40 @@ export class WebwriterQuiz extends QuizElement {
 			min-inline-size: 0;
 		}
 
-		::slotted(webwriter-task:not(:last-child)) {
+		::slotted(:not(:last-child)) {
 			margin-bottom: var(--sl-spacing-2x-large);
+		}
+
+		.header-placeholder {
+			font-weight: bold;
+			margin-bottom: var(--sl-spacing-x-small);
+		}
+
+		.insert-task-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(min(160px, 100%), 1fr));
+			gap: var(--sl-spacing-small);
+
+			sl-button::part(base) {
+				justify-content: flex-start;
+			}
+
+			sl-button::part(label) {
+				white-space: normal;
+				overflow-wrap: anywhere;
+			}
+		}
+
+		.add-question {
+			margin-top: var(--sl-spacing-small);
+			display: flex;
+			justify-content: center;
+		}
+
+		.dropdown-container {
+			width: min(100cqi, 36rem);
+			box-sizing: border-box;
+			padding: var(--sl-spacing-x-small);
 		}
 
 		.actions {
@@ -83,7 +121,7 @@ export class WebwriterQuiz extends QuizElement {
 		}
 
 		@media print {
-			.actions, sl-dialog {
+			.actions, sl-dialog, .add-question, .insert-task-grid, .header-placeholder {
 				display: none;
 			}
 		}
@@ -124,6 +162,7 @@ export class WebwriterQuiz extends QuizElement {
 	private unsubscribe?: () => void;
 
 	private questionActions = new Map<string, QuizType>();
+	private addQuestionDropdown = createRef<SlDropdown>();
 
 	connectedCallback() {
 		super.connectedCallback();
@@ -138,6 +177,7 @@ export class WebwriterQuiz extends QuizElement {
 			}
 			this.questionActions = actions;
 			this.refreshDrawer();
+			this.requestUpdate();
 		});
 	}
 
@@ -159,15 +199,25 @@ export class WebwriterQuiz extends QuizElement {
 	private insertQuizType(action: string) {
 		const quizType = this.questionActions.get(action);
 		if (!quizType || !this.isConnected || !this.editable) return;
-		const task = this.ownerDocument.createElement("webwriter-task");
+		const task = quizType.createInstance();
+		if (!isQuizTask(task)) return;
 
-		const prompt = this.ownerDocument.createElement("webwriter-task-prompt");
-		prompt.slot = "prompt";
-		prompt.appendChild(this.ownerDocument.createElement("p"));
-		task.appendChild(prompt);
-		const quiz = quizType.createInstance();
-		task.appendChild(quiz);
+		if (!Array.from(task.children).some(child => child.slot === "prompt")) {
+			const prompt = this.ownerDocument.createElement("p");
+			prompt.slot = "prompt";
+			task.prepend(prompt);
+		}
 		this.appendChild(task);
+		void this.addQuestionDropdown.value?.hide();
+	}
+
+	private InsertQuestionGrid() {
+		return html`<div class="insert-task-grid">
+			${Array.from(this.questionActions, ([name, type]) => html`<sl-button @click=${() => this.insertQuizType(name)}>
+				${type.icon ? html`<sl-icon slot="prefix" src=${type.icon}></sl-icon>` : nothing}
+				${type.getName(this.lang)}
+			</sl-button>`)}
+		</div>`;
 	}
 
 	private updateTasks() {
@@ -176,14 +226,7 @@ export class WebwriterQuiz extends QuizElement {
 	}
 
 	private getTasks() {
-		return Array.from(this.children).filter((child): child is WebwriterTask => child.tagName === "WEBWRITER-TASK");
-	}
-
-	private getTaskApi(task: WebwriterTask): IWebWriterQuizType | undefined {
-		return Array.from(task.children).find(
-			(child): child is HTMLElement & IWebWriterQuizType =>
-				typeof (child as Partial<IWebWriterQuizType>).checkValidity === "function",
-		);
+		return Array.from(this.children).filter(isQuizTask);
 	}
 
 	private formatScore(score: number) {
@@ -197,19 +240,16 @@ export class WebwriterQuiz extends QuizElement {
 
 	private resetAnswers() {
 		for (const task of this.getTasks()) {
-			this.getTaskApi(task)?.reset();
+			task.reset();
 			task.resetFeedback();
 		}
 		this.totalResult = undefined;
 	}
 
 	private submit() {
-		const tasksWithApi = this.getTasks().map(task => ({
-			task,
-			api: this.getTaskApi(task),
-		}));
-		const validities = tasksWithApi.map(({ task, api }) => {
-			const valid = api?.checkValidity() ?? false;
+		const tasks = this.getTasks();
+		const validities = tasks.map(task => {
+			const valid = task.checkValidity();
 			task.showRequiredWarning(!valid);
 			task.showScore(undefined);
 			return valid;
@@ -220,8 +260,8 @@ export class WebwriterQuiz extends QuizElement {
 
 		let score = 0;
 		let maximum = 0;
-		for (const { task, api } of tasksWithApi) {
-			const answerScore = api?.checkAnswer?.(this.detailedFeedback);
+		for (const task of tasks) {
+			const answerScore = task.checkAnswer?.(this.detailedFeedback);
 			if (answerScore === undefined || !Number.isFinite(answerScore)) continue;
 
 			const points = task.maximumPoints;
@@ -285,6 +325,17 @@ export class WebwriterQuiz extends QuizElement {
 		}
 
 		return html`<slot @slotchange=${this.updateTasks}></slot>
-			${this.getTasks().length ? nothing : html`<p>${this.msg("Add a question from the Widget drawer.")}</p>`}`;
+			${this.getTasks().length ? html`<div class="add-question">
+				<sl-dropdown placement="bottom" distance="4" ${ref(this.addQuestionDropdown)}>
+					<sl-button slot="trigger" caret>
+						<sl-icon slot="prefix" src=${AddIcon}></sl-icon>
+						${this.msg("Add Question")}
+					</sl-button>
+					<div class="dropdown-container">${this.InsertQuestionGrid()}</div>
+				</sl-dropdown>
+			</div>` : html`
+				${this.hideQuestionTitle ? nothing : html`<div class="header-placeholder">${this.msg(str`Question ${1}`)}</div>`}
+				${this.InsertQuestionGrid()}
+			`}`;
 	}
 }

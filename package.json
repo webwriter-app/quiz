@@ -29,7 +29,7 @@
   "repository": "https://github.com/webwriter-app/quiz",
   "scripts": {
     "prepublishOnly": "build && node scripts/build-exports.mjs && npm run build:api",
-    "build:api": "tsc -p tsconfig.api.json",
+    "build:api": "tsc -p tsconfig.api.json && tsc -p tsconfig.task.json",
     "dev": "build dev",
     "localize": "npx @lit/localize-tools extract && npx @lit/localize-tools build",
     "localize:apply": "node scripts/apply-translations.mjs"
@@ -53,17 +53,14 @@
       "import": "./dist/api/index.js",
       "default": "./dist/api/index.js"
     },
+    "./task": {
+      "types": "./dist/types/src/widgets/webwriter-task.d.ts",
+      "source": "./src/widgets/webwriter-task.ts",
+      "default": "./dist/task.js"
+    },
     "./widgets/webwriter-quiz.*": {
       "source": "./src/widgets/webwriter-quiz.ts",
       "default": "./dist/widgets/webwriter-quiz.*"
-    },
-    "./widgets/webwriter-task.*": {
-      "source": "./src/widgets/webwriter-task.ts",
-      "default": "./dist/widgets/webwriter-task.*"
-    },
-    "./widgets/webwriter-task-prompt.*": {
-      "source": "./src/widgets/webwriter-task-prompt.ts",
-      "default": "./dist/widgets/webwriter-task-prompt.*"
     },
     "./widgets/webwriter-quiz-hint.*": {
       "source": "./src/widgets/webwriter-quiz-hint.ts",
@@ -116,10 +113,6 @@
     "./widgets/webwriter-pairing-item.*": {
       "source": "./src/widgets/pairing/webwriter-pairing-item.ts",
       "default": "./dist/widgets/webwriter-pairing-item.*"
-    },
-    "./migrate.js": {
-      "source": "./src/migrate/index.ts",
-      "default": "./dist/migrate.js"
     },
     "./tests/quiz.*": {
       "source": "./src/tests/quiz.ts",

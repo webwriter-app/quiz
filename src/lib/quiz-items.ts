@@ -1,14 +1,13 @@
 import type { ReactiveController } from "lit";
-import type { QuizElement } from "./localization";
+import type { WebwriterTask } from "../widgets/webwriter-task";
 import { randomizeArray } from "./utils";
 
 /** Assign items to a manual slot in learner order without moving their authored nodes. */
 export class QuizItems<T extends HTMLElement> implements ReactiveController {
 	private learnerOrder: T[] | undefined;
-	private observer = new MutationObserver(() => this.host.requestUpdate());
 
 	constructor(
-		private host: QuizElement,
+		private host: WebwriterTask,
 		private tag: string,
 		private shuffleInUse: () => boolean,
 	) {
@@ -49,18 +48,12 @@ export class QuizItems<T extends HTMLElement> implements ReactiveController {
 		this.host.requestUpdate();
 	}
 
-	hostConnected() {
-		this.observer.observe(this.host, { childList: true, subtree: true, attributes: true, attributeFilter: ["slot"] });
-		this.host.requestUpdate();
-	}
-
 	hostDisconnected() {
-		this.observer.disconnect();
 		this.learnerOrder = undefined;
 	}
 
 	hostUpdated() {
-		const slot = this.host.renderRoot.querySelector("slot");
+		const slot = this.host.renderRoot.querySelector<HTMLSlotElement>("slot:not([name])");
 		if (!slot) return;
 		const ordered = this.ordered;
 		const items = new Set(ordered);

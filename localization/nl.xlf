@@ -62,10 +62,6 @@
   <source>False</source>
   <target>Niet waar</target>
 </trans-unit>
-<trans-unit id="sdc9d86c26cff613b">
-  <source>Drag and Drop</source>
-  <target>Slepen en neerzetten</target>
-</trans-unit>
 <trans-unit id="sd24f4d056c0124f6">
   <source>Empty gap</source>
   <target>Leeg invulveld</target>
@@ -303,7 +299,7 @@
   <target>Punten</target>
 </trans-unit>
 <trans-unit id="s729dc6aabe408a53">
-  <source>Question <x id="0" equiv-text="${index + 1}"/></source>
+  <source>Question <x id="0" equiv-text="${1}"/></source>
   <target>Vraag <x id="0" equiv-text="${index + 1}"/></target>
 </trans-unit>
 <trans-unit id="s43f438831bf2524d">
@@ -397,10 +393,6 @@
 <trans-unit id="s96d2f1dc180a46d8">
   <source>Debug</source>
   <target>Debug</target>
-</trans-unit>
-<trans-unit id="sabba507a58e60765">
-  <source>Add a question from the Widget drawer.</source>
-  <target>Voeg een vraag toe via het widgetpaneel.</target>
 </trans-unit>
 <trans-unit id="s6b39496c00a99aed">
   <source>Move question up</source>

@@ -1,5 +1,4 @@
 import SlIconButton from "@shoelace-style/shoelace/dist/components/icon-button/icon-button.component.js";
-import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
 import { ActionDeclaration, OptionDeclaration } from "@webwriter/lit";
 import PlusIcon from "bootstrap-icons/icons/plus.svg";
 import ShuffleIcon from "bootstrap-icons/icons/shuffle.svg";
@@ -9,11 +8,12 @@ import { customElement, property, queryAll, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import GripHorizontalIcon from "../../../assets/icons/grip-horizontal.svg";
 import { name as packageId } from "../../../package.json";
-import { IWebWriterQuizType, registerQuizType } from "../../api";
+import { registerQuizType } from "../../api";
 import { DraggableGrid, DraggableGridReorderEvent } from "../../lib/draggable-grid";
 import { encryptedProperty, encryptPlaintextAttributes } from "../../lib/encrypted-property";
 import { BiMap, randomizeArray } from "../../lib/utils";
-import { QuizElement, messageFor } from "../../lib/localization";
+import { messageFor } from "../../lib/localization";
+import { WebwriterTask } from "../webwriter-task";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -104,21 +104,21 @@ function transformTo(element: HTMLElement, from: DOMRect) {
  * The items must be `<webwriter-pairing-item>` children of this element.
  */
 @customElement("webwriter-pairing")
-export class WebwriterPairing extends QuizElement implements IWebWriterQuizType {
+export class WebwriterPairing extends WebwriterTask {
 	/** @internal */
 	static shadowRootOptions = {
-		...QuizElement.shadowRootOptions,
+		...WebwriterTask.shadowRootOptions,
 		slotAssignment: "manual" as const,
 	};
 
 	/** @internal */
 	static scopedElements = {
+		...WebwriterTask.scopedElements,
 		"draggable-grid": DraggableGrid,
-		"sl-icon": SlIcon,
 		"sl-icon-button": SlIconButton,
 	};
 
-	static styles = css`
+	static styles = [WebwriterTask.styles, css`
 		:host {
 			display: block;
 			--grid-gap: var(--sl-spacing-medium);
@@ -431,7 +431,7 @@ export class WebwriterPairing extends QuizElement implements IWebWriterQuizType 
 				transition-duration: 0ms;
 			}
 		}
-	`;
+	`];
 
 	/**
 	 * How learners match the items.
@@ -449,7 +449,7 @@ export class WebwriterPairing extends QuizElement implements IWebWriterQuizType 
 	accessor solution: [string, string][] = [];
 
 	/** @internal */
-	@queryAll("slot")
+	@queryAll("slot[data-child-id]")
 	accessor slots!: NodeListOf<HTMLSlotElement>;
 
 	@state()
@@ -471,11 +471,11 @@ export class WebwriterPairing extends QuizElement implements IWebWriterQuizType 
 		if (!this.isConnected || !this.editable) return;
 		const insertItem = () => {
 			// Insert new items at a random position to not make the pairing obvious from the order of the items in the DOM.
-			const randomIndex = Math.floor(Math.random() * (this.children.length + 1));
+			const items = Array.from(this.children).filter(child => child.localName === "webwriter-pairing-item" && !child.slot);
+			const randomIndex = Math.floor(Math.random() * (items.length + 1));
 			const newItem = this.ownerDocument.createElement("webwriter-pairing-item");
 			newItem.id = `ww${crypto.randomUUID()}`;
-			if (randomIndex === this.children.length) this.appendChild(newItem);
-			else this.insertBefore(newItem, this.children[randomIndex]);
+			this.insertBefore(newItem, items[randomIndex] ?? null);
 			return newItem.id;
 		};
 
@@ -849,6 +849,7 @@ export class WebwriterPairing extends QuizElement implements IWebWriterQuizType 
 	/** @internal */
 	get actions() {
 		return {
+			...super.actions,
 			addPair: { label: { _: this.msg("Add Pair") } },
 		} as Record<string, ActionDeclaration>;
 	}
@@ -856,6 +857,7 @@ export class WebwriterPairing extends QuizElement implements IWebWriterQuizType 
 	/** @internal */
 	get options() {
 		const options: Record<string, OptionDeclaration> = {
+			...super.options,
 			mode: {
 				type: "select",
 				label: { _: this.msg("Mode") },
@@ -899,7 +901,7 @@ export class WebwriterPairing extends QuizElement implements IWebWriterQuizType 
 
 	protected updated(changed: PropertyValues): void {
 		super.updated(changed);
-		const children = Array.from(this.children);
+		const children = Array.from(this.children).filter(child => child.localName === "webwriter-pairing-item" && !child.slot);
 		this.slots.forEach(slot => {
 			const refId = slot.dataset.childId;
 			const item = children.find(child => child.id === refId);
@@ -925,7 +927,7 @@ export class WebwriterPairing extends QuizElement implements IWebWriterQuizType 
 		this.pairingDragState = null;
 	}
 
-	render() {
+	protected renderAnswer() {
 		if (this.isContentEditable) return this.renderAuthoringView();
 		if (this.mode === "pairing") return this.renderPairingView();
 		if (this.mode === "memory") return this.renderMemoryGame();

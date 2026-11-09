@@ -6,9 +6,10 @@ import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import { styleMap } from "lit/directives/style-map.js";
 import { name as packageId } from "../../package.json";
-import { IWebWriterQuizType, registerQuizType } from "../api";
+import { registerQuizType } from "../api";
 import { encryptedProperty, encryptPlaintextAttributes } from "../lib/encrypted-property";
-import { QuizElement, messageFor } from "../lib/localization";
+import { messageFor } from "../lib/localization";
+import { WebwriterTask } from "./webwriter-task";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -24,7 +25,11 @@ registerQuizType({
 	id: "webwriter-mark",
 	getName: locale => messageFor(locale)("Mark"),
 	icon: HighlighterIcon,
-	createInstance: () => document.createElement("webwriter-mark"),
+	createInstance: () => {
+		const task = document.createElement("webwriter-mark");
+		task.append(document.createElement("p"));
+		return task;
+	},
 });
 
 type WordSegment = { node: Text; start: number; end: number };
@@ -37,14 +42,14 @@ function rangesOverlap(a: Range, b: Range): boolean {
 /**
  * An answer where learners mark the words of a text that fit the question.
  *
- * The text must be assigned to the default slot; the element itself must be
- * assigned to the default slot of a `<webwriter-task>`.
+ * Put the text to mark in the default slot.
  */
 @customElement("webwriter-mark")
-export class WebWriterMark extends QuizElement implements IWebWriterQuizType {
+export class WebWriterMark extends WebwriterTask {
 	/** @internal */
 	get actions() {
 		return {
+			...super.actions,
 			toggleMarkingAtPosition: { label: { _: this.msg("Toggle Marking at Position") } },
 		};
 	}
@@ -52,6 +57,7 @@ export class WebWriterMark extends QuizElement implements IWebWriterQuizType {
 	/** @internal */
 	get options(): Record<string, OptionDeclaration> {
 		return {
+			...super.options,
 			gradingMethod: {
 				type: "select",
 				options: [
@@ -65,6 +71,7 @@ export class WebWriterMark extends QuizElement implements IWebWriterQuizType {
 
 	/** @internal */
 	static scopedElements = {
+		...WebwriterTask.scopedElements,
 		"sl-tooltip": SlTooltip,
 	};
 
@@ -84,19 +91,26 @@ export class WebWriterMark extends QuizElement implements IWebWriterQuizType {
 		}
 	}
 
-	static styles = css`
+	static styles = [WebwriterTask.styles, css`
 		:host {
 			display: block;
 			min-height: 1rem;
 			position: relative;
 		}
 
-		slot {
+		slot:not([name]) {
 			display: block;
 			cursor: text;
+			position: relative;
+			min-height: 1rem;
 		}
 
-		:host(:not([contenteditable="true"]):not([contenteditable=""])) slot {
+		slot:not([name])::slotted(p) {
+			min-height: 1rem;
+			margin: 0;
+		}
+
+		:host(:not([contenteditable="true"]):not([contenteditable=""])) slot:not([name]) {
 			cursor: pointer;
 			user-select: none;
 		}
@@ -132,7 +146,7 @@ export class WebWriterMark extends QuizElement implements IWebWriterQuizType {
 		.enter-anchor {
 			position: absolute;
 		}
-	`;
+	`];
 
 	/**
 	 * How the score of this answer is calculated.
@@ -188,7 +202,10 @@ export class WebWriterMark extends QuizElement implements IWebWriterQuizType {
 
 	private getWordSegments(): WordSegment[] {
 		const segments: WordSegment[] = [];
-		const walker = document.createTreeWalker(this, NodeFilter.SHOW_TEXT);
+		const walker = this.ownerDocument.createTreeWalker(this, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, node => {
+			if (!this.isAnswerContent(node)) return NodeFilter.FILTER_REJECT;
+			return node instanceof Text ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+		});
 		for (let node = walker.nextNode(); node; node = walker.nextNode()) {
 			for (const segment of WebWriterMark.segmenter.segment((node as Text).data)) {
 				if (segment.isWordLike) {
@@ -238,6 +255,10 @@ export class WebWriterMark extends QuizElement implements IWebWriterQuizType {
 	}
 
 	private handleMutation(records: MutationRecord[]) {
+		const changedAnswer = records.some(record => record.target === this
+			? [...record.addedNodes, ...record.removedNodes].some(node => node instanceof Text || node instanceof Element && !node.slot)
+			: this.isAnswerContent(record.target));
+		if (!changedAnswer) return;
 		if (this.isContentEditable) {
 			const liveRanges = this.renderedRanges.marked.filter(range => !range.collapsed);
 			const solution = this.getWordSegments()
@@ -314,23 +335,25 @@ export class WebWriterMark extends QuizElement implements IWebWriterQuizType {
 
 		// As ProseMirror re-creates the DOM on a line break, we cannot support multi-line highlights.
 		// Therefore, we show a tooltip when the user presses Enter in the widget to inform them about this limitation.
-		if (event.key === "Enter" && selection?.focusNode?.parentElement === this) {
+		if (event.key === "Enter" && selection?.focusNode && this.isAnswerContent(selection.focusNode)) {
 			event.preventDefault();
 			const range = document.createRange();
 			range.setStart(selection.focusNode, selection.focusOffset); // = cursor position
 			range.collapse(true);
 			const cursorRect = range.getBoundingClientRect();
 			const thisRect = this.shadowRoot!.host.getBoundingClientRect();
-			this.enterAnchorRef.value!.style.left = `${cursorRect.left - thisRect.left}px`;
-			this.enterAnchorRef.value!.style.top = `${cursorRect.bottom - thisRect.top}px`;
-			this.enterTooltipRef.value!.show();
+			const anchor = this.enterAnchorRef.value;
+			if (!anchor) return;
+			anchor.style.left = `${cursorRect.left - thisRect.left}px`;
+			anchor.style.top = `${cursorRect.bottom - thisRect.top}px`;
+			this.enterTooltipRef.value?.show();
 		} else {
-			this.enterTooltipRef.value!.hide();
+			this.enterTooltipRef.value?.hide();
 		}
 	};
 
 	private handleSelectionChange = () => {
-		this.enterTooltipRef.value!.hide();
+		this.enterTooltipRef.value?.hide();
 	};
 
 	checkValidity(): boolean {
@@ -360,12 +383,13 @@ export class WebWriterMark extends QuizElement implements IWebWriterQuizType {
 		this.detailedFeedback = false;
 	}
 
-	render() {
+	protected renderAnswer() {
 		return html` <slot
 				style=${styleMap({
 					"--ww-placeholder": `"${this.msg("Text to Highlight")}"`,
 				})}
-				?data-empty=${!this.textContent}
+				?data-empty=${!Array.from(this.childNodes).some(node =>
+					(node instanceof Text || node instanceof Element) && this.isAnswerContent(node) && node.textContent?.trim())}
 				@click=${this.handleClick}
 				@contextmenu=${this.handleContextMenu}
 			></slot>

@@ -1,4 +1,3 @@
-import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
 import { type OptionDeclaration } from "@webwriter/lit";
 import PlusIcon from "bootstrap-icons/icons/plus.svg";
 import UiChecksIcon from "bootstrap-icons/icons/ui-checks.svg";
@@ -6,13 +5,14 @@ import UiRadiosIcon from "bootstrap-icons/icons/ui-radios.svg";
 import { css, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { name as packageId } from "../../../package.json";
-import { IWebWriterQuizType, registerQuizType } from "../../api";
+import { registerQuizType } from "../../api";
 import { DraggableGrid, DraggableGridReorderEvent } from "../../lib/draggable-grid";
 import { encryptedProperty, encryptPlaintextAttributes } from "../../lib/encrypted-property";
 import { QuizItems } from "../../lib/quiz-items";
 import { mutateWithStableSelection } from "../../lib/webwriter-quirks";
 import type { WebwriterChoiceItem } from "./webwriter-choice-item";
-import { QuizElement, messageFor } from "../../lib/localization";
+import { messageFor } from "../../lib/localization";
+import { WebwriterTask } from "../webwriter-task";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -25,17 +25,22 @@ export type ChoiceLayout = "list" | "tiles";
 export type ChoiceGradingMethod = "pass-fail" | "partial";
 export type ChoiceSolution = { [id: string]: boolean };
 
+function createChoice(mode: ChoiceMode) {
+	const choice = document.createElement("webwriter-choice");
+	choice.setAttribute("mode", mode);
+	const item = document.createElement("webwriter-choice-item");
+	item.append(document.createElement("p"));
+	choice.append(item);
+	return choice;
+}
+
 registerQuizType({
 	packageId,
 	widgetPosition: 2,
 	id: "webwriter-single-choice",
 	getName: locale => messageFor(locale)("Single Choice"),
 	icon: UiRadiosIcon,
-	createInstance: () => {
-		const choice = document.createElement("webwriter-choice");
-		choice.setAttribute("mode", "single");
-		return choice;
-	},
+	createInstance: () => createChoice("single"),
 });
 
 registerQuizType({
@@ -44,11 +49,7 @@ registerQuizType({
 	id: "webwriter-multiple-choice",
 	getName: locale => messageFor(locale)("Multiple Choice"),
 	icon: UiChecksIcon,
-	createInstance: () => {
-		const choice = document.createElement("webwriter-choice");
-		choice.setAttribute("mode", "multiple");
-		return choice;
-	},
+	createInstance: () => createChoice("multiple"),
 });
 
 /**
@@ -58,12 +59,13 @@ registerQuizType({
  * default slot.
  */
 @customElement("webwriter-choice")
-export class WebwriterChoice extends QuizElement implements IWebWriterQuizType {
-	static shadowRootOptions: ShadowRootInit = { ...QuizElement.shadowRootOptions, slotAssignment: "manual" };
+export class WebwriterChoice extends WebwriterTask {
+	static shadowRootOptions: ShadowRootInit = { ...WebwriterTask.shadowRootOptions, slotAssignment: "manual" };
 
 	/** @internal */
 	get actions() {
 		return {
+			...super.actions,
 			addOption: { label: { _: this.msg("Add Option") } },
 		};
 	}
@@ -71,6 +73,7 @@ export class WebwriterChoice extends QuizElement implements IWebWriterQuizType {
 	/** @internal */
 	get options(): Record<string, OptionDeclaration> {
 		return {
+			...super.options,
 			"mode": {
 				type: "select",
 				options: [
@@ -101,11 +104,11 @@ export class WebwriterChoice extends QuizElement implements IWebWriterQuizType {
 
 	/** @internal */
 	static scopedElements = {
-		"sl-icon": SlIcon,
+		...WebwriterTask.scopedElements,
 		"draggable-grid": DraggableGrid,
 	};
 
-	static styles = css`
+	static styles = [WebwriterTask.styles, css`
 		.container-list {
 			display: grid;
 			grid-template-columns: max-content minmax(0, 1fr) max-content max-content;
@@ -137,7 +140,7 @@ export class WebwriterChoice extends QuizElement implements IWebWriterQuizType {
 				}
 			}
 		}
-	`;
+	`];
 
 	/**
 	 * How many options learners may select.
@@ -300,7 +303,7 @@ export class WebwriterChoice extends QuizElement implements IWebWriterQuizType {
 		`;
 	}
 
-	render() {
+	protected renderAnswer() {
 		return html`<draggable-grid
 			class="container-${this.layout}"
 			?vertical=${this.layout === "list"}

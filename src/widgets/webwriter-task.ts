@@ -1,32 +1,22 @@
 import { str } from "@lit/localize";
 import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
 import SlTag from "@shoelace-style/shoelace/dist/components/tag/tag.component.js";
-import { type OptionDeclaration } from "@webwriter/lit";
+import type { ActionDeclaration, OptionDeclaration } from "@webwriter/lit";
 import WarningIcon from "bootstrap-icons/icons/exclamation-triangle.svg";
-import { css, html, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import type { IWebWriterQuizType } from "../api";
+import { css, html, nothing, type CSSResultGroup, type PropertyValues, type TemplateResult } from "lit";
+import { property, state } from "lit/decorators.js";
+import { styleMap } from "lit/directives/style-map.js";
+import { isQuizTask, type QuizTaskElement } from "../api/index.js";
+import { HintPopup } from "../lib/hint-popup";
 import { mutateWithStableSelection } from "../lib/webwriter-quirks";
 import type { WebwriterQuiz } from "./webwriter-quiz";
-import { QuizElement } from "../lib/localization";
+import { QuizElement } from "../lib/localization.js";
 
-declare global {
-	interface HTMLElementTagNameMap {
-		"webwriter-task": WebwriterTask;
-	}
-}
+/** Base class for a question. Put the prompt in the named slot and implement the answer UI. */
+export abstract class WebwriterTask extends QuizElement implements QuizTaskElement {
+	abstract checkValidity(): boolean;
+	abstract reset(): void;
 
-/**
- * A task describes a single quiz question, which consists of a
- * `<webwriter-task-prompt>`, an optional `<webwriter-quiz-hint>` and an answer
- * of a certain type, such as `<webwriter-choice>`.
- *
- * The `<webwriter-task-prompt>` must be assigned to the `prompt` slot, the
- * `<webwriter-quiz-hint>` must be assigned to the `hint` slot and the answer
- * must be assigned to the default slot.
- */
-@customElement("webwriter-task")
-export class WebwriterTask extends QuizElement {
 	/** @internal */
 	get options(): Record<string, OptionDeclaration> {
 		return {
@@ -35,22 +25,23 @@ export class WebwriterTask extends QuizElement {
 	}
 
 	/** @internal */
-	get actions() {
+	get actions(): Record<string, ActionDeclaration & { group?: string; intent?: "default" | "danger" }> {
 		if (this.parentElement?.localName !== "webwriter-quiz") return {};
 		return {
 			moveQuestionUp: { label: { _: this.msg("Move question up") } },
 			moveQuestionDown: { label: { _: this.msg("Move question down") } },
-			deleteQuestion: { label: { _: this.msg("Delete question") }, intent: "danger" as const },
+			deleteQuestion: { label: { _: this.msg("Delete question") }, intent: "danger" },
 		};
 	}
 
 	/** @internal */
-	static scopedElements = {
+	static scopedElements: Record<string, CustomElementConstructor> = {
+		"hint-popup": HintPopup,
 		"sl-icon": SlIcon,
 		"sl-tag": SlTag,
 	};
 
-	static styles = css`
+	static styles: CSSResultGroup = css`
 		:host {
 			display: block;
 		}
@@ -87,27 +78,62 @@ export class WebwriterTask extends QuizElement {
 				font-variant-numeric: tabular-nums;
 			}
 		}
+
+		.task-prompt {
+			display: flow-root;
+
+			hint-popup {
+				float: inline-end;
+				position: relative;
+				z-index: 10;
+			}
+
+			slot[name="prompt"]::slotted(p) {
+				margin-block-end: var(--sl-spacing-x-small);
+			}
+		}
 	`;
 
+	/** The maximum score for this question. */
 	@property({ type: Number, attribute: "points", reflect: true, useDefault: true })
-	private accessor points = 1;
+	accessor points = 1;
 
 	@state() private accessor requiredWarning = false;
 
 	@state() private accessor score: number | undefined;
 
-	@state() private accessor gradable = false;
-
-	private gradabilityUpdate = 0;
+	private slotObserver = new MutationObserver(records => {
+		if (records.some(record => record.target === this || record.target.parentNode === this)) this.requestUpdate();
+	});
 
 	connectedCallback() {
 		super.connectedCallback();
-		this.updateGradability();
+		for (const task of this.siblingTasks) task.requestUpdate();
+		this.slotObserver.observe(this, { childList: true, subtree: true, attributes: true, attributeFilter: ["slot", "id"] });
+		this.requestUpdate();
 	}
 
 	disconnectedCallback() {
 		super.disconnectedCallback();
-		this.gradabilityUpdate++;
+		this.slotObserver.disconnect();
+	}
+
+	protected updated(changed: PropertyValues) {
+		super.updated(changed);
+		if (this.shadowRoot?.slotAssignment === "manual") {
+			for (const slot of this.renderRoot.querySelectorAll<HTMLSlotElement>('slot[name="prompt"], slot[name="hint"]')) {
+				const children = Array.from(this.children).filter(child => child.slot === slot.name);
+				const assigned = slot.assignedElements();
+				if (children.length !== assigned.length || children.some((child, index) => child !== assigned[index])) {
+					slot.assign(...children);
+				}
+			}
+		}
+	}
+
+	protected isAnswerContent(node: Node) {
+		while (node.parentNode && node.parentNode !== this) node = node.parentNode;
+		return node.parentNode === this && (!(node instanceof Element) || !node.slot);
 	}
 
 	/** @internal */
@@ -135,27 +161,10 @@ export class WebwriterTask extends QuizElement {
 		return Number(score.toFixed(2));
 	}
 
-	private updateGradability() {
-		const update = ++this.gradabilityUpdate;
-		if (!this.isConnected) return;
-		const questionTypes = Array.from(this.children).filter(child => !child.slot);
-		this.gradable = questionTypes.some(
-			child => typeof (child as Partial<IWebWriterQuizType>).checkAnswer === "function",
-		);
-
-		const registry = this.ownerDocument.defaultView?.customElements;
-		for (const questionType of questionTypes) {
-			if (!registry || !questionType.localName.includes("-") || registry.get(questionType.localName)) continue;
-			registry.whenDefined(questionType.localName).then(() => {
-				if (update === this.gradabilityUpdate) this.updateGradability();
-			});
-		}
-	}
-
 	private get siblingTasks() {
 		const quiz = this.parentElement;
 		return quiz?.localName === "webwriter-quiz"
-			? Array.from(quiz.children).filter(child => child.localName === this.localName)
+			? Array.from(quiz.children).filter(isQuizTask)
 			: [];
 	}
 
@@ -184,7 +193,7 @@ export class WebwriterTask extends QuizElement {
 		if (!quiz || quiz.tagName !== "WEBWRITER-QUIZ") return nothing;
 
 		const index = this.siblingTasks.indexOf(this);
-		const result = this.gradable ? this.TaskResult(quiz) : nothing;
+		const result = this.checkAnswer ? this.TaskResult(quiz) : nothing;
 		const requiredWarning = !quiz.editable && this.requiredWarning;
 		if (quiz.hideQuestionTitle && !requiredWarning && result === nothing) return nothing;
 
@@ -218,9 +227,21 @@ export class WebwriterTask extends QuizElement {
 		</span>`;
 	}
 
-	render() {
+	protected abstract renderAnswer(): unknown;
+
+	render(): TemplateResult {
+		const children = Array.from(this.children);
+		const showHint = children.some(child => child.slot === "hint") ||
+			this.editable && children.some(child => child.slot === "prompt");
 		return html`${this.QuizHeader()}
-			<slot name="prompt"></slot>
-			<slot @slotchange=${this.updateGradability}></slot> `;
+			<div class="task-prompt">
+				${showHint ? html`<hint-popup position="start"><slot name="hint"></slot></hint-popup>` : nothing}
+				<slot name="prompt" style=${styleMap({ "--ww-placeholder": `"${this.msg("Prompt")}"` })}></slot>
+			</div>
+			${this.renderAnswer()}`;
 	}
+}
+
+export interface WebwriterTask {
+	checkAnswer?(detailedFeedback: boolean): number;
 }

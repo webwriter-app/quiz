@@ -1,14 +1,14 @@
 import "@shoelace-style/shoelace/dist/themes/light.css";
-import { LitElementWw } from "@webwriter/lit";
 import MicIcon from "bootstrap-icons/icons/mic.svg";
 import { css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { name as packageId } from "../../../package.json";
 
-import { IWebWriterQuizType, registerQuizType } from "../../api";
+import { registerQuizType } from "../../api";
 import { AudioPlayer } from "./audio-player";
 import { AudioRecorder } from "./audio-recorder";
 import { messageFor } from "../../lib/localization";
+import { WebwriterTask } from "../webwriter-task";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -27,23 +27,22 @@ registerQuizType({
 
 /**
  * An answer where learners record a spoken response.
- *
- * It must be assigned to the default slot of a `<webwriter-task>`.
  */
 @customElement("webwriter-speech")
-export class WebwriterSpeech extends LitElementWw implements IWebWriterQuizType {
+export class WebwriterSpeech extends WebwriterTask {
 	/** @internal */
 	static scopedElements = {
+		...WebwriterTask.scopedElements,
 		"audio-recorder": AudioRecorder,
 		"audio-player": AudioPlayer,
 	};
 
-	static styles = css`
+	static styles = [WebwriterTask.styles, css`
 		:host {
 			display: block;
 			width: 100%;
 		}
-	`;
+	`];
 
 	/**
 	 * An existing recording URL saved in authored HTML.
@@ -77,7 +76,7 @@ export class WebwriterSpeech extends LitElementWw implements IWebWriterQuizType 
 		return Boolean(this.activeSource);
 	}
 
-	render() {
+	protected renderAnswer() {
 		const source = this.activeSource;
 		if (!source) {
 			return html`<audio-recorder

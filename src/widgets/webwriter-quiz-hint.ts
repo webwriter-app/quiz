@@ -11,7 +11,7 @@ declare global {
 
 /**
  * A generic hint element that can be used inside a variety of elements that
- * explicitly mention it in their documentation, such as `<webwriter-task>`.
+ * explicitly mention it in their documentation, such as quiz tasks and choice items.
  *
  * Unless otherwise specified, it should be assigned to the `hint` slot of its
  * parent element.

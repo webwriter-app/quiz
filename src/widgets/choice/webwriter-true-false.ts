@@ -1,11 +1,12 @@
 import SlButtonGroup from "@shoelace-style/shoelace/dist/components/button-group/button-group.component.js";
 import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
-import { registerQuizType, type IWebWriterQuizType } from "../../api";
+import { registerQuizType } from "../../api";
 import { css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { name as packageId } from "../../../package.json";
 import TrueFalseIcon from "../../../assets/icons/truefalse.svg";
-import { QuizElement, messageFor } from "../../lib/localization";
+import { messageFor } from "../../lib/localization";
+import { WebwriterTask } from "../webwriter-task";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -26,23 +27,22 @@ registerQuizType({
 
 /**
  * An answer where learners decide whether a statement is true or false.
- *
- * It must be assigned to the default slot of a `<webwriter-task>`.
  */
 @customElement("webwriter-true-false")
-export class WebwriterTrueFalse extends QuizElement implements IWebWriterQuizType {
+export class WebwriterTrueFalse extends WebwriterTask {
 	/** @internal */
 	static scopedElements = {
+		...WebwriterTask.scopedElements,
 		"sl-button": SlButton,
 		"sl-button-group": SlButtonGroup,
 	};
 
-	static styles = css`
+	static styles = [WebwriterTask.styles, css`
 		sl-button:disabled::part(base) {
 			opacity: 1 !important;
 			cursor: default !important;
 		}
-	`;
+	`];
 
 	/**
 	 * The value counting as correct.
@@ -101,7 +101,7 @@ export class WebwriterTrueFalse extends QuizElement implements IWebWriterQuizTyp
 		</sl-button>`;
 	}
 
-	render() {
+	protected renderAnswer() {
 		return html`<sl-button-group>
 			${this.Button("true", this.msg("True"))} ${this.Button("false", this.msg("False"))}
 		</sl-button-group>`;
