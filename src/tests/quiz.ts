@@ -141,7 +141,7 @@ async function learnerOrder(fixture: HTMLElement) {
 
 async function learnerChoice(fixture: HTMLElement) {
 	const choice = document.createElement("webwriter-choice");
-	choice.setAttribute("solution", '{"first":true,"second":false}');
+	choice.setAttribute("solution", '{"first":true,"second":true}');
 	choice.setAttribute("randomize-order", "");
 	for (const id of ["first", "second"]) {
 		const item = document.createElement("webwriter-choice-item");
@@ -153,7 +153,7 @@ async function learnerChoice(fixture: HTMLElement) {
 	fixture.append(choice);
 	await choice.updateComplete;
 	choice.querySelector<HTMLElement>("#first")!.click();
-	assert(choice.checkValidity() && choice.checkAnswer(true) === 1, "Select and grade a shuffled choice");
+	assert(choice.checkValidity() && choice.checkAnswer(true) === 1, "Grade the first correct choice in single mode");
 	choice.reset();
 	await choice.updateComplete;
 	assert(choice.outerHTML === authored, "Shuffling and grading must leave authored choices intact");

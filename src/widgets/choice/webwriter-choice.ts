@@ -196,15 +196,21 @@ export class WebwriterChoice extends QuizElement implements IWebWriterQuizType {
 		else this.currentAnswer = value;
 	}
 
+	private get correctOptions() {
+		const correct = this.choices.authored.filter(item => this.solution[item.id]).map(item => item.id);
+		return this.mode === "single" ? correct.slice(0, 1) : correct;
+	}
+
 	/** @internal */
 	getChoiceState(id: string) {
-		const correct = Boolean(this.solution[id]) === Boolean(this.currentAnswer[id]);
+		const expected = this.correctOptions.includes(id);
+		const selected = Boolean(this.currentAnswer[id]);
 		const graded = this.graded && !this.editable;
 		return {
-			selected: this.selected[id] ?? false,
+			selected: this.editable ? expected : selected,
 			disabled: graded,
 			showFeedback: graded && this.detailedFeedback,
-			correct: graded && this.detailedFeedback && correct,
+			correct: graded && this.detailedFeedback && expected === selected,
 		};
 	}
 
@@ -262,11 +268,8 @@ export class WebwriterChoice extends QuizElement implements IWebWriterQuizType {
 		this.graded = true;
 		this.detailedFeedback = detailedFeedback;
 
-		const ids = this.choices.authored.map(item => item.id);
-		const toSet = (map: ChoiceSolution) => new Set(ids.filter(id => map[id]));
-
-		const correct = toSet(this.solution);
-		const selected = toSet(this.selected);
+		const correct = new Set(this.correctOptions);
+		const selected = new Set(this.choices.authored.filter(item => this.currentAnswer[item.id]).map(item => item.id));
 
 		const selectedCorrect = selected.intersection(correct);
 		const selectedWrong = selected.difference(correct);

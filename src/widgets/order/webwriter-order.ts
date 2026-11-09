@@ -210,7 +210,9 @@ export class WebwriterOrder extends QuizElement implements IWebWriterQuizType {
 
 	checkAnswer(detailedFeedback: boolean): number {
 		const order = this.items.map(item => item.id);
-		const solution = this.hasAttribute("solution") ? this.solution : this.orderItems.authored.map(item => item.id);
+		const solution = this.solution.length || this.hasAttribute("solution")
+			? this.solution
+			: this.orderItems.authored.map(item => item.id);
 		if (!order.length) return 0;
 		const matches = order.filter((id, index) => id === solution[index]).length;
 
