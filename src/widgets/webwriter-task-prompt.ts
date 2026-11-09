@@ -1,10 +1,8 @@
-import { msg } from "@lit/localize";
-import { LitElementWw } from "@webwriter/lit";
 import { css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
-import LOCALIZE from "../../localization/generated";
 import { HintPopup } from "../lib/hint-popup";
+import { QuizElement } from "../lib/localization";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -19,10 +17,7 @@ declare global {
  * `<webwriter-quiz-hint>` may be assigned to its `hint` slot.
  */
 @customElement("webwriter-task-prompt")
-export class WebwriterTaskPrompt extends LitElementWw {
-	/** @internal */
-	localize = LOCALIZE;
-
+export class WebwriterTaskPrompt extends QuizElement {
 	/** @internal */
 	static scopedElements = {
 		"hint-popup": HintPopup,
@@ -44,6 +39,6 @@ export class WebwriterTaskPrompt extends LitElementWw {
 
 	render() {
 		return html`<hint-popup position="start"><slot name="hint"></slot></hint-popup>
-			<slot style=${styleMap({ "--ww-placeholder": `"${msg("Prompt")}"` })}></slot>`;
+			<slot style=${styleMap({ "--ww-placeholder": `"${this.msg("Prompt")}"` })}></slot>`;
 	}
 }

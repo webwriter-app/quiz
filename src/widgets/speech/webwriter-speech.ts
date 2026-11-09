@@ -1,15 +1,14 @@
-import { msg } from "@lit/localize";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import { LitElementWw } from "@webwriter/lit";
 import MicIcon from "bootstrap-icons/icons/mic.svg";
 import { css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import LOCALIZE from "../../../localization/generated";
+import { customElement, property, state } from "lit/decorators.js";
 import { name as packageId } from "../../../package.json";
 
 import { IWebWriterQuizType, registerQuizType } from "../../api";
 import { AudioPlayer } from "./audio-player";
 import { AudioRecorder } from "./audio-recorder";
+import { messageFor } from "../../lib/localization";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -21,7 +20,7 @@ registerQuizType({
 	packageId,
 	widgetPosition: 40,
 	id: "webwriter-speech",
-	getName: () => msg("Speech"),
+	getName: locale => messageFor(locale)("Speech"),
 	icon: MicIcon,
 	createInstance: () => document.createElement("webwriter-speech"),
 });
@@ -33,9 +32,6 @@ registerQuizType({
  */
 @customElement("webwriter-speech")
 export class WebwriterSpeech extends LitElementWw implements IWebWriterQuizType {
-	/** @internal */
-	localize = LOCALIZE;
-
 	/** @internal */
 	static scopedElements = {
 		"audio-recorder": AudioRecorder,
@@ -50,36 +46,55 @@ export class WebwriterSpeech extends LitElementWw implements IWebWriterQuizType 
 	`;
 
 	/**
-	 * The recording of the learner as a data URL, or `null` if nothing was recorded yet.
+	 * An existing recording URL saved in authored HTML.
 	 */
 	@property({ type: String, attribute: true, reflect: true })
 	accessor src: string | null = null;
 
+	@state() private accessor recording: string | null | undefined;
+
+	private get activeSource() {
+		return this.editable || this.recording === undefined ? this.src : this.recording;
+	}
+
+	private discardRecording() {
+		if (this.recording) URL.revokeObjectURL(this.recording);
+		this.recording = undefined;
+	}
+
+	disconnectedCallback() {
+		super.disconnectedCallback();
+		this.discardRecording();
+	}
+
 	reset() {
-		this.src = null;
+		this.renderRoot?.querySelector<AudioRecorder>("audio-recorder")?.cancelRecording();
+		this.discardRecording();
+		this.recording = null;
 	}
 
 	checkValidity(): boolean {
-		return this.src !== null;
+		return Boolean(this.activeSource);
 	}
 
 	render() {
-		if (!this.src) {
+		const source = this.activeSource;
+		if (!source) {
 			return html`<audio-recorder
+				.disabled=${this.editable}
 				@recording-complete=${(e: CustomEvent) => {
+					if (!this.isConnected || this.editable) return;
 					const blob = e.detail.audioBlob;
-					const reader = new FileReader();
-					reader.onloadend = () => {
-						this.src = reader.result as string;
-					};
-					reader.readAsDataURL(blob);
+					this.discardRecording();
+					this.recording = URL.createObjectURL(blob);
 				}}
 			></audio-recorder>`;
 		} else {
 			return html`<audio-player
-				.src=${this.src}
+				.src=${source}
+				.allowDelete=${!this.editable}
 				@delete-recording=${() => {
-					this.src = null;
+					if (!this.editable) this.reset();
 				}}
 			></audio-player>`;
 		}

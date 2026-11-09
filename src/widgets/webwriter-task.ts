@@ -1,19 +1,14 @@
-import { msg, str } from "@lit/localize";
-import SlIconButton from "@shoelace-style/shoelace/dist/components/icon-button/icon-button.component.js";
+import { str } from "@lit/localize";
 import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
 import SlTag from "@shoelace-style/shoelace/dist/components/tag/tag.component.js";
-import { LitElementWw, type OptionDeclaration } from "@webwriter/lit";
-import ArrowDownIcon from "bootstrap-icons/icons/arrow-down.svg";
-import ArrowUpIcon from "bootstrap-icons/icons/arrow-up.svg";
+import { type OptionDeclaration } from "@webwriter/lit";
 import WarningIcon from "bootstrap-icons/icons/exclamation-triangle.svg";
-import TrashIcon from "bootstrap-icons/icons/trash.svg";
 import { css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { classMap } from "lit/directives/class-map.js";
 import type { IWebWriterQuizType } from "../api";
-import { commonStyles } from "../lib/utils";
 import { mutateWithStableSelection } from "../lib/webwriter-quirks";
 import type { WebwriterQuiz } from "./webwriter-quiz";
+import { QuizElement } from "../lib/localization";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -31,78 +26,70 @@ declare global {
  * must be assigned to the default slot.
  */
 @customElement("webwriter-task")
-export class WebwriterTask extends LitElementWw {
+export class WebwriterTask extends QuizElement {
 	/** @internal */
-	get dynamicOptions(): Record<string, OptionDeclaration> {
+	get options(): Record<string, OptionDeclaration> {
 		return {
-			"points": { type: Number, label: { _: msg("Points") } },
+			points: { type: Number, label: { _: this.msg("Points") } },
+		};
+	}
+
+	/** @internal */
+	get actions() {
+		if (this.parentElement?.localName !== "webwriter-quiz") return {};
+		return {
+			moveQuestionUp: { label: { _: this.msg("Move question up") } },
+			moveQuestionDown: { label: { _: this.msg("Move question down") } },
+			deleteQuestion: { label: { _: this.msg("Delete question") }, intent: "danger" as const },
 		};
 	}
 
 	/** @internal */
 	static scopedElements = {
-		"sl-icon-button": SlIconButton,
 		"sl-icon": SlIcon,
 		"sl-tag": SlTag,
 	};
 
-	static styles = [
-		commonStyles,
-		css`
-			:host {
-				display: block;
+	static styles = css`
+		:host {
+			display: block;
+		}
+
+		sl-tag {
+			margin-top: -5px;
+			margin-bottom: -5px;
+		}
+
+		.quiz-header {
+			margin-bottom: var(--sl-spacing-3x-small);
+
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+
+			.title {
+				font-weight: bold;
 			}
 
-			sl-tag {
-				margin-top: -5px;
-				margin-bottom: -5px;
-			}
+			.required-warning {
+				margin-left: var(--sl-spacing-small);
 
-			.quiz-header {
-				margin-bottom: var(--sl-spacing-3x-small);
-
-				display: flex;
-				align-items: center;
-
-				.title {
-					font-weight: bold;
-				}
-
-				.required-warning {
-					margin-left: var(--sl-spacing-small);
-
-					sl-icon {
-						padding-right: var(--sl-spacing-2x-small);
-					}
-				}
-
-				.spacer {
-					flex-grow: 1;
-				}
-
-				.actions {
-					opacity: 0;
-					display: flex;
-					align-items: center;
-
-					sl-icon-button::part(base) {
-						/* Ensures that icon buttons match the 1.5 line height of the header text */
-						padding: 0.25em;
-					}
-				}
-
-				.points {
-					font-variant-numeric: tabular-nums;
+				sl-icon {
+					padding-right: var(--sl-spacing-2x-small);
 				}
 			}
 
-			:host(:hover) .actions {
-				opacity: 1;
+			.spacer {
+				flex-grow: 1;
 			}
-		`,
-	];
 
-	@property({ type: Number, attribute: "points", reflect: true })
+			.points {
+				font-variant-numeric: tabular-nums;
+			}
+		}
+	`;
+
+	@property({ type: Number, attribute: "points", reflect: true, useDefault: true })
 	private accessor points = 1;
 
 	@state() private accessor requiredWarning = false;
@@ -118,10 +105,14 @@ export class WebwriterTask extends LitElementWw {
 		this.updateGradability();
 	}
 
-	protected willUpdate(changedProperties: Map<PropertyKey, unknown>) {
-		if (changedProperties.has("points") && (!Number.isFinite(this.points) || this.points <= 0)) {
-			this.points = 1;
-		}
+	disconnectedCallback() {
+		super.disconnectedCallback();
+		this.gradabilityUpdate++;
+	}
+
+	/** @internal */
+	get maximumPoints() {
+		return Number.isFinite(this.points) && this.points > 0 ? this.points : 1;
 	}
 
 	/** @internal */
@@ -146,65 +137,84 @@ export class WebwriterTask extends LitElementWw {
 
 	private updateGradability() {
 		const update = ++this.gradabilityUpdate;
+		if (!this.isConnected) return;
 		const questionTypes = Array.from(this.children).filter(child => !child.slot);
 		this.gradable = questionTypes.some(
 			child => typeof (child as Partial<IWebWriterQuizType>).checkAnswer === "function",
 		);
 
+		const registry = this.ownerDocument.defaultView?.customElements;
 		for (const questionType of questionTypes) {
-			if (customElements.get(questionType.localName)) continue;
-			customElements.whenDefined(questionType.localName).then(() => {
+			if (!registry || !questionType.localName.includes("-") || registry.get(questionType.localName)) continue;
+			registry.whenDefined(questionType.localName).then(() => {
 				if (update === this.gradabilityUpdate) this.updateGradability();
 			});
 		}
+	}
+
+	private get siblingTasks() {
+		const quiz = this.parentElement;
+		return quiz?.localName === "webwriter-quiz"
+			? Array.from(quiz.children).filter(child => child.localName === this.localName)
+			: [];
+	}
+
+	private moveQuestionUp() {
+		const tasks = this.siblingTasks;
+		const previous = tasks[tasks.indexOf(this) - 1];
+		if (this.isConnected && this.editable && previous) {
+			mutateWithStableSelection(this, () => previous.before(this));
+		}
+	}
+
+	private moveQuestionDown() {
+		const tasks = this.siblingTasks;
+		const next = tasks[tasks.indexOf(this) + 1];
+		if (this.isConnected && this.editable && next) {
+			mutateWithStableSelection(this, () => next.after(this));
+		}
+	}
+
+	private deleteQuestion() {
+		if (this.isConnected && this.editable && this.parentElement?.localName === "webwriter-quiz") this.remove();
 	}
 
 	private QuizHeader() {
 		const quiz = this.parentElement as WebwriterQuiz | null;
 		if (!quiz || quiz.tagName !== "WEBWRITER-QUIZ") return nothing;
 
-		const allTasks = Array.from(quiz.children);
-		const index = allTasks.indexOf(this);
+		const index = this.siblingTasks.indexOf(this);
+		const result = this.gradable ? this.TaskResult(quiz) : nothing;
+		const requiredWarning = !quiz.editable && this.requiredWarning;
+		if (quiz.hideQuestionTitle && !requiredWarning && result === nothing) return nothing;
 
 		return html`
-			<div class=${classMap({ "quiz-header": true })}>
-				<div class="title">${msg(str`Question ${index + 1}`)}</div>
-				${this.requiredWarning
+			<div class="quiz-header">
+				${quiz.hideQuestionTitle ? nothing : html`<div class="title">${this.msg(str`Question ${index + 1}`)}</div>`}
+				${requiredWarning
 					? html`<sl-tag variant="danger" class="required-warning">
-							<sl-icon src=${WarningIcon}></sl-icon> ${msg("Unanswered")}
+							<sl-icon src=${WarningIcon}></sl-icon> ${this.msg("Unanswered")}
 						</sl-tag>`
 					: nothing}
 				<div class="spacer"></div>
-				<span class="actions author-only">
-					<sl-icon-button
-						src=${ArrowUpIcon}
-						?disabled=${index === 0}
-						@click=${() => mutateWithStableSelection(this, () => allTasks[index - 1].before(this))}
-					></sl-icon-button>
-					<sl-icon-button
-						src=${ArrowDownIcon}
-						?disabled=${index === allTasks.length - 1}
-						@click=${() => mutateWithStableSelection(this, () => allTasks[index + 1].after(this))}
-					></sl-icon-button>
-					<sl-icon-button src=${TrashIcon} @click=${() => this.remove()}></sl-icon-button>
-				</span>
-				${this.gradable ? this.TaskResult(quiz) : nothing}
+				${result}
 			</div>
 		`;
 	}
 
 	private TaskResult(quiz: WebwriterQuiz) {
+		const score = quiz.editable ? undefined : this.score;
 		if (quiz.hidePoints) {
-			if (this.score === undefined) return nothing;
-			if (this.score === 0) return html`<sl-tag variant="danger">${msg("Incorrect")}</sl-tag>`;
-			if (this.score === this.points) return html`<sl-tag variant="success">${msg("Correct")}</sl-tag>`;
-			return html`<sl-tag variant="warning">${msg("Partially correct")}</sl-tag>`;
+			if (score === undefined) return nothing;
+			if (score === 0) return html`<sl-tag variant="danger">${this.msg("Incorrect")}</sl-tag>`;
+			if (score === this.maximumPoints) return html`<sl-tag variant="success">${this.msg("Correct")}</sl-tag>`;
+			return html`<sl-tag variant="warning">${this.msg("Partially correct")}</sl-tag>`;
 		}
 
 		return html`<span>
-			${this.score !== undefined ? html`${this.formatScore(this.score)} / ` : nothing}
-			<span class="points">${this.points}</span>
-			${this.points === 1 ? msg("point") : msg("points")}
+			${score !== undefined ? html`${this.formatScore(score)} / ` : nothing}
+			<span class="points">${this.maximumPoints}</span>
+			${this.maximumPoints === 1 ? this.msg("point") : this.msg("points")}
 		</span>`;
 	}
 

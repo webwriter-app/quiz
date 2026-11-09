@@ -1,18 +1,18 @@
-import { msg } from "@lit/localize";
 import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
-import { action, LitElementWw, type OptionDeclaration } from "@webwriter/lit";
+import { type OptionDeclaration } from "@webwriter/lit";
 import PlusIcon from "bootstrap-icons/icons/plus.svg";
 import UiChecksIcon from "bootstrap-icons/icons/ui-checks.svg";
 import UiRadiosIcon from "bootstrap-icons/icons/ui-radios.svg";
 import { css, html, nothing, PropertyValues } from "lit";
-import { customElement, property, queryAssignedElements, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { name as packageId } from "../../../package.json";
 import { IWebWriterQuizType, registerQuizType } from "../../api";
 import { DraggableGrid, DraggableGridReorderEvent } from "../../lib/draggable-grid";
 import { encryptedProperty, encryptPlaintextAttributes } from "../../lib/encrypted-property";
-import { randomizeArray } from "../../lib/utils";
-import { mutateWithStableSelection, registerAsEnterCreatesNew } from "../../lib/webwriter-quirks";
+import { QuizItems } from "../../lib/quiz-items";
+import { mutateWithStableSelection } from "../../lib/webwriter-quirks";
 import type { WebwriterChoiceItem } from "./webwriter-choice-item";
+import { QuizElement, messageFor } from "../../lib/localization";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -29,7 +29,7 @@ registerQuizType({
 	packageId,
 	widgetPosition: 2,
 	id: "webwriter-single-choice",
-	getName: () => msg("Single Choice"),
+	getName: locale => messageFor(locale)("Single Choice"),
 	icon: UiRadiosIcon,
 	createInstance: () => {
 		const choice = document.createElement("webwriter-choice");
@@ -42,7 +42,7 @@ registerQuizType({
 	packageId,
 	widgetPosition: 3,
 	id: "webwriter-multiple-choice",
-	getName: () => msg("Multiple Choice"),
+	getName: locale => messageFor(locale)("Multiple Choice"),
 	icon: UiChecksIcon,
 	createInstance: () => {
 		const choice = document.createElement("webwriter-choice");
@@ -58,34 +58,43 @@ registerQuizType({
  * default slot.
  */
 @customElement("webwriter-choice")
-export class WebwriterChoice extends LitElementWw implements IWebWriterQuizType {
+export class WebwriterChoice extends QuizElement implements IWebWriterQuizType {
+	static shadowRootOptions: ShadowRootInit = { ...QuizElement.shadowRootOptions, slotAssignment: "manual" };
+
 	/** @internal */
-	get dynamicOptions(): Record<string, OptionDeclaration> {
+	get actions() {
+		return {
+			addOption: { label: { _: this.msg("Add Option") } },
+		};
+	}
+
+	/** @internal */
+	get options(): Record<string, OptionDeclaration> {
 		return {
 			"mode": {
 				type: "select",
 				options: [
-					{ value: "single", label: { _: msg("Single Choice") } },
-					{ value: "multiple", label: { _: msg("Multiple Choice") } },
+					{ value: "single", label: { _: this.msg("Single Choice") } },
+					{ value: "multiple", label: { _: this.msg("Multiple Choice") } },
 				],
-				label: { _: msg("Mode") },
+				label: { _: this.msg("Mode") },
 			},
 			"layout": {
 				type: "select",
 				options: [
-					{ value: "list", label: { _: msg("List") } },
-					{ value: "tiles", label: { _: msg("Tiles") } },
+					{ value: "list", label: { _: this.msg("List") } },
+					{ value: "tiles", label: { _: this.msg("Tiles") } },
 				],
-				label: { _: msg("Layout") },
+				label: { _: this.msg("Layout") },
 			},
-			"randomize-order": { type: "boolean", label: { _: msg("Randomize Order") } },
-			"grading-method": {
+			randomizeOrder: { type: "boolean", label: { _: this.msg("Randomize Order") } },
+			gradingMethod: {
 				type: "select",
 				options: [
-					{ value: "pass-fail", label: { _: msg("Pass/Fail") } },
-					{ value: "partial", label: { _: msg("Partial Credit") } },
+					{ value: "pass-fail", label: { _: this.msg("Pass/Fail") } },
+					{ value: "partial", label: { _: this.msg("Partial Credit") } },
 				],
-				label: { _: msg("Grading Method") },
+				label: { _: this.msg("Grading Method") },
 			},
 		};
 	}
@@ -104,7 +113,7 @@ export class WebwriterChoice extends LitElementWw implements IWebWriterQuizType 
 
 		.container-tiles {
 			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+			grid-template-columns: repeat(auto-fill, minmax(min(130px, 100%), 1fr));
 			gap: var(--sl-spacing-medium);
 
 			.add-option {
@@ -136,7 +145,7 @@ export class WebwriterChoice extends LitElementWw implements IWebWriterQuizType 
 	 * - `single`: Exactly one option can be selected.
 	 * - `multiple`: Any number of options can be selected.
 	 */
-	@property({ type: String, attribute: "mode", reflect: true })
+	@property({ type: String, attribute: "mode", reflect: true, useDefault: true })
 	accessor mode: ChoiceMode = "single";
 
 	/**
@@ -145,7 +154,7 @@ export class WebwriterChoice extends LitElementWw implements IWebWriterQuizType 
 	 * - `list`: One option per row.
 	 * - `tiles`: A responsive grid of equally sized tiles.
 	 */
-	@property({ type: String, attribute: "layout", reflect: true })
+	@property({ type: String, attribute: "layout", reflect: true, useDefault: true })
 	accessor layout: ChoiceLayout = "list";
 
 	/**
@@ -153,7 +162,7 @@ export class WebwriterChoice extends LitElementWw implements IWebWriterQuizType 
 	 *
 	 * Note: Randomization occurs only during the first render, so changing this property dynamically will not have any effect.
 	 */
-	@property({ type: Boolean, attribute: "randomize-order", reflect: true })
+	@property({ type: Boolean, attribute: "randomize-order", reflect: true, useDefault: true })
 	private accessor randomizeOrder: boolean = false;
 
 	/**
@@ -162,123 +171,99 @@ export class WebwriterChoice extends LitElementWw implements IWebWriterQuizType 
 	 * - `pass-fail`: Full score only if exactly the correct options are selected.
 	 * - `partial`: Correct selections earn credit, wrong ones subtract from it.
 	 */
-	@property({ type: String, attribute: "grading-method", reflect: true })
+	@property({ type: String, attribute: "grading-method", reflect: true, useDefault: true })
 	accessor gradingMethod: ChoiceGradingMethod = "pass-fail";
 
 	/**
 	 * The options counting as correct, as a map from option ID to whether it has to be selected.
 	 * It is obfuscated in the markup so that learners cannot read it directly.
 	 */
-	@property({ type: Array, attribute: "solution", reflect: true, converter: encryptedProperty })
+	@property({ type: Array, attribute: "solution", reflect: true, useDefault: true, converter: encryptedProperty })
 	accessor solution: ChoiceSolution = {};
 
 	@state() private accessor currentAnswer: ChoiceSolution = {};
 	@state() private accessor graded: boolean = false;
 	@state() private accessor detailedFeedback: boolean = false;
 
-	@queryAssignedElements()
-	private accessor items!: WebwriterChoiceItem[];
-
-	private syncSolutionWithItems() {
-		const newSolution: ChoiceSolution = {};
-		for (const item of this.items) newSolution[item.id] = this.solution[item.id] || false;
-		this.solution = newSolution;
-	}
-
-	private randomizeItems() {
-		this.append(...randomizeArray(this.items));
-	}
+	private choices = new QuizItems<WebwriterChoiceItem>(this, "webwriter-choice-item", () => this.randomizeOrder);
 
 	private get selected(): ChoiceSolution {
-		return this.isContentEditable ? this.solution : this.currentAnswer;
+		return this.editable ? this.solution : this.currentAnswer;
 	}
 
 	private set selected(value: ChoiceSolution) {
-		if (this.isContentEditable) this.solution = value;
+		if (this.editable) this.solution = value;
 		else this.currentAnswer = value;
 	}
 
 	/** @internal */
 	getChoiceState(id: string) {
-		const correct = this.solution[id] === (this.currentAnswer[id] ?? false);
+		const correct = Boolean(this.solution[id]) === Boolean(this.currentAnswer[id]);
+		const graded = this.graded && !this.editable;
 		return {
 			selected: this.selected[id] ?? false,
-			disabled: this.graded,
-			showFeedback: this.graded && this.detailedFeedback,
-			correct: this.graded && this.detailedFeedback && correct,
+			disabled: graded,
+			showFeedback: graded && this.detailedFeedback,
+			correct: graded && this.detailedFeedback && correct,
 		};
 	}
 
 	protected firstUpdated(changed: PropertyValues): void {
 		super.firstUpdated(changed);
-		encryptPlaintextAttributes(this);
-		this.syncSolutionWithItems();
-		// We assume randomizeOrder does not change during learner view, so shuffle only once.
-		// TODO: Actually handle dynamic changes to randomizeOrder
-		if (this.randomizeOrder && !this.isContentEditable) this.randomizeItems();
+		if (this.editable) encryptPlaintextAttributes(this);
 	}
 
 	protected updated(changed: PropertyValues): void {
+		super.updated(changed);
 		if (changed.has("mode") && this.mode === "single") {
-			// Ensure that the first item is selected if multiple were selected before switching to single mode
-			const newSelected: ChoiceSolution = {};
-			let isFirst = true;
-			for (const item of this.items) {
-				if (this.selected[item.id] && isFirst) {
-					newSelected[item.id] = true;
-					isFirst = false;
-				} else {
-					newSelected[item.id] = false;
-				}
-			}
-			this.selected = newSelected;
+			const first = this.choices.authored.find(item => this.currentAnswer[item.id]);
+			if (first) this.currentAnswer = { [first.id]: true };
 		}
 
-		if (changed.has("solution") || changed.has("currentAnswer") || changed.has("graded")) {
-			this.items.forEach(item => item.requestUpdate?.());
+		if (changed.has("solution") || changed.has("currentAnswer") || changed.has("graded") ||
+			changed.has("layout") || changed.has("mode") || changed.has("editable")) {
+			this.choices.authored.forEach(item => item.requestUpdate?.());
 		}
 	}
 
 	private handleReorder({ detail }: DraggableGridReorderEvent) {
+		const items = this.choices.authored;
+		if (!this.editable || !items.includes(detail.item as WebwriterChoiceItem) ||
+			(detail.before && !items.includes(detail.before as WebwriterChoiceItem))) return;
 		mutateWithStableSelection(detail.item, () => this.insertBefore(detail.item, detail.before));
 	}
 
 	private handleSelect(event: CustomEvent) {
-		if (this.graded) return;
-		const id = (event.target as WebwriterChoiceItem).id;
+		const item = event.target as WebwriterChoiceItem;
+		if (!this.choices.authored.includes(item) || (this.graded && !this.editable)) return;
+		if (!item.id && this.editable) item.id = "ww" + crypto.randomUUID();
+		const id = item.id;
 		if (this.mode === "single") {
-			const newSelected: { [key: string]: boolean } = {};
-			for (const key in this.selected) newSelected[key] = key === id;
+			const newSelected = { ...this.selected };
+			for (const option of this.choices.authored) newSelected[option.id] = option === item;
 			this.selected = newSelected;
 		} else {
 			this.selected = { ...this.selected, [id]: !this.selected[id] };
 		}
 	}
 
-	connectedCallback() {
-		super.connectedCallback();
-		registerAsEnterCreatesNew("webwriter-choice-item");
-	}
-
-	@action({ label: { _: msg("Add Option") } })
 	private addOption() {
-		this.appendChild(document.createElement("webwriter-choice-item"));
+		if (!this.isConnected || !this.editable) return;
+		const item = this.ownerDocument.createElement("webwriter-choice-item");
+		item.id = "ww" + crypto.randomUUID();
+		this.appendChild(item);
 	}
 
 	checkValidity(): boolean {
-		return Object.values(this.currentAnswer).some(v => v === true);
+		return this.choices.authored.some(item => this.currentAnswer[item.id] === true);
 	}
 
 	checkAnswer(detailedFeedback: boolean): number {
 		this.graded = true;
 		this.detailedFeedback = detailedFeedback;
 
-		const toSet = (map: ChoiceSolution) =>
-			new Set(
-				Object.entries(map)
-					.filter(([, correct]) => correct)
-					.map(([id]) => id),
-			);
+		const ids = this.choices.authored.map(item => item.id);
+		const toSet = (map: ChoiceSolution) => new Set(ids.filter(id => map[id]));
 
 		const correct = toSet(this.solution);
 		const selected = toSet(this.selected);
@@ -289,28 +274,25 @@ export class WebwriterChoice extends LitElementWw implements IWebWriterQuizType 
 		if (this.gradingMethod === "pass-fail") {
 			return selectedWrong.size === 0 && selectedCorrect.size === correct.size ? 1 : 0;
 		} else if (this.gradingMethod === "partial") {
-			return Math.max(0, selectedCorrect.size - selectedWrong.size) / correct.size;
+			return correct.size ? Math.max(0, selectedCorrect.size - selectedWrong.size) / correct.size : 0;
 		} else {
 			return 0;
 		}
 	}
 
 	reset() {
-		const newSelected: ChoiceSolution = {};
-		for (const item of this.items) newSelected[item.id] = false;
-		this.selected = newSelected;
-
-		if (this.randomizeOrder && !this.isContentEditable) this.randomizeItems();
+		this.currentAnswer = {};
+		this.choices.shuffle();
 		this.graded = false;
 		this.detailedFeedback = false;
 	}
 
 	private AddOptionButton() {
-		if (this.layout !== "tiles" || !this.isContentEditable) return nothing;
+		if (this.layout !== "tiles" || !this.editable) return nothing;
 		return html`
 			<div class="add-option" @click=${this.addOption} id="add-option" data-not-draggable>
 				<sl-icon src=${PlusIcon}></sl-icon>
-				Add Option
+				${this.msg("Add Option")}
 			</div>
 		`;
 	}
@@ -321,7 +303,7 @@ export class WebwriterChoice extends LitElementWw implements IWebWriterQuizType 
 			?vertical=${this.layout === "list"}
 			@reorder=${this.handleReorder}
 		>
-			<slot @select=${this.handleSelect} @slotchange=${this.syncSolutionWithItems}></slot>
+			<slot @select=${this.handleSelect}></slot>
 			${this.AddOptionButton()}
 		</draggable-grid>`;
 	}

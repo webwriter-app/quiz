@@ -1,14 +1,15 @@
 {
   "name": "@webwriter/quiz",
-  "version": "2.0.0",
+  "version": "3.0.0",
+  "type": "module",
   "description": "Add interactive tasks (multiple choice, order, free text, highlighting, or speech input). Make a quiz out of multiple tasks.",
   "keywords": [
     "webwriter-widget",
     "widget-practical",
-    "widget-lang-en",
-    "widget-lang-de",
-    "widget-lang-fr",
-    "widget-lang-es",
+    "widget-lang-en-US",
+    "widget-lang-de-DE",
+    "widget-lang-fr-FR",
+    "widget-lang-es-ES",
     "widget-lang-it",
     "widget-lang-nl",
     "isced2011-1",
@@ -27,20 +28,22 @@
   "author": "Frederic Salmen <frederic@fsalmen.de>",
   "repository": "https://github.com/webwriter-app/quiz",
   "scripts": {
-    "prepublishOnly": "npx @webwriter/build && npm run build:api",
+    "prepublishOnly": "build && node scripts/build-exports.mjs && npm run build:api",
     "build:api": "tsc -p tsconfig.api.json",
-    "dev": "npx @webwriter/build dev",
+    "dev": "build dev",
     "localize": "npx @lit/localize-tools extract && npx @lit/localize-tools build",
     "localize:apply": "node scripts/apply-translations.mjs"
   },
   "dependencies": {
+    "@lit/localize": "^0.12.2",
     "@shoelace-style/shoelace": "^2.20.1",
-    "@webwriter/lit": "^2",
+    "@webwriter/lit": "^3.0.0",
     "bootstrap-icons": "^1.13.1",
     "lit": "^3"
   },
   "devDependencies": {
     "@lit/localize-tools": "^0.8",
+    "@webwriter/build": "^1.13.1",
     "typescript": "~5.9.0"
   },
   "exports": {
@@ -118,6 +121,19 @@
       "source": "./src/migrate/index.ts",
       "default": "./dist/migrate.js"
     },
+    "./tests/quiz.*": {
+      "source": "./src/tests/quiz.ts",
+      "default": "./dist/tests/quiz.*"
+    },
+    "./snippets/true-or-false.html": "./src/snippets/true-or-false.html",
+    "./snippets/single-choice.html": "./src/snippets/single-choice.html",
+    "./snippets/multiple-choice.html": "./src/snippets/multiple-choice.html",
+    "./snippets/order.html": "./src/snippets/order.html",
+    "./snippets/text.html": "./src/snippets/text.html",
+    "./snippets/mark.html": "./src/snippets/mark.html",
+    "./snippets/speech.html": "./src/snippets/speech.html",
+    "./snippets/gap.html": "./src/snippets/gap.html",
+    "./snippets/pairing.html": "./src/snippets/pairing.html",
     "./icon": "./icon.svg",
     "./editing-config.json": "./editing-config.json",
     "./custom-elements.json": "./custom-elements.json"

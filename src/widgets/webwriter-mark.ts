@@ -1,6 +1,5 @@
-import { msg } from "@lit/localize";
 import SlTooltip from "@shoelace-style/shoelace/dist/components/tooltip/tooltip.component.js";
-import { action, LitElementWw, type OptionDeclaration } from "@webwriter/lit";
+import { type OptionDeclaration } from "@webwriter/lit";
 import HighlighterIcon from "bootstrap-icons/icons/highlighter.svg";
 import { css, html, type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -9,6 +8,7 @@ import { styleMap } from "lit/directives/style-map.js";
 import { name as packageId } from "../../package.json";
 import { IWebWriterQuizType, registerQuizType } from "../api";
 import { encryptedProperty, encryptPlaintextAttributes } from "../lib/encrypted-property";
+import { QuizElement, messageFor } from "../lib/localization";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -22,7 +22,7 @@ registerQuizType({
 	packageId,
 	widgetPosition: 20,
 	id: "webwriter-mark",
-	getName: () => msg("Mark"),
+	getName: locale => messageFor(locale)("Mark"),
 	icon: HighlighterIcon,
 	createInstance: () => document.createElement("webwriter-mark"),
 });
@@ -41,17 +41,24 @@ function rangesOverlap(a: Range, b: Range): boolean {
  * assigned to the default slot of a `<webwriter-task>`.
  */
 @customElement("webwriter-mark")
-export class WebWriterMark extends LitElementWw implements IWebWriterQuizType {
+export class WebWriterMark extends QuizElement implements IWebWriterQuizType {
 	/** @internal */
-	get dynamicOptions(): Record<string, OptionDeclaration> {
+	get actions() {
 		return {
-			"grading-method": {
+			toggleMarkingAtPosition: { label: { _: this.msg("Toggle Marking at Position") } },
+		};
+	}
+
+	/** @internal */
+	get options(): Record<string, OptionDeclaration> {
+		return {
+			gradingMethod: {
 				type: "select",
 				options: [
-					{ value: "pass-fail", label: { _: msg("Pass/Fail") } },
-					{ value: "partial", label: { _: msg("Partial Credit") } },
+					{ value: "pass-fail", label: { _: this.msg("Pass/Fail") } },
+					{ value: "partial", label: { _: this.msg("Partial Credit") } },
 				],
-				label: { _: msg("Grading Method") },
+				label: { _: this.msg("Grading Method") },
 			},
 		};
 	}
@@ -133,13 +140,13 @@ export class WebWriterMark extends LitElementWw implements IWebWriterQuizType {
 	 * - `pass-fail`: Full score only if exactly the correct words are marked.
 	 * - `partial`: Correctly marked words earn credit, wrong ones subtract from it.
 	 */
-	@property({ type: String, attribute: "grading-method", reflect: true })
+	@property({ type: String, attribute: "grading-method", reflect: true, useDefault: true })
 	accessor gradingMethod: MarkGradingMethod = "pass-fail";
 
 	/**
 	 * The indices of the word-like segments counting as correct. It is obfuscated in the markup so that learners cannot read it directly.
 	 */
-	@property({ type: Array, attribute: "solution", reflect: true, converter: encryptedProperty })
+	@property({ type: Array, attribute: "solution", reflect: true, useDefault: true, converter: encryptedProperty })
 	accessor solution: number[] = [];
 
 	@state() private accessor currentAnswer: number[] = [];
@@ -160,7 +167,7 @@ export class WebWriterMark extends LitElementWw implements IWebWriterQuizType {
 
 	protected firstUpdated(changed: PropertyValues): void {
 		super.firstUpdated(changed);
-		encryptPlaintextAttributes(this);
+		if (this.editable) encryptPlaintextAttributes(this);
 	}
 
 	connectedCallback(): void {
@@ -225,7 +232,8 @@ export class WebWriterMark extends LitElementWw implements IWebWriterQuizType {
 		this.setHighlight("wrong", showFeedback ? toRanges(this.currentAnswer.filter(i => !solution.has(i))) : []);
 	}
 
-	protected updated(): void {
+	protected updated(changed: PropertyValues): void {
+		super.updated(changed);
 		this.renderHighlights();
 	}
 
@@ -277,7 +285,6 @@ export class WebWriterMark extends LitElementWw implements IWebWriterQuizType {
 	}
 
 	/** @internal */
-	@action({ label: { _: msg("Toggle Marking at Position") } })
 	toggleMarkingAtPosition() {
 		if (!this.isContentEditable) return;
 		this.toggleSolutionMarking(null);
@@ -356,7 +363,7 @@ export class WebWriterMark extends LitElementWw implements IWebWriterQuizType {
 	render() {
 		return html` <slot
 				style=${styleMap({
-					"--ww-placeholder": `"${msg("Text to Highlight")}"`,
+					"--ww-placeholder": `"${this.msg("Text to Highlight")}"`,
 				})}
 				?data-empty=${!this.textContent}
 				@click=${this.handleClick}
@@ -364,7 +371,7 @@ export class WebWriterMark extends LitElementWw implements IWebWriterQuizType {
 			></slot>
 			<sl-tooltip
 				${ref(this.enterTooltipRef)}
-				content=${msg("Multiple lines are not supported")}
+				content=${this.msg("Multiple lines are not supported")}
 				trigger="manual"
 				placement="bottom"
 			>

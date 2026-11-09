@@ -1,8 +1,9 @@
-# Quiz (`@webwriter/quiz@2.0.0`)
-[License: MIT](LICENSE) | Version: 2.0.0
+# Quiz (`@webwriter/quiz@3.0.0`)
+[License: MIT](LICENSE) | Version: 3.0.0
 
 Add interactive tasks (multiple choice, order, free text, highlighting, or speech input). Make a quiz out of multiple tasks.
 
+In WebWriter 2, select the quiz or a question to use its authoring commands in the Widget drawer. The package includes one-question snippets for each built-in type with question titles and points hidden.
 
 
 
@@ -40,6 +41,7 @@ npm install @webwriter/quiz
 | `detailedFeedback` (`detailed-feedback`) | `boolean` | Whether learners see per-answer feedback and the solution after submitting. | `false` | ✓ |
 | `confirmSubmit` (`confirm-submit`) | `boolean` | Whether learners have to confirm a dialog before submitting. | `false` | ✓ |
 | `confirmReset` (`confirm-reset`) | `boolean` | Whether learners have to confirm a dialog before resetting. | `false` | ✓ |
+| `hideQuestionTitle` (`hide-question-title`) | `boolean` | Whether the generated question titles are hidden. | `false` | ✓ |
 | `hidePoints` (`hide-points`) | `boolean` | Whether the points of each task and the total score are hidden. | `false` | ✓ |
 
 *Fields including [properties](https://developer.mozilla.org/en-US/docs/Glossary/Property/JavaScript) and [attributes](https://developer.mozilla.org/en-US/docs/Glossary/Attribute) define the current state of the widget and offer customization options.*
@@ -445,7 +447,7 @@ npm install @webwriter/quiz
 ## Fields
 | Name (Attribute Name) | Type | Description | Default | Reflects |
 | :-------------------: | :--: | :---------: | :-----: | :------: |
-| `src` (`src`) | `string \| null` | The recording of the learner as a data URL, or `null` if nothing was recorded yet. | `null` | ✓ |
+| `src` (`src`) | `string \| null` | An existing recording URL saved in authored HTML. | `null` | ✓ |
 
 *Fields including [properties](https://developer.mozilla.org/en-US/docs/Glossary/Property/JavaScript) and [attributes](https://developer.mozilla.org/en-US/docs/Glossary/Attribute) define the current state of the widget and offer customization options.*
 

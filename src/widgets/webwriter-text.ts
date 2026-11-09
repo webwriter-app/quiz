@@ -1,14 +1,13 @@
-import { msg } from "@lit/localize";
 import SlInput from "@shoelace-style/shoelace/dist/components/input/input.component.js";
 import SlTextarea from "@shoelace-style/shoelace/dist/components/textarea/textarea.component.js";
-import { LitElementWw, type OptionDeclaration } from "@webwriter/lit";
+import { type OptionDeclaration } from "@webwriter/lit";
 import TextParagraphIcon from "bootstrap-icons/icons/text-paragraph.svg";
 import { css, html, nothing, type PropertyValues } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
-import LOCALIZE from "../../localization/generated";
 import { name as packageId } from "../../package.json";
 import { registerQuizType, type IWebWriterQuizType } from "../api";
 import { encryptedProperty, encryptPlaintextAttributes } from "../lib/encrypted-property";
+import { QuizElement, messageFor } from "../lib/localization";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -22,7 +21,7 @@ registerQuizType({
 	packageId,
 	widgetPosition: 30,
 	id: "webwriter-text",
-	getName: () => msg("Text"),
+	getName: locale => messageFor(locale)("Text"),
 	icon: TextParagraphIcon,
 	createInstance: () => document.createElement("webwriter-text"),
 });
@@ -33,14 +32,12 @@ registerQuizType({
  * It must be assigned to the default slot of a `<webwriter-task>`.
  */
 @customElement("webwriter-text")
-export class WebwriterText extends LitElementWw implements IWebWriterQuizType {
-	/** @internal */
-	localize = LOCALIZE;
-
+export class WebwriterText extends QuizElement implements IWebWriterQuizType {
 	/** @internal */
 	static scopedElements = {
-		"sl-textarea": SlTextarea,
-		"sl-input": SlInput,
+		// Shoelace's autocorrect type predates the boolean HTMLElement property.
+		"sl-textarea": SlTextarea as unknown as CustomElementConstructor,
+		"sl-input": SlInput as unknown as CustomElementConstructor,
 	};
 
 	static styles = css`
@@ -111,87 +108,92 @@ export class WebwriterText extends LitElementWw implements IWebWriterQuizType {
 	 * - `time`: A time picker.
 	 * - `datetime-local`: A combined date and time picker.
 	 */
-	@property({ type: String, attribute: true, reflect: true })
+	@property({ type: String, attribute: true, reflect: true, useDefault: true })
 	accessor type: TextType = "long-text";
 
 	/**
 	 * The placeholder shown while the field is empty.
 	 */
-	@property({ type: String, attribute: true, reflect: true })
+	@property({ type: String, attribute: true, reflect: true, useDefault: true })
 	accessor placeholder: string = "";
 
 	/**
 	 * Whether any non-empty answer counts as correct, without comparing it to the solution.
 	 */
-	@property({ type: Boolean, attribute: "free-text", reflect: true })
+	@property({ type: Boolean, attribute: "free-text", reflect: true, useDefault: true })
 	accessor freeText = false;
 
 	/**
 	 * Whether the answer is compared to the solution case-insensitively.
 	 */
-	@property({ type: Boolean, attribute: "ignore-case", reflect: true })
+	@property({ type: Boolean, attribute: "ignore-case", reflect: true, useDefault: true })
 	accessor ignoreCase = false;
 
 	/**
 	 * The feedback shown after submitting if the answer is correct.
 	 */
-	@property({ type: String, attribute: "correct-message", reflect: true })
+	@property({ type: String, attribute: "correct-message", reflect: true, useDefault: true })
 	accessor correctMessage: string = "";
 
 	/**
 	 * The feedback shown after submitting if the answer is wrong.
 	 */
-	@property({ type: String, attribute: "wrong-message", reflect: true })
+	@property({ type: String, attribute: "wrong-message", reflect: true, useDefault: true })
 	accessor wrongMessage: string = "";
 
 	/** @internal */
-	get dynamicOptions(): Record<string, OptionDeclaration> {
+	get options(): Record<string, OptionDeclaration> {
 		const isText = this.type === "long-text" || this.type === "text";
 		const options: Record<string, OptionDeclaration> = {
 			type: {
 				type: "select",
-				label: { _: msg("Type") },
+				label: { _: this.msg("Type") },
 				options: [
-					{ value: "long-text", label: { _: msg("Long Text") } },
-					{ value: "text", label: { _: msg("Short Text") } },
-					{ value: "number", label: { _: msg("Number") } },
-					{ value: "date", label: { _: msg("Date") } },
-					{ value: "time", label: { _: msg("Time") } },
-					{ value: "datetime-local", label: { _: msg("Date & Time") } },
+					{ value: "long-text", label: { _: this.msg("Long Text") } },
+					{ value: "text", label: { _: this.msg("Short Text") } },
+					{ value: "number", label: { _: this.msg("Number") } },
+					{ value: "date", label: { _: this.msg("Date") } },
+					{ value: "time", label: { _: this.msg("Time") } },
+					{ value: "datetime-local", label: { _: this.msg("Date & Time") } },
 				],
 			},
 		};
 
 		if (isText || this.type === "number") {
-			options.placeholder = { type: "string", label: { _: msg("Placeholder") } };
+			options.placeholder = { type: "string", label: { _: this.msg("Placeholder") } };
 		}
 
-		options["free-text"] = { type: "boolean", label: { _: msg("Free answer") } };
+		options.freeText = { type: "boolean", label: { _: this.msg("Free answer") } };
 
 		if (!this.freeText) {
 			if (isText) {
-				options["ignore-case"] = {
+				options.ignoreCase = {
 					type: "boolean",
-					label: { _: msg("Ignore capitalization") },
+					label: { _: this.msg("Ignore capitalization") },
 				};
 			}
-			options["correct-message"] = {
+			options.correctMessage = {
 				type: "string",
-				label: { _: msg("Message for correct solution") },
+				label: { _: this.msg("Message for correct solution") },
 			};
-			options["wrong-message"] = {
+			options.wrongMessage = {
 				type: "string",
-				label: { _: msg("Message for wrong solution") },
+				label: { _: this.msg("Message for wrong solution") },
 			};
 		}
 
 		return options;
 	}
 
+	protected updated(changed: PropertyValues) {
+		super.updated(changed);
+		if (changed.has("type") || changed.has("freeText")) this.refreshDrawer();
+	}
+
 	/**
 	 * The value counting as correct. It is obfuscated in the markup so that learners cannot read it directly.
 	 */
-	@property({ type: String, attribute: true, reflect: true, converter: encryptedProperty })
+	@property({ type: String, attribute: true, reflect: true, useDefault: true, converter: encryptedProperty })
 	accessor solution: string = "";
 
 	@state() private accessor currentAnswer: string | undefined;
@@ -203,7 +205,7 @@ export class WebwriterText extends LitElementWw implements IWebWriterQuizType {
 
 	protected firstUpdated(changed: PropertyValues): void {
 		super.firstUpdated(changed);
-		encryptPlaintextAttributes(this);
+		if (this.editable) encryptPlaintextAttributes(this);
 	}
 
 	private get value(): string {
@@ -259,6 +261,7 @@ export class WebwriterText extends LitElementWw implements IWebWriterQuizType {
 		const state = this.feedbackState;
 		const message = state === "correct" ? this.correctMessage : this.wrongMessage;
 		const showSolution = this.detailedFeedback && this.solution.trim() !== "";
+		const disabled = this.graded && !this.editable;
 
 		const field =
 			this.type === "long-text"
@@ -267,7 +270,7 @@ export class WebwriterText extends LitElementWw implements IWebWriterQuizType {
 						value=${value}
 						placeholder=${this.placeholder}
 						resize="none"
-						?disabled=${this.graded}
+						?disabled=${disabled}
 						@sl-change=${this.handleChange}
 					></sl-textarea>`
 				: html`<sl-input
@@ -275,7 +278,7 @@ export class WebwriterText extends LitElementWw implements IWebWriterQuizType {
 						value=${value}
 						placeholder=${this.placeholder}
 						type=${this.type}
-						?disabled=${this.graded}
+						?disabled=${disabled}
 						@sl-change=${this.handleChange}
 					></sl-input>`;
 
@@ -283,7 +286,7 @@ export class WebwriterText extends LitElementWw implements IWebWriterQuizType {
 			? html`<div class="feedback" data-state=${state} role="status">
 					${message ? html`<div>${message}</div>` : nothing}
 					${showSolution
-						? html`<div class="solution"><strong>${msg("Solution")}:</strong> ${this.solution}</div>`
+						? html`<div class="solution"><strong>${this.msg("Solution")}:</strong> ${this.solution}</div>`
 						: nothing}
 				</div>`
 			: nothing}`;

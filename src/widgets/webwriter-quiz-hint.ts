@@ -1,9 +1,7 @@
-import { msg } from "@lit/localize";
-import { LitElementWw } from "@webwriter/lit";
 import { css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
-import LOCALIZE from "../../localization/generated";
+import { QuizElement } from "../lib/localization";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -19,10 +17,7 @@ declare global {
  * parent element.
  */
 @customElement("webwriter-quiz-hint")
-export class WebwriterQuizHint extends LitElementWw {
-	/** @internal */
-	localize = LOCALIZE;
-
+export class WebwriterQuizHint extends QuizElement {
 	static styles = css`
 		slot {
 			display: inline-block !important;
@@ -31,6 +26,6 @@ export class WebwriterQuizHint extends LitElementWw {
 	`;
 
 	render() {
-		return html`<slot style=${styleMap({ "--ww-placeholder": `"${msg("Hint")}"` })}></slot>`;
+		return html`<slot style=${styleMap({ "--ww-placeholder": `"${this.msg("Hint")}"` })}></slot>`;
 	}
 }

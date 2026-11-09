@@ -3,7 +3,7 @@ export type QuizType = {
 	widgetPosition?: number;
 	id: string;
 	icon: string;
-	getName(): string;
+	getName(locale?: string): string;
 	createInstance(): HTMLElement & IWebWriterQuizType;
 };
 

@@ -31,6 +31,7 @@ export class DraggableGridReorderEvent extends CustomEvent<DraggableGridReorderD
 type Point = { x: number; y: number };
 
 type SnapshotItem = Point & {
+	element: HTMLElement;
 	draggable: boolean;
 	height: number;
 };
@@ -62,7 +63,6 @@ type DragSession = {
 	reorder: DraggableGridReorderDetail | null;
 	frame: number | null;
 	maxScrollY: number;
-	previousCursor: string;
 };
 
 /** Distance from the viewport edge at which auto scrolling kicks in, and its top speed. */
@@ -134,6 +134,7 @@ export class DraggableGrid extends LitElement {
 
 	private snapshot: Snapshot | null = null;
 	private session: DragSession | null = null;
+	private settleTimeout: ReturnType<typeof setTimeout> | undefined;
 
 	@property({ type: String, attribute: true })
 	accessor dragHandleSelector: string = "[data-drag-handle]";
@@ -153,8 +154,8 @@ export class DraggableGrid extends LitElement {
 		this.addEventListener("pointermove", this.onPointerMove);
 		document.addEventListener("scroll", this.onScroll);
 		this.addEventListener("pointerup", this.onPointerUp);
-		this.addEventListener("pointercancel", this.onPointerUp);
-		this.addEventListener("lostpointercapture", this.onPointerUp);
+		this.addEventListener("pointercancel", this.onPointerCancel);
+		this.addEventListener("lostpointercapture", this.onPointerCancel);
 	}
 
 	disconnectedCallback(): void {
@@ -163,8 +164,9 @@ export class DraggableGrid extends LitElement {
 		this.removeEventListener("pointermove", this.onPointerMove);
 		document.removeEventListener("scroll", this.onScroll);
 		this.removeEventListener("pointerup", this.onPointerUp);
-		this.removeEventListener("pointercancel", this.onPointerUp);
-		this.removeEventListener("lostpointercapture", this.onPointerUp);
+		this.removeEventListener("pointercancel", this.onPointerCancel);
+		this.removeEventListener("lostpointercapture", this.onPointerCancel);
+		this.cancelDrag();
 	}
 
 	render() {
@@ -180,9 +182,10 @@ export class DraggableGrid extends LitElement {
 	}
 
 	/** The element that is transformed for a child: either a nested one it provides, or itself. */
-	private animatedElement(id: string): HTMLElement {
+	private animatedElement(id: string): HTMLElement | undefined {
 		const child = this.childById(id);
-		return child && "draggableElement" in child ? (child as DraggableGridItem).draggableElement : child!;
+		if (child && "draggableElement" in child) return (child as DraggableGridItem).draggableElement;
+		return child?.getRootNode() === this.getRootNode() ? child : undefined;
 	}
 
 	private measure(): Snapshot {
@@ -201,8 +204,11 @@ export class DraggableGrid extends LitElement {
 				console.warn("DraggableGrid: child element is missing an id", child);
 				continue;
 			}
-			const itemRect = this.animatedElement(child.id).getBoundingClientRect();
+			const element = this.animatedElement(child.id);
+			if (!element) continue;
+			const itemRect = element.getBoundingClientRect();
 			snapshot.items.set(child.id, {
+				element,
 				draggable: !child.hasAttribute("data-not-draggable"),
 				height: itemRect.height,
 				x: itemRect.x - rect.x,
@@ -224,12 +230,12 @@ export class DraggableGrid extends LitElement {
 			if (id === undefined || id === draggedId) continue;
 			const item = snapshot.items.get(id);
 			if (!item) continue; // This should not happen
-			this.animatedElement(id).style.transform = `translate(${x - item.x}px, ${y - item.y}px)`;
+			item.element.style.transform = `translate(${x - item.x}px, ${y - item.y}px)`;
 		}
 	}
 
 	private onPointerDown = (event: PointerEvent) => {
-		if (this.session) return;
+		if (this.session || !event.isPrimary || event.button !== 0) return;
 
 		const path = event.composedPath();
 		if (!path.find(el => el instanceof HTMLElement && el.matches(this.dragHandleSelector))) return;
@@ -245,7 +251,7 @@ export class DraggableGrid extends LitElement {
 		event.preventDefault();
 
 		this.snapshot = this.measure();
-		for (const id of this.snapshot.order) this.animatedElement(id).style.transition = DraggableGrid.TRANSITION;
+		for (const item of this.snapshot.items.values()) item.element.style.transition = DraggableGrid.TRANSITION;
 
 		element.style.transition = "none";
 		element.style.zIndex = "1000";
@@ -264,10 +270,9 @@ export class DraggableGrid extends LitElement {
 			reorder: null,
 			frame: null,
 			maxScrollY: documentMaxScrollY(),
-			previousCursor: document.documentElement.style.cursor,
 		};
 
-		document.documentElement.style.cursor = "grabbing";
+		this.style.cursor = "grabbing";
 		this.setPointerCapture(event.pointerId);
 	};
 
@@ -285,8 +290,13 @@ export class DraggableGrid extends LitElement {
 		event.preventDefault();
 
 		this.cancelFrame();
+		const element = this.animatedElement(session.id);
+		if (!element) {
+			this.cancelDrag();
+			return;
+		}
 		session.phase = "settling";
-		this.animatedElement(session.id).style.transition = DraggableGrid.TRANSITION;
+		element.style.transition = DraggableGrid.TRANSITION;
 		this.layout(session.order);
 
 		try {
@@ -295,7 +305,11 @@ export class DraggableGrid extends LitElement {
 			// Pointer capture may already be gone after a lostpointercapture event.
 		}
 
-		setTimeout(() => this.endDrag(session), DraggableGrid.TRANSITION_MS);
+		this.settleTimeout = setTimeout(() => this.endDrag(session), DraggableGrid.TRANSITION_MS);
+	};
+
+	private onPointerCancel = (event: PointerEvent) => {
+		if (this.session?.phase === "dragging" && this.session.pointerId === event.pointerId) this.cancelDrag();
 	};
 
 	private onScroll = () => {
@@ -305,19 +319,28 @@ export class DraggableGrid extends LitElement {
 	/** Drops all drag styling once the settle animation finished and reports the new order. */
 	private endDrag(session: DragSession) {
 		if (this.session !== session) return;
-		this.session = null;
-		this.snapshot = null;
+		const { reorder } = session;
+		this.cancelDrag();
+		if (reorder) this.dispatchEvent(new DraggableGridReorderEvent(reorder));
+	}
 
-		for (const child of this.slotElements) {
-			const element = this.animatedElement(child.id);
+	cancelDrag() {
+		const session = this.session;
+		if (!session) return;
+		this.cancelFrame();
+		clearTimeout(this.settleTimeout);
+		this.settleTimeout = undefined;
+		this.session = null;
+		if (this.hasPointerCapture(session.pointerId)) this.releasePointerCapture(session.pointerId);
+
+		for (const { element } of this.snapshot?.items.values() ?? []) {
 			element.style.transition = "";
 			element.style.transform = "";
 			element.style.zIndex = "";
 			element.classList.remove("ww-dragging");
 		}
-		document.documentElement.style.cursor = session.previousCursor;
-
-		if (session.reorder) this.dispatchEvent(new DraggableGridReorderEvent(session.reorder));
+		this.snapshot = null;
+		this.style.cursor = "";
 	}
 
 	private scheduleFrame() {
@@ -342,7 +365,12 @@ export class DraggableGrid extends LitElement {
 		const rect = this.getBoundingClientRect();
 		const deltaX = this.vertical ? 0 : session.pointer.x - rect.left - session.startPointer.x;
 		const deltaY = session.pointer.y - rect.top - session.startPointer.y;
-		this.animatedElement(session.id).style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+		const element = this.animatedElement(session.id);
+		if (!element) {
+			this.cancelDrag();
+			return;
+		}
+		element.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
 
 		this.updateDropTarget({ x: session.startCorner.x + deltaX, y: session.startCorner.y + deltaY });
 

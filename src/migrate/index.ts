@@ -50,11 +50,16 @@ function uniqueId() {
 }
 
 /** Marks `el` as belonging to the current version of this package. */
-function markAsCurrent(el: Element) {
+function updateVersion(el: Element) {
 	for (const cls of Array.from(el.classList)) {
-		if (cls.startsWith("ww-v")) el.classList.remove(cls);
+		if (/^ww-v\d/.test(cls)) el.classList.remove(cls);
 	}
-	el.classList.add("ww-widget", `ww-v${packageVersion}`, `ww-pkg-${packageName}`);
+	el.classList.add(`ww-v${packageVersion}`);
+}
+
+function markAsCurrent(el: Element) {
+	updateVersion(el);
+	el.classList.add("ww-widget", `ww-pkg-${packageName}`);
 	if (!el.id) el.id = uniqueId();
 }
 
@@ -611,11 +616,12 @@ document.addEventListener("migrate", event => {
 	const classes = Array.from(el.classList);
 	if (classes.find(cls => cls.startsWith("ww-pkg-"))?.slice("ww-pkg-".length) !== packageName) return;
 
-	const major = Number.parseInt(classes.find(cls => cls.startsWith("ww-v"))?.slice("ww-v".length) ?? "", 10);
+	const major = Number.parseInt(classes.find(cls => /^ww-v\d/.test(cls))?.slice("ww-v".length) ?? "", 10);
 	if (!Number.isFinite(major) || major >= CURRENT_MAJOR_VERSION) return;
 
 	try {
-		migrateElement(el);
+		if (major === 1) migrateElement(el);
+		else updateVersion(el);
 	} catch (error) {
 		warn(`Could not migrate a <${el.localName}>, it may display incorrectly.`, el, error);
 	}

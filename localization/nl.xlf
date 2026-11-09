@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-<file target-language="nl" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<file target-language="nl" source-language="en-US" original="lit-localize-inputs" datatype="plaintext">
 <body>
 <trans-unit id="s54393bfa280ea55b">
   <source>Prompt</source>
@@ -298,10 +298,6 @@
   <source>Add Question</source>
   <target>Vraag toevoegen</target>
 </trans-unit>
-<trans-unit id="s729db3aabe406a0a">
-  <source>Question 1</source>
-  <target>Vraag 1</target>
-</trans-unit>
 <trans-unit id="scabf78417c4e5d86">
   <source>Points</source>
   <target>Punten</target>
@@ -401,6 +397,26 @@
 <trans-unit id="s96d2f1dc180a46d8">
   <source>Debug</source>
   <target>Debug</target>
+</trans-unit>
+<trans-unit id="sabba507a58e60765">
+  <source>Add a question from the Widget drawer.</source>
+  <target>Voeg een vraag toe via het widgetpaneel.</target>
+</trans-unit>
+<trans-unit id="s6b39496c00a99aed">
+  <source>Move question up</source>
+  <target>Vraag omhoog verplaatsen</target>
+</trans-unit>
+<trans-unit id="s4ba3fea645f5b52c">
+  <source>Move question down</source>
+  <target>Vraag omlaag verplaatsen</target>
+</trans-unit>
+<trans-unit id="s3b6b3fe1c8b7b5de">
+  <source>Delete question</source>
+  <target>Vraag verwijderen</target>
+</trans-unit>
+<trans-unit id="s2e379649e77c8952">
+  <source>Hide question titles</source>
+  <target>Vraagtitels verbergen</target>
 </trans-unit>
 </body>
 </file>

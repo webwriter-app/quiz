@@ -1,7 +1,6 @@
-import { msg } from "@lit/localize";
 import SlIconButton from "@shoelace-style/shoelace/dist/components/icon-button/icon-button.component.js";
 import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
-import { ActionDeclaration, LitElementWw, OptionDeclaration } from "@webwriter/lit";
+import { ActionDeclaration, OptionDeclaration } from "@webwriter/lit";
 import PlusIcon from "bootstrap-icons/icons/plus.svg";
 import ShuffleIcon from "bootstrap-icons/icons/shuffle.svg";
 import TrashIcon from "bootstrap-icons/icons/trash.svg";
@@ -14,6 +13,7 @@ import { IWebWriterQuizType, registerQuizType } from "../../api";
 import { DraggableGrid, DraggableGridReorderEvent } from "../../lib/draggable-grid";
 import { encryptedProperty, encryptPlaintextAttributes } from "../../lib/encrypted-property";
 import { BiMap, randomizeArray } from "../../lib/utils";
+import { QuizElement, messageFor } from "../../lib/localization";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -58,7 +58,7 @@ registerQuizType({
 	packageId,
 	widgetPosition: 40,
 	id: "webwriter-pairing",
-	getName: () => msg("Pairing"),
+	getName: locale => messageFor(locale)("Pairing"),
 	icon: ShuffleIcon,
 	createInstance: () => document.createElement("webwriter-pairing"),
 });
@@ -104,10 +104,10 @@ function transformTo(element: HTMLElement, from: DOMRect) {
  * The items must be `<webwriter-pairing-item>` children of this element.
  */
 @customElement("webwriter-pairing")
-export class WebwriterPairing extends LitElementWw implements IWebWriterQuizType {
+export class WebwriterPairing extends QuizElement implements IWebWriterQuizType {
 	/** @internal */
 	static shadowRootOptions = {
-		...LitElementWw.shadowRootOptions,
+		...QuizElement.shadowRootOptions,
 		slotAssignment: "manual" as const,
 	};
 
@@ -129,7 +129,7 @@ export class WebwriterPairing extends LitElementWw implements IWebWriterQuizType
 
 		.pairs {
 			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(var(--pair-min-width), 1fr));
+			grid-template-columns: repeat(auto-fill, minmax(min(var(--pair-min-width), 100%), 1fr));
 			gap: var(--grid-gap);
 		}
 
@@ -218,7 +218,7 @@ export class WebwriterPairing extends LitElementWw implements IWebWriterQuizType
 
 		.pairing-grid {
 			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(var(--item-min-width), 1fr));
+			grid-template-columns: repeat(auto-fill, minmax(min(var(--item-min-width), 100%), 1fr));
 			gap: var(--grid-gap);
 		}
 
@@ -352,7 +352,7 @@ export class WebwriterPairing extends LitElementWw implements IWebWriterQuizType
 
 		.memory-grid {
 			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(var(--item-min-width), 1fr));
+			grid-template-columns: repeat(auto-fill, minmax(min(var(--item-min-width), 100%), 1fr));
 			gap: var(--grid-gap);
 		}
 
@@ -439,13 +439,13 @@ export class WebwriterPairing extends LitElementWw implements IWebWriterQuizType
 	 * - `pairing`: All items are visible and learners drag them together.
 	 * - `memory`: The items are face down and learners uncover two at a time.
 	 */
-	@property({ type: String, attribute: true, reflect: true })
+	@property({ type: String, attribute: true, reflect: true, useDefault: true })
 	accessor mode: PairingMode = "pairing";
 
 	/**
 	 * The pairs counting as correct, as tuples of the two item IDs. It is obfuscated in the markup so that learners cannot read it directly.
 	 */
-	@property({ type: Array, attribute: true, reflect: true, converter: encryptedProperty })
+	@property({ type: Array, attribute: true, reflect: true, useDefault: true, converter: encryptedProperty })
 	accessor solution: [string, string][] = [];
 
 	/** @internal */
@@ -468,10 +468,12 @@ export class WebwriterPairing extends LitElementWw implements IWebWriterQuizType
 	}
 
 	private addPair() {
+		if (!this.isConnected || !this.editable) return;
 		const insertItem = () => {
 			// Insert new items at a random position to not make the pairing obvious from the order of the items in the DOM.
 			const randomIndex = Math.floor(Math.random() * (this.children.length + 1));
-			const newItem = document.createElement("webwriter-pairing-item");
+			const newItem = this.ownerDocument.createElement("webwriter-pairing-item");
+			newItem.id = `ww${crypto.randomUUID()}`;
 			if (randomIndex === this.children.length) this.appendChild(newItem);
 			else this.insertBefore(newItem, this.children[randomIndex]);
 			return newItem.id;
@@ -481,9 +483,11 @@ export class WebwriterPairing extends LitElementWw implements IWebWriterQuizType
 	}
 
 	private removePair(a: string, b: string) {
-		this.querySelector(`webwriter-pairing-item#${a}`)?.remove();
-		this.querySelector(`webwriter-pairing-item#${b}`)?.remove();
-		this.solution = this.solution.filter(([idA, idB]) => idA !== a && idB !== b);
+		if (!this.editable || !this.solution.some(([idA, idB]) => idA === a && idB === b)) return;
+		for (const child of Array.from(this.children)) {
+			if (child.localName === "webwriter-pairing-item" && (child.id === a || child.id === b)) child.remove();
+		}
+		this.solution = this.solution.filter(([idA, idB]) => idA !== a || idB !== b);
 	}
 
 	private renderAuthoringView() {
@@ -510,7 +514,7 @@ export class WebwriterPairing extends LitElementWw implements IWebWriterQuizType
 						</div>`,
 				)}
 				<div @click=${this.addPair} id="add-pair" data-not-draggable>
-					<div class="label"><sl-icon src=${PlusIcon}></sl-icon>${msg("Add Pair")}</div>
+					<div class="label"><sl-icon src=${PlusIcon}></sl-icon>${this.msg("Add Pair")}</div>
 					<!-- Required so that the height of add-pair always matches the height of the pairings -->
 					<div class="size-placeholder"></div>
 				</div>
@@ -843,21 +847,21 @@ export class WebwriterPairing extends LitElementWw implements IWebWriterQuizType
 	}
 
 	/** @internal */
-	get dynamicActions() {
+	get actions() {
 		return {
-			addPair: { label: { _: msg("Add Pair") } },
+			addPair: { label: { _: this.msg("Add Pair") } },
 		} as Record<string, ActionDeclaration>;
 	}
 
 	/** @internal */
-	get dynamicOptions() {
+	get options() {
 		const options: Record<string, OptionDeclaration> = {
 			mode: {
 				type: "select",
-				label: { _: msg("Mode") },
+				label: { _: this.msg("Mode") },
 				options: [
-					{ value: "pairing", label: { _: msg("Pairing") } },
-					{ value: "memory", label: { _: msg("Memory") } },
+					{ value: "pairing", label: { _: this.msg("Pairing") } },
+					{ value: "memory", label: { _: this.msg("Memory") } },
 				],
 			},
 		};
@@ -890,25 +894,22 @@ export class WebwriterPairing extends LitElementWw implements IWebWriterQuizType
 
 	protected firstUpdated(changed: PropertyValues): void {
 		super.firstUpdated(changed);
-		encryptPlaintextAttributes(this);
+		if (this.editable) encryptPlaintextAttributes(this);
 	}
 
 	protected updated(changed: PropertyValues): void {
-		if (changed.has("solution") && this.solution.length === 0) {
-			// Ensure that there is always at least one pair
-			this.updateComplete.then(() => this.addPair());
-		}
-
+		super.updated(changed);
 		const children = Array.from(this.children);
 		this.slots.forEach(slot => {
 			const refId = slot.dataset.childId;
 			const item = children.find(child => child.id === refId);
 			if (item) slot.assign(item);
+			else slot.assign();
 		});
 	}
 
 	protected willUpdate(changed: PropertyValues<this>): void {
-		if (changed.has("solution")) {
+		if (changed.has("solution") || changed.has("mode")) {
 			if (this.mode === "pairing") this.resetPairingQuiz();
 			else if (this.mode === "memory") this.resetMemoryGame();
 		}

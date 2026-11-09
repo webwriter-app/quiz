@@ -1,15 +1,13 @@
-import { msg } from "@lit/localize";
-import { ActionDeclaration, LitElementWw, OptionDeclaration } from "@webwriter/lit";
+import { ActionDeclaration, OptionDeclaration } from "@webwriter/lit";
 import InputCursorIcon from "bootstrap-icons/icons/input-cursor.svg";
-import { css, html, nothing } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import type { WebwriterGapItem } from "./webwriter-gap-item";
 import { customElement, property, state } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
-import LOCALIZE from "../../../localization/generated";
 import { name as packageId } from "../../../package.json";
 import { IWebWriterQuizType, registerQuizType } from "../../api";
-import { isWebWriter } from "../../lib/webwriter-quirks";
 import { randomizeArray } from "../../lib/utils";
+import { QuizElement, messageFor } from "../../lib/localization";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -23,7 +21,7 @@ registerQuizType({
 	packageId,
 	widgetPosition: 30,
 	id: "webwriter-gap",
-	getName: () => msg("Gap"),
+	getName: locale => messageFor(locale)("Gap"),
 	icon: InputCursorIcon,
 	createInstance: () => document.createElement("webwriter-gap"),
 });
@@ -35,35 +33,32 @@ registerQuizType({
  * in place of each gap.
  */
 @customElement("webwriter-gap")
-export class WebwriterGap extends LitElementWw implements IWebWriterQuizType {
+export class WebwriterGap extends QuizElement implements IWebWriterQuizType {
 	/** @internal */
-	get dynamicActions() {
+	get actions() {
 		const options: Record<string, ActionDeclaration> = {
-			insertGapAtSelection: { label: { _: msg("Insert gap at selection") } },
+			insertGapAtSelection: { label: { _: this.msg("Insert gap at selection") } },
 		};
 		return options;
 	}
 
 	/** @internal */
-	get dynamicOptions(): Record<string, OptionDeclaration> {
+	get options(): Record<string, OptionDeclaration> {
 		const options: Record<string, OptionDeclaration> = {
 			mode: {
 				type: "select",
-				label: { _: msg("Mode") },
+				label: { _: this.msg("Mode") },
 				options: [
-					{ value: "input", label: { _: msg("Freeform input") } },
-					{ value: "drag-and-drop", label: { _: msg("Drag and drop") } },
+					{ value: "input", label: { _: this.msg("Freeform input") } },
+					{ value: "drag-and-drop", label: { _: this.msg("Drag and drop") } },
 				],
 			},
 		};
 		if (this.mode === "input") {
-			options["ignore-case"] = { type: "boolean", label: { _: msg("Ignore case") } };
+			options.ignoreCase = { type: "boolean", label: { _: this.msg("Ignore case") } };
 		}
 		return options;
 	}
-
-	/** @internal */
-	localize = LOCALIZE;
 
 	/** @internal */
 	static scopedElements = {};
@@ -132,13 +127,13 @@ export class WebwriterGap extends LitElementWw implements IWebWriterQuizType {
 	 * - `input`: Each gap is a text field learners type into.
 	 * - `drag-and-drop`: The gaps are filled from a shared pool of draggable answers.
 	 */
-	@property({ type: String, attribute: true, reflect: true })
+	@property({ type: String, attribute: true, reflect: true, useDefault: true })
 	accessor mode: GapMode = "input";
 
 	/**
 	 * Whether answers are compared to the solution case-insensitively. Only applies in `input` mode.
 	 */
-	@property({ type: Boolean, attribute: "ignore-case", reflect: true })
+	@property({ type: Boolean, attribute: "ignore-case", reflect: true, useDefault: true })
 	accessor ignoreCase = false;
 
 	@state() private accessor graded = false;
@@ -291,36 +286,15 @@ export class WebwriterGap extends LitElementWw implements IWebWriterQuizType {
 		window.removeEventListener("keydown", this.cancelOnEscape);
 	};
 
-	private preventProseMirrorLineBreaks = (event: KeyboardEvent) => {
-		// Require collapsed selection (i.e. cursor, not text selection)
-		const selection = document.getSelection();
-		if (!selection || !selection.isCollapsed) return;
-
-		// Require cursor inside a gap item of this gap element
-		const parent = selection.focusNode?.parentElement;
-		if (!parent || parent.tagName !== "WEBWRITER-GAP-ITEM" || parent.closest("webwriter-gap") !== this) return;
-
-		// Require cursor at the start or end of the gap item
-		if (
-			(event.key === "ArrowLeft" && selection.focusOffset === 0) ||
-			(event.key === "ArrowRight" && selection.focusOffset === selection.focusNode.textContent?.length)
-		) {
-			// Prevent ProseMirror from inserting a weird line break placeholder/cursor thing
-			event.stopPropagation();
-		}
-	};
-
-	@state()
-	private accessor popupPosition: ({ left: string } & ({ top: string } | { bottom: string })) | null = null;
-
 	private getGapSelectionAndRange(): [Selection, Range] | [] {
-		const selection = document.getSelection();
+		const selection = this.ownerDocument.getSelection();
 		if (!selection) return [];
 
 		// Require non-collapsed selection (i.e. actual text selection, not just a cursor)
-		if (selection.rangeCount === 0 || selection.isCollapsed) return [];
+		if (!this.editable || !selection.rangeCount || selection.isCollapsed) return [];
 
 		const range = selection.getRangeAt(0);
+		if (range.startContainer !== range.endContainer || !(range.startContainer instanceof Text)) return [];
 		const commonNode =
 			range.commonAncestorContainer.nodeType === Node.TEXT_NODE
 				? range.commonAncestorContainer.parentElement
@@ -339,7 +313,7 @@ export class WebwriterGap extends LitElementWw implements IWebWriterQuizType {
 		const [selection, range] = this.getGapSelectionAndRange();
 		if (!selection || !range) return;
 
-		const gapItem = document.createElement("webwriter-gap-item");
+		const gapItem = this.ownerDocument.createElement("webwriter-gap-item");
 		let text = range.toString();
 		if (text.startsWith(" ")) text = "\u00A0" + text.slice(1);
 		gapItem.textContent = text;
@@ -348,17 +322,17 @@ export class WebwriterGap extends LitElementWw implements IWebWriterQuizType {
 		range.insertNode(gapItem);
 
 		selection.removeAllRanges();
-		const afterGapRange = document.createRange();
+		const afterGapRange = this.ownerDocument.createRange();
 		afterGapRange.setStartAfter(gapItem);
 		afterGapRange.collapse(true);
 		selection.addRange(afterGapRange);
-		this.popupPosition = null;
+		return true;
 	}
 
 	private insertGapOnKeyDown = (event: KeyboardEvent) => {
-		if ((event.ctrlKey || event.metaKey) && event.key.toUpperCase() === "G") {
+		if (!event.defaultPrevented && (event.ctrlKey || event.metaKey) && event.key.toUpperCase() === "G"
+			&& this.insertGapAtSelection()) {
 			event.preventDefault();
-			this.insertGapAtSelection();
 		}
 	};
 
@@ -366,20 +340,20 @@ export class WebwriterGap extends LitElementWw implements IWebWriterQuizType {
 		super.connectedCallback();
 		this.observer.observe(this, { childList: true, subtree: true });
 		this.syncItems();
-		if (this.isContentEditable) {
-			if (isWebWriter()) document.addEventListener("keydown", this.preventProseMirrorLineBreaks, true);
-			document.addEventListener("keydown", this.insertGapOnKeyDown);
-		}
+		this.addEventListener("keydown", this.insertGapOnKeyDown);
 	}
 
 	disconnectedCallback(): void {
 		super.disconnectedCallback();
 		this.observer.disconnect();
 		this.cancelDrag();
-		if (this.isContentEditable) {
-			if (isWebWriter()) document.removeEventListener("keydown", this.preventProseMirrorLineBreaks, true);
-			document.removeEventListener("keydown", this.insertGapOnKeyDown);
-		}
+		this.removeEventListener("keydown", this.insertGapOnKeyDown);
+	}
+
+	protected updated(changed: PropertyValues) {
+		super.updated(changed);
+		if (changed.has("mode")) this.refreshDrawer();
+		if (changed.has("mode") || changed.has("editable")) this.cancelDrag();
 	}
 
 	checkValidity(): boolean {
@@ -425,9 +399,9 @@ export class WebwriterGap extends LitElementWw implements IWebWriterQuizType {
 		return html`<div>
 			<!-- Holds the drag ghost, which is placed imperatively and must survive re-renders. -->
 			<div id="drag-layer"></div>
-			<slot style=${styleMap({ "--ww-placeholder": `"${msg("Text")}"` })} @slotchange=${this.syncItems}></slot>
+			<slot style=${styleMap({ "--ww-placeholder": `"${this.msg("Text")}"` })} @slotchange=${this.syncItems}></slot>
 			${this.mode === "drag-and-drop" && !this.isContentEditable ? html`
-				<div class="choices" role="group" aria-label=${msg("Available answers")}>
+				<div class="choices" role="group" aria-label=${this.msg("Available answers")}>
 					${this.choices.filter(item => !placed.has(item)).map(item => html`
 						<button class="choice" type="button" ?disabled=${this.graded} aria-pressed=${this.selected === item}
 							@pointerdown=${(event: PointerEvent) => this.startDrag(event, item)}
@@ -438,7 +412,7 @@ export class WebwriterGap extends LitElementWw implements IWebWriterQuizType {
 							}}>${item.textContent}</button>
 					`)}
 					${this.selected && placed.has(this.selected) ? html`
-						<button type="button" @click=${() => this.place(this.selected!, null)}>${msg("Return to answers")}</button>
+						<button type="button" @click=${() => this.place(this.selected!, null)}>${this.msg("Return to answers")}</button>
 					` : nothing}
 				</div>
 			` : nothing}

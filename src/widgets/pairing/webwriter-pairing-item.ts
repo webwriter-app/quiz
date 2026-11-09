@@ -1,8 +1,7 @@
-import { msg } from "@lit/localize";
-import { LitElementWw } from "@webwriter/lit";
 import { css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
+import { QuizElement } from "../../lib/localization";
 
 /**
  * A single item of a `<webwriter-pairing>`.
@@ -10,7 +9,7 @@ import { styleMap } from "lit/directives/style-map.js";
  * It must be a child of its parent element.
  */
 @customElement("webwriter-pairing-item")
-export class WebwriterPairing extends LitElementWw {
+export class WebwriterPairing extends QuizElement {
 	static styles = css`
 		:host {
 			display: block;
@@ -39,7 +38,7 @@ export class WebwriterPairing extends LitElementWw {
 	render() {
 		return html`<slot
 			style=${styleMap({
-				"--ww-placeholder": `"${msg("Item")}"`,
+				"--ww-placeholder": `"${this.msg("Item")}"`,
 			})}
 		></slot>`;
 	}

@@ -412,6 +412,17 @@
             },
             {
               "kind": "field",
+              "name": "hideQuestionTitle",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether the generated question titles are hidden.",
+              "attribute": "hide-question-title",
+              "reflects": true
+            },
+            {
+              "kind": "field",
               "name": "hidePoints",
               "type": {
                 "text": "boolean"
@@ -581,6 +592,15 @@
               "default": "false",
               "description": "Whether learners have to confirm a dialog before resetting.",
               "fieldName": "confirmReset"
+            },
+            {
+              "name": "hide-question-title",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether the generated question titles are hidden.",
+              "fieldName": "hideQuestionTitle"
             },
             {
               "name": "hide-points",
@@ -2717,7 +2737,7 @@
                 "text": "string | null"
               },
               "default": "null",
-              "description": "The recording of the learner as a data URL, or `null` if nothing was recorded yet.",
+              "description": "An existing recording URL saved in authored HTML.",
               "attribute": "src",
               "reflects": true
             },
@@ -2742,7 +2762,7 @@
                 "text": "string | null"
               },
               "default": "null",
-              "description": "The recording of the learner as a data URL, or `null` if nothing was recorded yet.",
+              "description": "An existing recording URL saved in authored HTML.",
               "fieldName": "src"
             }
           ],

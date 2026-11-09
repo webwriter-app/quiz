@@ -4,7 +4,6 @@
 	},
 	"./widgets/webwriter-quiz-hint": {
 		"group": "containerinline",
-		"defining": true,
 		"isolating": true,
 		"content": "p+",
 		"uninsertable": true
@@ -16,7 +15,6 @@
 	},
 	"./widgets/webwriter-task-prompt": {
 		"group": "",
-		"defining": true,
 		"content": "webwriter-quiz-hint?  (p | flow)+",
 		"uninsertable": true
 	},
@@ -31,8 +29,6 @@
 		"content": "webwriter-choice-item+"
 	},
 	"./widgets/webwriter-choice-item": {
-		"selectable": false,
-		"draggable": false,
 		"isolating": false,
 		"content": "webwriter-quiz-hint? (p | flow)+",
 		"uninsertable": true
@@ -43,8 +39,6 @@
 		"content": "webwriter-order-item+"
 	},
 	"./widgets/webwriter-order-item": {
-		"selectable": false,
-		"draggable": false,
 		"isolating": false,
 		"content": "webwriter-quiz-hint? (p | flow)+",
 		"uninsertable": true
@@ -66,7 +60,6 @@
 	},
 	"./widgets/webwriter-mark": {
 		"group": "answer",
-		"defining": true,
 		"isolating": true,
 		"content": "text*",
 		"marks": "",

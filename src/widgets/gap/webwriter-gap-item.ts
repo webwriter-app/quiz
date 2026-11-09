@@ -1,12 +1,12 @@
-import { msg } from "@lit/localize";
 import SlIconButton from "@shoelace-style/shoelace/dist/components/icon-button/icon-button.component.js";
 import SlInput from "@shoelace-style/shoelace/dist/components/input/input.component.js";
-import { LitElementWw, OptionDeclaration } from "@webwriter/lit";
+import { OptionDeclaration } from "@webwriter/lit";
 import XIcon from "bootstrap-icons/icons/x.svg";
 import { css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import type { GapMode } from "./webwriter-gap";
+import { QuizElement } from "../../lib/localization";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -21,12 +21,12 @@ declare global {
  * element.
  */
 @customElement("webwriter-gap-item")
-export class WebwriterGapItem extends LitElementWw {
+export class WebwriterGapItem extends QuizElement {
 	/** @internal */
-	get dynamicOptions(): Record<string, OptionDeclaration> {
+	get options(): Record<string, OptionDeclaration> {
 		const options: Record<string, OptionDeclaration> = {};
 		if (this.mode === "input") {
-			options.placeholder = { type: "string", label: { _: msg("Placeholder") } };
+			options.placeholder = { type: "string", label: { _: this.msg("Placeholder") } };
 		}
 		return options;
 	}
@@ -56,13 +56,14 @@ export class WebwriterGapItem extends LitElementWw {
 	/** @internal */
 	static scopedElements = {
 		"sl-icon-button": SlIconButton,
-		"sl-input": SlInput,
+		// Shoelace's autocorrect type predates the boolean HTMLElement property.
+		"sl-input": SlInput as unknown as CustomElementConstructor,
 	};
 
 	/**
 	 * The placeholder shown while the gap is empty. Only applies in `input` mode.
 	 */
-	@property({ type: String, attribute: "placeholder", reflect: true })
+	@property({ type: String, attribute: "placeholder", reflect: true, useDefault: true })
 	accessor placeholder: string = "";
 
 	static styles = css`
@@ -220,7 +221,7 @@ export class WebwriterGapItem extends LitElementWw {
 			type="button"
 			?disabled=${this.graded}
 			class="container-base container-placeholder ${this.dropActive ? "active" : ""} ${this.answer ? "filled" : ""}"
-			aria-label=${this.answer || msg("Empty gap")}
+			aria-label=${this.answer || this.msg("Empty gap")}
 			aria-pressed=${this.answerSelected}
 			@pointerdown=${(event: PointerEvent) => this.closest("webwriter-gap")?.startGapDrag(event, this)}
 			@click=${() => this.closest("webwriter-gap")?.activateGap(this)}
@@ -235,8 +236,8 @@ export class WebwriterGapItem extends LitElementWw {
 			const { correct, answer, solution } = this.feedback;
 			return html`<span class="container-base feedback ${correct ? "correct" : "incorrect"}" role="status">
 				${correct ? answer : html`
-					<del aria-label=${msg("Your answer")}>${answer || msg("No answer")}</del>
-					<span class="correction" aria-label=${msg("Correct answer")}>${solution}</span>
+					<del aria-label=${this.msg("Your answer")}>${answer || this.msg("No answer")}</del>
+					<span class="correction" aria-label=${this.msg("Correct answer")}>${solution}</span>
 				`}
 			</span>`;
 		}
