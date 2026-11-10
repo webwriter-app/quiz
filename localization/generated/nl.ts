@@ -87,6 +87,7 @@
 'sb3d4f79d9d8b71e5': `Inleveren`,
 'sb5b8485f95c97a79': `Er is een fout opgetreden bij de toegang tot de microfoon.`,
 'sb8f0e32715402f50': `Beoordelingsmethode`,
+'sbb588bb505779122': `Feedback`,
 'sbbb7581f20733d79': `Vrije invoer`,
 'sbbb97b1c63507dc0': `Getal`,
 'sbcdedcdd8451318c': `Antwoorden wissen?`,

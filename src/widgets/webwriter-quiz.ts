@@ -262,7 +262,10 @@ export class WebwriterQuiz extends QuizElement {
 		let maximum = 0;
 		for (const task of tasks) {
 			const answerScore = task.checkAnswer?.(this.detailedFeedback);
-			if (answerScore === undefined || !Number.isFinite(answerScore)) continue;
+			if (answerScore === undefined || !Number.isFinite(answerScore)) {
+				task.showScore(undefined, true);
+				continue;
+			}
 
 			const points = task.maximumPoints;
 			const taskScore = Math.max(0, Math.min(1, answerScore)) * points;

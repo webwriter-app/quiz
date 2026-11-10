@@ -17,7 +17,7 @@ export interface IWebWriterQuizType {
 export interface QuizTaskElement extends HTMLElement, IWebWriterQuizType {
 	readonly maximumPoints: number;
 	showRequiredWarning(show: boolean): void;
-	showScore(score: number | undefined): void;
+	showScore(score: number | undefined, submitted?: boolean): void;
 	resetFeedback(): void;
 	requestUpdate(): void;
 }

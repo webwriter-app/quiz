@@ -87,6 +87,7 @@
 'sb3d4f79d9d8b71e5': `Invia`,
 'sb5b8485f95c97a79': `Si è verificato un errore durante l'accesso al microfono.`,
 'sb8f0e32715402f50': `Metodo di valutazione`,
+'sbb588bb505779122': `Feedback`,
 'sbbb7581f20733d79': `Inserimento libero`,
 'sbbb97b1c63507dc0': `Numero`,
 'sbcdedcdd8451318c': `Azzerare le risposte?`,

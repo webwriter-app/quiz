@@ -21,6 +21,7 @@ export abstract class WebwriterTask extends QuizElement implements QuizTaskEleme
 	get options(): Record<string, OptionDeclaration> {
 		return {
 			points: { type: Number, label: { _: this.msg("Points") } },
+			feedback: { type: "string", multiline: true, label: { _: this.msg("Feedback") } },
 		};
 	}
 
@@ -92,15 +93,27 @@ export abstract class WebwriterTask extends QuizElement implements QuizTaskEleme
 				margin-block-end: var(--sl-spacing-x-small);
 			}
 		}
+
+		.question-feedback {
+			margin-block-start: var(--sl-spacing-small);
+			white-space: pre-wrap;
+			overflow-wrap: anywhere;
+		}
 	`;
 
 	/** The maximum score for this question. */
 	@property({ type: Number, attribute: "points", reflect: true, useDefault: true })
 	accessor points = 1;
 
+	/** Feedback shown after a successful quiz submission. */
+	@property({ type: String, reflect: true, useDefault: true })
+	accessor feedback = "";
+
 	@state() private accessor requiredWarning = false;
 
 	@state() private accessor score: number | undefined;
+
+	@state() private accessor submitted = false;
 
 	private slotObserver = new MutationObserver(records => {
 		if (records.some(record => record.target === this || record.target.parentNode === this)) this.requestUpdate();
@@ -147,14 +160,15 @@ export abstract class WebwriterTask extends QuizElement implements QuizTaskEleme
 	}
 
 	/** @internal */
-	showScore(score: number | undefined) {
+	showScore(score: number | undefined, submitted = score !== undefined) {
 		this.score = score;
+		this.submitted = submitted;
 	}
 
 	/** @internal */
 	resetFeedback() {
 		this.requiredWarning = false;
-		this.score = undefined;
+		this.showScore(undefined);
 	}
 
 	private formatScore(score: number) {
@@ -238,7 +252,10 @@ export abstract class WebwriterTask extends QuizElement implements QuizTaskEleme
 				${showHint ? html`<hint-popup position="start"><slot name="hint"></slot></hint-popup>` : nothing}
 				<slot name="prompt" style=${styleMap({ "--ww-placeholder": `"${this.msg("Prompt")}"` })}></slot>
 			</div>
-			${this.renderAnswer()}`;
+			${this.renderAnswer()}
+			${!this.editable && this.submitted && this.feedback.trim()
+				? html`<div class="question-feedback" role="status">${this.feedback}</div>`
+				: nothing}`;
 	}
 }
 

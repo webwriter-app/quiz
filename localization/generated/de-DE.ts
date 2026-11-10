@@ -87,6 +87,7 @@
 'sb3d4f79d9d8b71e5': `Abgeben`,
 'sb5b8485f95c97a79': `Beim Zugriff auf das Mikrofon ist ein Fehler aufgetreten.`,
 'sb8f0e32715402f50': `Bewertungsmethode`,
+'sbb588bb505779122': `Feedback`,
 'sbbb7581f20733d79': `Freie Eingabe`,
 'sbbb97b1c63507dc0': `Zahl`,
 'sbcdedcdd8451318c': `Antworten zurücksetzen?`,

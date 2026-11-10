@@ -87,6 +87,7 @@
 'sb3d4f79d9d8b71e5': `Enviar`,
 'sb5b8485f95c97a79': `Se ha producido un error al acceder al micrófono.`,
 'sb8f0e32715402f50': `Método de calificación`,
+'sbb588bb505779122': `Comentarios`,
 'sbbb7581f20733d79': `Entrada libre`,
 'sbbb97b1c63507dc0': `Número`,
 'sbcdedcdd8451318c': `¿Reiniciar respuestas?`,

@@ -308,6 +308,10 @@
 <trans-unit id="sa937fce28916575e">
   <source>Solution</source>
 <target>Solución</target></trans-unit>
+<trans-unit id="sbb588bb505779122">
+  <source>Feedback</source>
+  <target>Comentarios</target>
+</trans-unit>
 </body>
 </file>
 </xliff>

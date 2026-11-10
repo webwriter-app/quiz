@@ -410,6 +410,10 @@
   <source>Hide question titles</source>
   <target>Masquer les titres des questions</target>
 </trans-unit>
+<trans-unit id="sbb588bb505779122">
+  <source>Feedback</source>
+  <target>Commentaire</target>
+</trans-unit>
 </body>
 </file>
 </xliff>

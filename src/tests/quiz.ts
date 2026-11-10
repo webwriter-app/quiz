@@ -89,6 +89,8 @@ async function authoring(fixture: HTMLElement) {
 	}
 	assert(quiz.children.length === 10, "The drawer must insert built-in and externally registered questions");
 	assert(Array.from(quiz.children).every(task => task instanceof WebwriterTask), "Task types must be direct quiz children");
+	assert(Array.from(quiz.children).every(task => (task as WebwriterTask).options.feedback),
+		"Every task type must expose a Feedback field");
 	const first = quiz.firstElementChild as HTMLElement;
 	assert(first.localName === "webwriter-true-false", "Insert the task type without a wrapper");
 	assert(first.firstElementChild?.matches('p[slot="prompt"]'), "New questions must include a slotted native paragraph");
@@ -229,6 +231,63 @@ async function savedRecording(fixture: HTMLElement) {
 	assert(recording.checkValidity(), "Reinsertion must restore the saved audio");
 }
 
+async function answerInsertion(fixture: HTMLElement) {
+	fixture.contentEditable = "true";
+	const choice = document.createElement("webwriter-choice");
+	const order = document.createElement("webwriter-order");
+	order.setAttribute("solution", "[]");
+	fixture.append(choice, order);
+	for (const task of [choice, order]) {
+		for (const layout of ["list", "tiles"] as const) {
+			task.layout = layout;
+			await task.updateComplete;
+			const count = task.children.length;
+			clickButton(task.shadowRoot!, "Add Option");
+			assert(task.children.length === count + 1 && task.lastElementChild?.firstElementChild?.localName === "p",
+				`The ${layout} button must append one editable answer`);
+		}
+	}
+	assert(order.solution.join() === Array.from(order.children, item => item.id).join(),
+		"Inline insertion must extend the authored order solution");
+	fixture.contentEditable = "false";
+	await settleUpdates();
+	assert(!choice.shadowRoot!.querySelector(".add-option") && !order.shadowRoot!.querySelector(".add-option"),
+		"Hide answer insertion in use mode");
+}
+
+async function questionFeedback(fixture: HTMLElement) {
+	const quiz = document.createElement("webwriter-quiz") as WebwriterQuiz;
+	const text = document.createElement("webwriter-text");
+	text.freeText = true;
+	text.feedback = "Compare your approach.\nConsider another example.";
+	const speech = document.createElement("webwriter-speech");
+	speech.feedback = "Listen to your response.";
+	quiz.append(text, speech);
+	fixture.append(quiz);
+	await settleUpdates();
+	assert(text.options.feedback && text.getAttribute("feedback") === text.feedback,
+		"Open-ended text must expose and persist feedback");
+	clickButton(quiz.shadowRoot!, "Submit");
+	await settleUpdates();
+	assert(!text.shadowRoot!.querySelector(".question-feedback"), "Keep feedback hidden when submission is incomplete");
+	const input = text.shadowRoot!.querySelector("sl-textarea") as HTMLElement & { value: string };
+	input.value = "An open-ended response";
+	input.dispatchEvent(new Event("sl-change"));
+	speech.src = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=";
+	clickButton(quiz.shadowRoot!, "Submit");
+	await settleUpdates();
+	assert(text.shadowRoot!.querySelector(".question-feedback")?.textContent === text.feedback,
+		"Show multiline feedback for open-ended text on submission");
+	assert(speech.shadowRoot!.querySelector(".question-feedback")?.textContent === speech.feedback,
+		"Show feedback even for a question without a score");
+	assert(quiz.shadowRoot!.querySelector(".total-result strong")?.textContent === "1 / 1",
+		"Ungraded feedback must leave the quiz score alone");
+	clickButton(quiz.shadowRoot!, "Reset answers");
+	await settleUpdates();
+	assert(!text.shadowRoot!.querySelector(".question-feedback") && !speech.shadowRoot!.querySelector(".question-feedback") &&
+		text.hasAttribute("feedback") && speech.hasAttribute("feedback"), "Reset must hide feedback and preserve authored messages");
+}
+
 async function mixedQuiz(fixture: HTMLElement) {
 	const quiz = document.createElement("webwriter-quiz") as WebwriterQuiz;
 	const first = document.createElement("webwriter-true-false");
@@ -286,7 +345,7 @@ async function promptIsolation(fixture: HTMLElement) {
 	selection.removeAllRanges();
 }
 
-const cases = { authoring, languages, titleVisibility, learnerOrder, learnerChoice, savedRecording, mixedQuiz, promptIsolation };
+const cases = { authoring, languages, titleVisibility, learnerOrder, learnerChoice, savedRecording, answerInsertion, questionFeedback, mixedQuiz, promptIsolation };
 report({ type: "beforeAll" });
 for (const [id, run] of Object.entries(cases)) {
 	const test = { id, path: ["Quiz", id] };

@@ -5,6 +5,7 @@ Add interactive tasks (multiple choice, order, free text, highlighting, or speec
 
 In WebWriter 2, use the quiz’s question buttons or the Widget drawer to insert questions. The package includes one-question snippets for each built-in type with question titles and points hidden.
 
+In edit mode, Choice and Order show **Add Option** below the answers in both layouts. Each question has a **Feedback** field in the Widget drawer. Its message appears after a valid submission, including for open-ended and ungraded questions. **Show detailed feedback** controls answer-specific feedback and solution reveal.
 
 
 
@@ -71,7 +72,7 @@ Extend `WebwriterTask` from `@webwriter/quiz/task`. Implement
 also implement `checkAnswer(detailedFeedback)` and return a score from 0 to 1.
 Extend the base styles and scoped elements when declaring your own. Merge
 `super.options` and `super.actions` into any instance declarations so the
-drawer still shows points and question commands.
+drawer shows points, feedback, and question commands.
 
 Register the custom element and call `registerQuizType` from
 `@webwriter/quiz/api` with a factory that creates an instance. Give the widget

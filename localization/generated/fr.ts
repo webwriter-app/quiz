@@ -87,6 +87,7 @@
 'sb3d4f79d9d8b71e5': `Envoyer`,
 'sb5b8485f95c97a79': `Une erreur s'est produite lors de l'accès au microphone.`,
 'sb8f0e32715402f50': `Méthode de notation`,
+'sbb588bb505779122': `Commentaire`,
 'sbbb7581f20733d79': `Saisie libre`,
 'sbbb97b1c63507dc0': `Nombre`,
 'sbcdedcdd8451318c': `Réinitialiser les réponses ?`,

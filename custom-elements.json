@@ -670,6 +670,17 @@
               "description": "The maximum score for this question.",
               "attribute": "points",
               "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "feedback",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Feedback shown after a successful quiz submission.",
+              "attribute": "feedback",
+              "reflects": true
             }
           ],
           "attributes": [
@@ -681,6 +692,15 @@
               "default": "1",
               "description": "The maximum score for this question.",
               "fieldName": "points"
+            },
+            {
+              "name": "feedback",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Feedback shown after a successful quiz submission.",
+              "fieldName": "feedback"
             }
           ],
           "slots": [
