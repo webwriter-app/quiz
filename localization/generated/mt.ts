@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Parzjalment korretta`,
 's21b5ec7253ee5705': `Id-direzzjoni tal-ordni li għandha tintuża.`,
 's2317e68a652c8498': `Test qasir`,
+'s23600058a1e98e13': `Żid kummenti`,
 's2492f5fb1b05b45e': `Test`,
 's270d49ea25614a7b': `Irrisettja t-tweġibiet`,
 's2ba5f4d8f3bd7c57': `Ordni`,

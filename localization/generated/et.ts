@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Osaliselt õige`,
 's21b5ec7253ee5705': `Kasutatav järjestussuund.`,
 's2317e68a652c8498': `Lühike tekst`,
+'s23600058a1e98e13': `Lisa tagasiside`,
 's2492f5fb1b05b45e': `Tekst`,
 's270d49ea25614a7b': `Lähtesta vastused`,
 's2ba5f4d8f3bd7c57': `Järjestus`,

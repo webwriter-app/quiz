@@ -1,13 +1,18 @@
 import { str } from "@lit/localize";
+import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
+import SlButtonGroup from "@shoelace-style/shoelace/dist/components/button-group/button-group.component.js";
+import SlDropdown from "@shoelace-style/shoelace/dist/components/dropdown/dropdown.component.js";
 import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
 import SlTag from "@shoelace-style/shoelace/dist/components/tag/tag.component.js";
 import type { ActionDeclaration, OptionDeclaration } from "@webwriter/lit";
 import WarningIcon from "bootstrap-icons/icons/exclamation-triangle.svg";
+import PlusIcon from "bootstrap-icons/icons/plus.svg";
 import { css, html, nothing, type CSSResultGroup, type PropertyValues, type TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 import { isQuizTask, type QuizTaskElement } from "../api/index.js";
 import { HintPopup } from "../lib/hint-popup";
+import { questionPickerStyles } from "../lib/question-picker-styles";
 import { mutateWithStableSelection } from "../lib/webwriter-quirks";
 import type { WebwriterQuiz } from "./webwriter-quiz";
 import { QuizElement } from "../lib/localization.js";
@@ -21,7 +26,6 @@ export abstract class WebwriterTask extends QuizElement implements QuizTaskEleme
 	get options(): Record<string, OptionDeclaration> {
 		return {
 			points: { type: Number, label: { _: this.msg("Points") } },
-			feedback: { type: "string", multiline: true, label: { _: this.msg("Feedback") } },
 		};
 	}
 
@@ -38,11 +42,14 @@ export abstract class WebwriterTask extends QuizElement implements QuizTaskEleme
 	/** @internal */
 	static scopedElements: Record<string, CustomElementConstructor> = {
 		"hint-popup": HintPopup,
+		"sl-button": SlButton,
+		"sl-button-group": SlButtonGroup,
+		"sl-dropdown": SlDropdown,
 		"sl-icon": SlIcon,
 		"sl-tag": SlTag,
 	};
 
-	static styles: CSSResultGroup = css`
+	static styles: CSSResultGroup = [questionPickerStyles, css`
 		:host {
 			display: block;
 		}
@@ -96,16 +103,59 @@ export abstract class WebwriterTask extends QuizElement implements QuizTaskEleme
 
 		.question-feedback {
 			margin-block-start: var(--sl-spacing-small);
-			white-space: pre-wrap;
+			border-inline-start: 3px solid var(--sl-color-neutral-300);
+			padding-inline-start: var(--sl-spacing-small);
 			overflow-wrap: anywhere;
 		}
-	`;
+
+		.feedback-label {
+			font-weight: bold;
+		}
+
+		.legacy-feedback {
+			white-space: pre-wrap;
+		}
+
+		.authoring-row {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: var(--sl-spacing-x-small);
+			margin-block-start: var(--sl-spacing-small);
+
+			sl-button-group, sl-button {
+				min-inline-size: 0;
+				max-inline-size: 100%;
+			}
+
+			sl-button-group::part(base) {
+				max-inline-size: 100%;
+			}
+
+			sl-button-group > sl-button::part(base) {
+				height: 100%;
+			}
+
+			sl-button-group > sl-button::part(label) {
+				padding: var(--sl-spacing-2x-small) var(--sl-spacing-x-small);
+				line-height: var(--sl-line-height-dense);
+				white-space: normal;
+				overflow-wrap: anywhere;
+			}
+		}
+
+		@media print {
+			.authoring-row {
+				display: none;
+			}
+		}
+	`];
 
 	/** The maximum score for this question. */
 	@property({ type: Number, attribute: "points", reflect: true, useDefault: true })
 	accessor points = 1;
 
-	/** Feedback shown after a successful quiz submission. */
+	/** @deprecated Author a webwriter-quiz-feedback child in the feedback slot. */
 	@property({ type: String, reflect: true, useDefault: true })
 	accessor feedback = "";
 
@@ -134,7 +184,7 @@ export abstract class WebwriterTask extends QuizElement implements QuizTaskEleme
 	protected updated(changed: PropertyValues) {
 		super.updated(changed);
 		if (this.shadowRoot?.slotAssignment === "manual") {
-			for (const slot of this.renderRoot.querySelectorAll<HTMLSlotElement>('slot[name="prompt"], slot[name="hint"]')) {
+			for (const slot of this.renderRoot.querySelectorAll<HTMLSlotElement>('slot[name="prompt"], slot[name="hint"], slot[name="feedback"]')) {
 				const children = Array.from(this.children).filter(child => child.slot === slot.name);
 				const assigned = slot.assignedElements();
 				if (children.length !== assigned.length || children.some((child, index) => child !== assigned[index])) {
@@ -147,6 +197,28 @@ export abstract class WebwriterTask extends QuizElement implements QuizTaskEleme
 	protected isAnswerContent(node: Node) {
 		while (node.parentNode && node.parentNode !== this) node = node.parentNode;
 		return node.parentNode === this && (!(node instanceof Element) || !node.slot);
+	}
+
+	/** @internal */
+	get hostsQuestionPicker() {
+		return true;
+	}
+
+	protected get feedbackElement() {
+		return this.querySelector(":scope > webwriter-quiz-feedback[slot=feedback]");
+	}
+
+	private addFeedback() {
+		if (!this.isConnected || !this.editable || this.feedbackElement) return;
+		const feedback = this.ownerDocument.createElement("webwriter-quiz-feedback");
+		feedback.slot = "feedback";
+		for (const line of this.feedback.split(/\r\n?|\n/)) {
+			const paragraph = this.ownerDocument.createElement("p");
+			paragraph.textContent = line;
+			feedback.append(paragraph);
+		}
+		this.append(feedback);
+		this.removeAttribute("feedback");
 	}
 
 	/** @internal */
@@ -243,6 +315,40 @@ export abstract class WebwriterTask extends QuizElement implements QuizTaskEleme
 
 	protected abstract renderAnswer(): unknown;
 
+	protected addOption?(): void;
+
+	private AuthoringRow() {
+		const addOption = this.addOption;
+		const addFeedback = !this.feedbackElement;
+		const quiz = this.parentElement as WebwriterQuiz | null;
+		const addQuestion = quiz?.renderAddQuestion?.(this) ?? nothing;
+		if (!addOption && !addFeedback && addQuestion === nothing) return nothing;
+
+		return html`<div class="authoring-row">
+			${addOption || addFeedback ? html`<sl-button-group>
+				${addOption ? html`<sl-button class="add-option" @click=${addOption}>
+					<sl-icon slot="prefix" src=${PlusIcon}></sl-icon>
+					${this.msg("Add Option")}
+				</sl-button>` : nothing}
+				${addFeedback ? html`<sl-button class="add-feedback" @click=${this.addFeedback}>
+					<sl-icon slot="prefix" src=${PlusIcon}></sl-icon>
+					${this.msg("Add Feedback")}
+				</sl-button>` : nothing}
+			</sl-button-group>` : nothing}
+			${addQuestion}
+		</div>`;
+	}
+
+	private QuestionFeedback() {
+		const feedback = this.feedbackElement;
+		if (this.editable ? !feedback : !this.submitted || (!feedback && !this.feedback.trim())) return nothing;
+		return html`<div class="question-feedback">
+			<div class="feedback-label">${this.msg("Feedback")}</div>
+			${feedback ? html`<slot name="feedback"></slot>`
+				: html`<div class="legacy-feedback">${this.feedback}</div>`}
+		</div>`;
+	}
+
 	render(): TemplateResult {
 		const children = Array.from(this.children);
 		const showHint = children.some(child => child.slot === "hint") ||
@@ -253,9 +359,8 @@ export abstract class WebwriterTask extends QuizElement implements QuizTaskEleme
 				<slot name="prompt" style=${styleMap({ "--ww-placeholder": `"${this.msg("Prompt")}"` })}></slot>
 			</div>
 			${this.renderAnswer()}
-			${!this.editable && this.submitted && this.feedback.trim()
-				? html`<div class="question-feedback" role="status">${this.feedback}</div>`
-				: nothing}`;
+			${this.QuestionFeedback()}
+			${this.editable ? this.AuthoringRow() : nothing}`;
 	}
 }
 

@@ -2,6 +2,10 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
 <file target-language="ml" source-language="en-US" original="lit-localize-inputs" datatype="plaintext">
 <body>
+<trans-unit id="s23600058a1e98e13">
+  <source>Add Feedback</source>
+  <target>പ്രതികരണം ചേർക്കുക</target>
+</trans-unit>
 <trans-unit id="s73c0e4814878d26e">
   <source>Snap to grid</source>
 <target>ഗ്രിഡിലേക്ക് ചേർക്കുക</target></trans-unit>

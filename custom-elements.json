@@ -380,6 +380,44 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/widgets/webwriter-quiz-feedback.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Formatted feedback authored in the feedback slot of a question.",
+          "name": "WebwriterQuizFeedback",
+          "members": [],
+          "superclass": {
+            "name": "QuizElement",
+            "module": "src/lib/localization.ts"
+          },
+          "tagName": "webwriter-quiz-feedback",
+          "customElement": true,
+          "modulePath": "src/widgets/webwriter-quiz-feedback.ts",
+          "definitionPath": "src/widgets/webwriter-quiz-feedback.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterQuizFeedback",
+          "declaration": {
+            "name": "WebwriterQuizFeedback",
+            "module": "src/widgets/webwriter-quiz-feedback.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-quiz-feedback",
+          "declaration": {
+            "name": "WebwriterQuizFeedback",
+            "module": "src/widgets/webwriter-quiz-feedback.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/widgets/webwriter-quiz.ts",
       "declarations": [
         {
@@ -670,17 +708,6 @@
               "description": "The maximum score for this question.",
               "attribute": "points",
               "reflects": true
-            },
-            {
-              "kind": "field",
-              "name": "feedback",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "description": "Feedback shown after a successful quiz submission.",
-              "attribute": "feedback",
-              "reflects": true
             }
           ],
           "attributes": [
@@ -692,15 +719,6 @@
               "default": "1",
               "description": "The maximum score for this question.",
               "fieldName": "points"
-            },
-            {
-              "name": "feedback",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "description": "Feedback shown after a successful quiz submission.",
-              "fieldName": "feedback"
             }
           ],
           "slots": [
@@ -711,6 +729,10 @@
             {
               "name": "hint",
               "description": "An optional question hint."
+            },
+            {
+              "name": "feedback",
+              "description": "Optional formatted feedback shown after a valid submission."
             }
           ],
           "superclass": {

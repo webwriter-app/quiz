@@ -475,7 +475,7 @@ export class WebwriterPairing extends WebwriterTask {
 			const randomIndex = Math.floor(Math.random() * (items.length + 1));
 			const newItem = this.ownerDocument.createElement("webwriter-pairing-item");
 			newItem.id = `ww${crypto.randomUUID()}`;
-			this.insertBefore(newItem, items[randomIndex] ?? null);
+			this.insertBefore(newItem, items[randomIndex] ?? this.feedbackElement);
 			return newItem.id;
 		};
 

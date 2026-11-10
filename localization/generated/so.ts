@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Qayb ahaan sax`,
 's21b5ec7253ee5705': `Jihada kala hormarinta la adeegsanayo.`,
 's2317e68a652c8498': `Qoraal gaaban`,
+'s23600058a1e98e13': `Ku dar jawaab celin`,
 's2492f5fb1b05b45e': `Qoraal`,
 's270d49ea25614a7b': `Dib u deji jawaabaha`,
 's2ba5f4d8f3bd7c57': `Kala hormarin`,

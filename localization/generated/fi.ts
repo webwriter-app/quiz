@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Osittain oikein`,
 's21b5ec7253ee5705': `Käytettävä järjestyssuunta.`,
 's2317e68a652c8498': `Lyhyt teksti`,
+'s23600058a1e98e13': `Lisää palaute`,
 's2492f5fb1b05b45e': `Teksti`,
 's270d49ea25614a7b': `Nollaa vastaukset`,
 's2ba5f4d8f3bd7c57': `Järjestys`,

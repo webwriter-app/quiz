@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Sampela hap i stret`,
 's21b5ec7253ee5705': `Hap oda i mas i go long en.`,
 's2317e68a652c8498': `Sotpela teks`,
+'s23600058a1e98e13': `Putim bekim`,
 's2492f5fb1b05b45e': `Teks`,
 's270d49ea25614a7b': `Kliaim ol ansa`,
 's2ba5f4d8f3bd7c57': `Stretim oda`,

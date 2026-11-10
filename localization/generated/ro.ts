@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Parțial corect`,
 's21b5ec7253ee5705': `Direcția de ordonare care va fi folosită.`,
 's2317e68a652c8498': `Text scurt`,
+'s23600058a1e98e13': `Adaugă feedback`,
 's2492f5fb1b05b45e': `Text`,
 's270d49ea25614a7b': `Resetează răspunsurile`,
 's2ba5f4d8f3bd7c57': `Ordine`,

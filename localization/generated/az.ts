@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Qismən düzgün`,
 's21b5ec7253ee5705': `İstifadə olunacaq sıralama istiqaməti.`,
 's2317e68a652c8498': `Qısa mətn`,
+'s23600058a1e98e13': `Rəy əlavə et`,
 's2492f5fb1b05b45e': `Mətn`,
 's270d49ea25614a7b': `Cavabları sıfırla`,
 's2ba5f4d8f3bd7c57': `Sıralama`,

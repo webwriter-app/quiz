@@ -18,6 +18,7 @@ export interface IWebWriterQuizType {
 /** The quiz and its task classes may be loaded from separate bundles. */
 export interface QuizTaskElement extends HTMLElement, IWebWriterQuizType {
 	readonly maximumPoints: number;
+	readonly hostsQuestionPicker?: boolean;
 	showRequiredWarning(show: boolean): void;
 	showScore(score: number | undefined, submitted?: boolean): void;
 	resetFeedback(): void;

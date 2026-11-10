@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Parcialment correcte`,
 's21b5ec7253ee5705': `La direcció d'ordenació que s'ha d'utilitzar.`,
 's2317e68a652c8498': `Text breu`,
+'s23600058a1e98e13': `Afig comentaris`,
 's2492f5fb1b05b45e': `Text`,
 's270d49ea25614a7b': `Reinicia les respostes`,
 's2ba5f4d8f3bd7c57': `Orde`,

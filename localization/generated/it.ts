@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Parzialmente corretto`,
 's21b5ec7253ee5705': `La direzione di ordinamento da usare.`,
 's2317e68a652c8498': `Testo breve`,
+'s23600058a1e98e13': `Aggiungi feedback`,
 's2492f5fb1b05b45e': `Testo`,
 's270d49ea25614a7b': `Azzera risposte`,
 's2ba5f4d8f3bd7c57': `Ordinamento`,

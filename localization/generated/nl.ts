@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Deels goed`,
 's21b5ec7253ee5705': `De te gebruiken richting van de volgorde.`,
 's2317e68a652c8498': `Korte tekst`,
+'s23600058a1e98e13': `Feedback toevoegen`,
 's2492f5fb1b05b45e': `Tekst`,
 's270d49ea25614a7b': `Antwoorden wissen`,
 's2ba5f4d8f3bd7c57': `Volgorde`,

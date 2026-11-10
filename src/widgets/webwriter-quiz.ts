@@ -10,8 +10,9 @@ import AddIcon from "bootstrap-icons/icons/plus-lg.svg";
 import { css, html, nothing, type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
-import { isQuizTask, onQuizTypesChanged, type QuizType } from "../api";
+import { isQuizTask, onQuizTypesChanged, type QuizTaskElement, type QuizType } from "../api";
 import { QuizElement } from "../lib/localization";
+import { questionPickerStyles } from "../lib/question-picker-styles";
 
 /**
  * A quiz groups multiple question elements into one exercise that is
@@ -55,7 +56,7 @@ export class WebwriterQuiz extends QuizElement {
 		"sl-progress-bar": SlProgressBar,
 	};
 
-	static styles = css`
+	static styles = [questionPickerStyles, css`
 		:host {
 			display: block;
 			container-type: inline-size;
@@ -71,31 +72,9 @@ export class WebwriterQuiz extends QuizElement {
 			margin-bottom: var(--sl-spacing-x-small);
 		}
 
-		.insert-task-grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(min(160px, 100%), 1fr));
-			gap: var(--sl-spacing-small);
-
-			sl-button::part(base) {
-				justify-content: flex-start;
-			}
-
-			sl-button::part(label) {
-				white-space: normal;
-				overflow-wrap: anywhere;
-			}
-		}
-
-		.add-question {
-			margin-top: var(--sl-spacing-small);
+		.quiz-footer {
+			margin-block-start: var(--sl-spacing-small);
 			display: flex;
-			justify-content: center;
-		}
-
-		.dropdown-container {
-			width: min(100cqi, 36rem);
-			box-sizing: border-box;
-			padding: var(--sl-spacing-x-small);
 		}
 
 		.actions {
@@ -121,11 +100,11 @@ export class WebwriterQuiz extends QuizElement {
 		}
 
 		@media print {
-			.actions, sl-dialog, .add-question, .insert-task-grid, .header-placeholder {
+			.actions, sl-dialog, .quiz-footer, .insert-task-grid, .header-placeholder {
 				display: none;
 			}
 		}
-	`;
+	`];
 
 	/**
 	 * Whether learners see per-answer feedback and the solution after submitting.
@@ -193,6 +172,8 @@ export class WebwriterQuiz extends QuizElement {
 		if (changedProperties.has("editable") && this.editable) this.confirmationAction = undefined;
 		if (changedProperties.has("hidePoints") || changedProperties.has("hideQuestionTitle") || changedProperties.has("editable")) {
 			this.getTasks().forEach(task => task.requestUpdate?.());
+		} else if (this.editable) {
+			this.getTasks().at(-1)?.requestUpdate();
 		}
 	}
 
@@ -218,6 +199,20 @@ export class WebwriterQuiz extends QuizElement {
 				${type.getName(this.lang, this.msg)}
 			</sl-button>`)}
 		</div>`;
+	}
+
+	/** @internal */
+	renderAddQuestion(task?: QuizTaskElement) {
+		const last = this.getTasks().at(-1);
+		if (!this.editable || !last || (last.hostsQuestionPicker ? task !== last : task !== undefined)) return nothing;
+
+		return html`<sl-dropdown class="add-question" placement="bottom-end" distance="4" ${ref(this.addQuestionDropdown)}>
+			<sl-button slot="trigger" caret>
+				<sl-icon slot="prefix" src=${AddIcon}></sl-icon>
+				${this.msg("Add Question")}
+			</sl-button>
+			<div class="dropdown-container">${this.InsertQuestionGrid()}</div>
+		</sl-dropdown>`;
 	}
 
 	private updateTasks() {
@@ -327,16 +322,9 @@ export class WebwriterQuiz extends QuizElement {
 				${this.ConfirmationDialog()}`;
 		}
 
+		const last = this.getTasks().at(-1);
 		return html`<slot @slotchange=${this.updateTasks}></slot>
-			${this.getTasks().length ? html`<div class="add-question">
-				<sl-dropdown placement="bottom" distance="4" ${ref(this.addQuestionDropdown)}>
-					<sl-button slot="trigger" caret>
-						<sl-icon slot="prefix" src=${AddIcon}></sl-icon>
-						${this.msg("Add Question")}
-					</sl-button>
-					<div class="dropdown-container">${this.InsertQuestionGrid()}</div>
-				</sl-dropdown>
-			</div>` : html`
+			${last ? last.hostsQuestionPicker ? nothing : html`<div class="quiz-footer">${this.renderAddQuestion()}</div>` : html`
 				${this.hideQuestionTitle ? nothing : html`<div class="header-placeholder">${this.msg(str`Question ${1}`)}</div>`}
 				${this.InsertQuestionGrid()}
 			`}`;

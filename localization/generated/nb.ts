@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Delvis riktig`,
 's21b5ec7253ee5705': `Sorteringsretningen som skal brukes.`,
 's2317e68a652c8498': `Kort tekst`,
+'s23600058a1e98e13': `Legg til tilbakemelding`,
 's2492f5fb1b05b45e': `Tekst`,
 's270d49ea25614a7b': `Tilbakestill svar`,
 's2ba5f4d8f3bd7c57': `Rekkefølge`,

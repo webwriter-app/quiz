@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Sawetara bener`,
 's21b5ec7253ee5705': `Arah urutan sing arep digunakake.`,
 's2317e68a652c8498': `Teks cekak`,
+'s23600058a1e98e13': `Tambah tanggapan`,
 's2492f5fb1b05b45e': `Teks`,
 's270d49ea25614a7b': `Reset wangsulan`,
 's2ba5f4d8f3bd7c57': `Urutan`,

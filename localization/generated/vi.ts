@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Đúng một phần`,
 's21b5ec7253ee5705': `Hướng sắp xếp cần dùng.`,
 's2317e68a652c8498': `Văn bản ngắn`,
+'s23600058a1e98e13': `Thêm phản hồi`,
 's2492f5fb1b05b45e': `Văn bản`,
 's270d49ea25614a7b': `Đặt lại câu trả lời`,
 's2ba5f4d8f3bd7c57': `Thứ tự`,

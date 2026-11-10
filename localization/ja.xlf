@@ -2,6 +2,10 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
 <file target-language="ja" source-language="en-US" original="lit-localize-inputs" datatype="plaintext">
 <body>
+<trans-unit id="s23600058a1e98e13">
+  <source>Add Feedback</source>
+  <target>フィードバックを追加</target>
+</trans-unit>
 <trans-unit id="s73c0e4814878d26e">
   <source>Snap to grid</source>
 <target>グリッドにスナップ</target></trans-unit>

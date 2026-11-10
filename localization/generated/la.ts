@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Ex parte rectum`,
 's21b5ec7253ee5705': `Directio ordinis adhibenda.`,
 's2317e68a652c8498': `Textus brevis`,
+'s23600058a1e98e13': `Responsum adde`,
 's2492f5fb1b05b45e': `Textus`,
 's270d49ea25614a7b': `Responsa restitue`,
 's2ba5f4d8f3bd7c57': `Ordinatio`,

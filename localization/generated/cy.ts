@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Yn rhannol gywir`,
 's21b5ec7253ee5705': `Y cyfeiriad trefnu i'w ddefnyddio.`,
 's2317e68a652c8498': `Testun byr`,
+'s23600058a1e98e13': `Ychwanegu adborth`,
 's2492f5fb1b05b45e': `Testun`,
 's270d49ea25614a7b': `Ailosod atebion`,
 's2ba5f4d8f3bd7c57': `Trefn`,

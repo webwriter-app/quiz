@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Delvis rätt`,
 's21b5ec7253ee5705': `Sorteringsriktningen som ska användas.`,
 's2317e68a652c8498': `Kort text`,
+'s23600058a1e98e13': `Lägg till återkoppling`,
 's2492f5fb1b05b45e': `Text`,
 's270d49ea25614a7b': `Återställ svar`,
 's2ba5f4d8f3bd7c57': `Ordning`,

@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Wani ɓangare daidai`,
 's21b5ec7253ee5705': `Hanyar jerin da za a yi amfani da ita.`,
 's2317e68a652c8498': `Gajeren rubutu`,
+'s23600058a1e98e13': `Ƙara ra’ayi`,
 's2492f5fb1b05b45e': `Rubutu`,
 's270d49ea25614a7b': `Sake saita amsoshi`,
 's2ba5f4d8f3bd7c57': `Jeri`,

@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Iš dalies teisinga`,
 's21b5ec7253ee5705': `Naudotina rūšiavimo kryptis.`,
 's2317e68a652c8498': `Trumpas tekstas`,
+'s23600058a1e98e13': `Pridėti grįžtamąjį ryšį`,
 's2492f5fb1b05b45e': `Tekstas`,
 's270d49ea25614a7b': `Nustatyti atsakymus iš naujo`,
 's2ba5f4d8f3bd7c57': `Tvarka`,

@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Partzialki zuzena`,
 's21b5ec7253ee5705': `Erabili beharreko ordena-norabidea.`,
 's2317e68a652c8498': `Testu laburra`,
+'s23600058a1e98e13': `Gehitu iruzkinak`,
 's2492f5fb1b05b45e': `Testua`,
 's270d49ea25614a7b': `Berrezarri erantzunak`,
 's2ba5f4d8f3bd7c57': `Ordena`,

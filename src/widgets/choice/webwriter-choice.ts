@@ -1,9 +1,7 @@
-import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
 import { type OptionDeclaration } from "@webwriter/lit";
-import PlusIcon from "bootstrap-icons/icons/plus.svg";
 import UiChecksIcon from "bootstrap-icons/icons/ui-checks.svg";
 import UiRadiosIcon from "bootstrap-icons/icons/ui-radios.svg";
-import { css, html, nothing, PropertyValues } from "lit";
+import { css, html, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { name as packageId } from "../../../package.json";
 import { registerQuizType } from "../../api";
@@ -106,7 +104,6 @@ export class WebwriterChoice extends WebwriterTask {
 	/** @internal */
 	static scopedElements = {
 		...WebwriterTask.scopedElements,
-		"sl-button": SlButton,
 		"draggable-grid": DraggableGrid,
 	};
 
@@ -120,14 +117,6 @@ export class WebwriterChoice extends WebwriterTask {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(min(130px, 100%), 1fr));
 			gap: var(--sl-spacing-medium);
-		}
-
-		.add-option {
-			margin-block-start: var(--sl-spacing-small);
-			max-inline-size: 100%;
-			&::part(label) {
-				white-space: normal;
-			}
 		}
 	`];
 
@@ -228,7 +217,7 @@ export class WebwriterChoice extends WebwriterTask {
 		const items = this.choices.authored;
 		if (!this.editable || !items.includes(detail.item as WebwriterChoiceItem) ||
 			(detail.before && !items.includes(detail.before as WebwriterChoiceItem))) return;
-		mutateWithStableSelection(detail.item, () => this.insertBefore(detail.item, detail.before));
+		mutateWithStableSelection(detail.item, () => this.insertBefore(detail.item, detail.before ?? this.feedbackElement));
 	}
 
 	private handleSelect(event: CustomEvent) {
@@ -245,12 +234,12 @@ export class WebwriterChoice extends WebwriterTask {
 		}
 	}
 
-	private addOption() {
+	protected addOption() {
 		if (!this.isConnected || !this.editable) return;
 		const item = this.ownerDocument.createElement("webwriter-choice-item");
 		item.id = "ww" + crypto.randomUUID();
 		item.append(this.ownerDocument.createElement("p"));
-		this.appendChild(item);
+		this.insertBefore(item, this.feedbackElement);
 	}
 
 	checkValidity(): boolean {
@@ -283,14 +272,6 @@ export class WebwriterChoice extends WebwriterTask {
 		this.detailedFeedback = false;
 	}
 
-	private AddOptionButton() {
-		if (!this.editable) return nothing;
-		return html`<sl-button class="add-option" @click=${this.addOption}>
-			<sl-icon slot="prefix" src=${PlusIcon}></sl-icon>
-			${this.msg("Add Option")}
-		</sl-button>`;
-	}
-
 	protected renderAnswer() {
 		return html`<draggable-grid
 			class="container-${this.layout}"
@@ -298,7 +279,6 @@ export class WebwriterChoice extends WebwriterTask {
 			@reorder=${this.handleReorder}
 		>
 			<slot @select=${this.handleSelect}></slot>
-		</draggable-grid>
-		${this.AddOptionButton()}`;
+		</draggable-grid>`;
 	}
 }

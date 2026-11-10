@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Částečně správně`,
 's21b5ec7253ee5705': `Směr řazení, který se má použít.`,
 's2317e68a652c8498': `Krátký text`,
+'s23600058a1e98e13': `Přidat zpětnou vazbu`,
 's2492f5fb1b05b45e': `Text`,
 's270d49ea25614a7b': `Resetovat odpovědi`,
 's2ba5f4d8f3bd7c57': `Pořadí`,

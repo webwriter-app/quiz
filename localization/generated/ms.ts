@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Betul sebahagian`,
 's21b5ec7253ee5705': `Arah susunan yang akan digunakan.`,
 's2317e68a652c8498': `Teks pendek`,
+'s23600058a1e98e13': `Tambah maklum balas`,
 's2492f5fb1b05b45e': `Teks`,
 's270d49ea25614a7b': `Tetapkan semula jawapan`,
 's2ba5f4d8f3bd7c57': `Urutan`,

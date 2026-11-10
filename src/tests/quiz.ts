@@ -11,6 +11,7 @@ import "../widgets/pairing/webwriter-pairing-item";
 import "../widgets/speech/webwriter-speech";
 import type { WebwriterSpeech } from "../widgets/speech/webwriter-speech";
 import "../widgets/webwriter-mark";
+import "../widgets/webwriter-quiz-feedback";
 import "../widgets/webwriter-quiz-hint";
 import "../widgets/webwriter-quiz";
 import type { WebwriterQuiz } from "../widgets/webwriter-quiz";
@@ -63,7 +64,9 @@ async function authoring(fixture: HTMLElement) {
 	clickButton(quiz.shadowRoot!, "True or False");
 	assert(quiz.firstElementChild?.matches("webwriter-true-false"), "An inline button must insert a direct task");
 	await settleUpdates();
-	assert(quiz.shadowRoot!.querySelector("sl-dropdown .insert-task-grid"), "Keep the question buttons in populated quizzes");
+	const firstTask = quiz.querySelector("webwriter-true-false")!;
+	assert(firstTask.shadowRoot!.querySelector(".authoring-row sl-dropdown .insert-task-grid"),
+		"Show the question picker in the last question's authoring row");
 	quiz.firstElementChild?.remove();
 	await settleUpdates();
 	assert(!quiz.hasAttribute("hide-points") && !quiz.hidePoints, "The absent setting must use the widget default");
@@ -89,8 +92,12 @@ async function authoring(fixture: HTMLElement) {
 	}
 	assert(quiz.children.length === 10, "The drawer must insert built-in and externally registered questions");
 	assert(Array.from(quiz.children).every(task => task instanceof WebwriterTask), "Task types must be direct quiz children");
-	assert(Array.from(quiz.children).every(task => (task as WebwriterTask).options.feedback),
-		"Every task type must expose a Feedback field");
+	await settleUpdates();
+	assert(Array.from(quiz.children).every(task => task.shadowRoot!.querySelector(".add-feedback")),
+		"Every task type must have an Add Feedback button");
+	const tasksWithPicker = Array.from(quiz.children).filter(task => task.shadowRoot?.querySelector(".authoring-row .add-question"));
+	assert(tasksWithPicker.length === 1 && tasksWithPicker[0] === quiz.lastElementChild,
+		"Move the single question picker to the new last question");
 	const first = quiz.firstElementChild as HTMLElement;
 	assert(first.localName === "webwriter-true-false", "Insert the task type without a wrapper");
 	assert(first.firstElementChild?.matches('p[slot="prompt"]'), "New questions must include a slotted native paragraph");
@@ -253,8 +260,15 @@ async function answerInsertion(fixture: HTMLElement) {
 	fixture.contentEditable = "true";
 	const choice = document.createElement("webwriter-choice");
 	const order = document.createElement("webwriter-order");
+	const quiz = document.createElement("webwriter-quiz") as WebwriterQuiz;
 	order.setAttribute("solution", "[]");
-	fixture.append(choice, order);
+	quiz.append(choice, order);
+	fixture.append(quiz);
+	await settleUpdates();
+	assert(order.shadowRoot!.querySelector(".authoring-row > sl-button-group > .add-option") &&
+		order.shadowRoot!.querySelector(".authoring-row > sl-button-group > .add-feedback") &&
+		order.shadowRoot!.querySelector(".authoring-row > .add-question"),
+		"Group the task buttons on the same row as the question picker");
 	for (const task of [choice, order]) {
 		for (const layout of ["list", "tiles"] as const) {
 			task.layout = layout;
@@ -277,14 +291,27 @@ async function questionFeedback(fixture: HTMLElement) {
 	const quiz = document.createElement("webwriter-quiz") as WebwriterQuiz;
 	const text = document.createElement("webwriter-text");
 	text.freeText = true;
-	text.feedback = "Compare your approach.\nConsider another example.";
 	const speech = document.createElement("webwriter-speech");
-	speech.feedback = "Listen to your response.";
+	speech.setAttribute("feedback", "Listen to your response.\nCompare it with a model.");
+	fixture.contentEditable = "true";
 	quiz.append(text, speech);
 	fixture.append(quiz);
 	await settleUpdates();
-	assert(text.options.feedback && text.getAttribute("feedback") === text.feedback,
-		"Open-ended text must expose and persist feedback");
+	clickButton(text.shadowRoot!, "Add Feedback");
+	clickButton(text.shadowRoot!, "Add Feedback");
+	clickButton(speech.shadowRoot!, "Add Feedback");
+	await settleUpdates();
+	const feedback = text.querySelector("webwriter-quiz-feedback[slot=feedback]")!;
+	const speechFeedback = speech.querySelector("webwriter-quiz-feedback[slot=feedback]")!;
+	assert(feedback?.firstElementChild?.matches("p") && text.children.length === 1,
+		"Add Feedback must insert a single editable block");
+	assert(speechFeedback?.children.length === 2 && !speech.hasAttribute("feedback"),
+		"Convert old feedback to editable paragraphs when adding a feedback block");
+	feedback.innerHTML = "<p>Compare your <strong>approach</strong>.</p><p>Consider another example.</p>";
+	assert(text.shadowRoot!.querySelector<HTMLSlotElement>('slot[name="feedback"]')?.assignedElements()[0] === feedback,
+		"Authors must see the editable feedback content");
+	fixture.contentEditable = "false";
+	await settleUpdates();
 	clickButton(quiz.shadowRoot!, "Submit");
 	await settleUpdates();
 	assert(!text.shadowRoot!.querySelector(".question-feedback"), "Keep feedback hidden when submission is incomplete");
@@ -294,16 +321,17 @@ async function questionFeedback(fixture: HTMLElement) {
 	speech.src = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=";
 	clickButton(quiz.shadowRoot!, "Submit");
 	await settleUpdates();
-	assert(text.shadowRoot!.querySelector(".question-feedback")?.textContent === text.feedback,
-		"Show multiline feedback for open-ended text on submission");
-	assert(speech.shadowRoot!.querySelector(".question-feedback")?.textContent === speech.feedback,
+	assert(text.shadowRoot!.querySelector<HTMLSlotElement>('slot[name="feedback"]')?.assignedElements()[0] === feedback &&
+		feedback.querySelector("strong")?.textContent === "approach",
+		"Show the original formatted feedback for open-ended text on submission");
+	assert(speech.shadowRoot!.querySelector<HTMLSlotElement>('slot[name="feedback"]')?.assignedElements()[0] === speechFeedback,
 		"Show feedback even for a question without a score");
 	assert(quiz.shadowRoot!.querySelector(".total-result strong")?.textContent === "1 / 1",
 		"Ungraded feedback must leave the quiz score alone");
 	clickButton(quiz.shadowRoot!, "Reset answers");
 	await settleUpdates();
 	assert(!text.shadowRoot!.querySelector(".question-feedback") && !speech.shadowRoot!.querySelector(".question-feedback") &&
-		text.hasAttribute("feedback") && speech.hasAttribute("feedback"), "Reset must hide feedback and preserve authored messages");
+		text.contains(feedback) && speech.contains(speechFeedback), "Reset must hide feedback and preserve authored content");
 }
 
 async function mixedQuiz(fixture: HTMLElement) {

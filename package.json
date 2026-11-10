@@ -162,6 +162,10 @@
       "source": "./src/widgets/webwriter-quiz-hint.ts",
       "default": "./dist/widgets/webwriter-quiz-hint.*"
     },
+    "./widgets/webwriter-quiz-feedback.*": {
+      "source": "./src/widgets/webwriter-quiz-feedback.ts",
+      "default": "./dist/widgets/webwriter-quiz-feedback.*"
+    },
     "./widgets/webwriter-true-false.*": {
       "source": "./src/widgets/choice/webwriter-true-false.ts",
       "default": "./dist/widgets/webwriter-true-false.*"

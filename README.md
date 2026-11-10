@@ -5,7 +5,7 @@ Add interactive tasks (multiple choice, order, free text, highlighting, or speec
 
 In WebWriter 2, use the quiz’s question buttons or the Widget drawer to insert questions. The package includes one-question snippets for each built-in type with question titles and points hidden.
 
-In edit mode, Choice and Order show **Add Option** below the answers in both layouts. Each question has a **Feedback** field in the Widget drawer. Its message appears after a valid submission, including for open-ended and ungraded questions. **Show detailed feedback** controls answer-specific feedback and solution reveal.
+In edit mode, **Add Feedback** inserts a block you can edit and format in the question. Choice and Order group it with **Add Option** in both layouts. The last question shares that row with **Add Question** on the right. Learners see the feedback block after a valid submission, including for open-ended and ungraded questions. **Show detailed feedback** controls answer-specific feedback and solution reveal.
 
 
 
@@ -72,14 +72,15 @@ Extend `WebwriterTask` from `@webwriter/quiz/task`. Implement
 also implement `checkAnswer(detailedFeedback)` and return a score from 0 to 1.
 Extend the base styles and scoped elements when declaring your own. Merge
 `super.options` and `super.actions` into any instance declarations so the
-drawer shows points, feedback, and question commands.
+drawer shows points and question commands.
 
 Register the custom element and call `registerQuizType` from
 `@webwriter/quiz/api` with a factory that creates an instance. Give the widget
 the `quiz-task` editing group and start its content expression with
-`webwriter-quiz-hint? p`. The quiz drawer supplies a `<p slot="prompt">` when the
+`webwriter-quiz-hint? p webwriter-quiz-feedback?`. The quiz drawer supplies a `<p slot="prompt">` when the
 factory has not supplied one. A question hint is a direct
-`<webwriter-quiz-hint slot="hint">` child before the prompt.
+`<webwriter-quiz-hint slot="hint">` child before the prompt. **Add Feedback**
+inserts a `<webwriter-quiz-feedback slot="feedback">` child after the answer content.
 
 ## `WebwriterQuizHint` (`<webwriter-quiz-hint>`)
 A generic hint element that can be used inside a variety of elements that

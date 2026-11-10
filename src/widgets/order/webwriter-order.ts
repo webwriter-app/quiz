@@ -1,8 +1,6 @@
-import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
 import { type OptionDeclaration } from "@webwriter/lit";
 import ArrowDownUpIcon from "bootstrap-icons/icons/arrow-down-up.svg";
-import PlusIcon from "bootstrap-icons/icons/plus.svg";
-import { css, html, nothing, PropertyValues } from "lit";
+import { css, html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { name as packageId } from "../../../package.json";
 import { registerQuizType } from "../../api";
@@ -109,7 +107,6 @@ export class WebwriterOrder extends WebwriterTask {
 	/** @internal */
 	static scopedElements = {
 		...WebwriterTask.scopedElements,
-		"sl-button": SlButton,
 		"draggable-grid": DraggableGrid,
 	};
 
@@ -126,14 +123,6 @@ export class WebwriterOrder extends WebwriterTask {
 				display: grid;
 				grid-template-columns: repeat(auto-fill, minmax(min(130px, 100%), 1fr));
 				gap: var(--sl-spacing-medium);
-			}
-
-			.add-option {
-				margin-block-start: var(--sl-spacing-small);
-				max-inline-size: 100%;
-				&::part(label) {
-					white-space: normal;
-				}
 			}
 		`,
 	];
@@ -250,26 +239,18 @@ export class WebwriterOrder extends WebwriterTask {
 		if (!items.includes(detail.item as WebwriterOrderItem) ||
 			(detail.before && !items.includes(detail.before as WebwriterOrderItem))) return;
 		mutateWithStableSelection(detail.item, () => {
-			this.insertBefore(detail.item, detail.before);
+			this.insertBefore(detail.item, detail.before ?? this.feedbackElement);
 			this.solution = this.orderItems.authored.map(item => item.id);
 		});
 	}
 
-	private addOption() {
+	protected addOption() {
 		if (!this.isConnected || !this.editable) return;
 		const item = this.ownerDocument.createElement("webwriter-order-item");
 		item.id = "ww" + crypto.randomUUID();
 		item.append(this.ownerDocument.createElement("p"));
-		this.appendChild(item);
+		this.insertBefore(item, this.feedbackElement);
 		if (this.hasAttribute("solution")) this.solution = [...this.solution, item.id];
-	}
-
-	private AddOptionButton() {
-		if (!this.editable) return nothing;
-		return html`<sl-button class="add-option" @click=${this.addOption}>
-			<sl-icon slot="prefix" src=${PlusIcon}></sl-icon>
-			${this.msg("Add Option")}
-		</sl-button>`;
 	}
 
 	protected renderAnswer() {
@@ -279,7 +260,6 @@ export class WebwriterOrder extends WebwriterTask {
 			@reorder=${this.handleReorder}
 		>
 			<slot @slotchange=${this.refreshItems}></slot>
-		</draggable-grid>
-		${this.AddOptionButton()}`;
+		</draggable-grid>`;
 	}
 }

@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Częściowo poprawnie`,
 's21b5ec7253ee5705': `Kierunek sortowania do użycia.`,
 's2317e68a652c8498': `Krótki tekst`,
+'s23600058a1e98e13': `Dodaj informację zwrotną`,
 's2492f5fb1b05b45e': `Tekst`,
 's270d49ea25614a7b': `Resetuj odpowiedzi`,
 's2ba5f4d8f3bd7c57': `Kolejność`,

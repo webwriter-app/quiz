@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Ceart go páirteach`,
 's21b5ec7253ee5705': `Treo an tsórtála atá le húsáid.`,
 's2317e68a652c8498': `Téacs gairid`,
+'s23600058a1e98e13': `Cuir aiseolas leis`,
 's2492f5fb1b05b45e': `Téacs`,
 's270d49ea25614a7b': `Athshocraigh freagraí`,
 's2ba5f4d8f3bd7c57': `Ord`,

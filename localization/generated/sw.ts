@@ -20,6 +20,7 @@
 's19d2c07c1effbdaf': `Sahihi kwa sehemu`,
 's21b5ec7253ee5705': `Mwelekeo wa kupanga unaotumika.`,
 's2317e68a652c8498': `Maandishi mafupi`,
+'s23600058a1e98e13': `Ongeza maoni`,
 's2492f5fb1b05b45e': `Maandishi`,
 's270d49ea25614a7b': `Weka upya majibu`,
 's2ba5f4d8f3bd7c57': `Mpangilio`,
