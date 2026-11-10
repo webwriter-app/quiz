@@ -36,7 +36,7 @@ export class WebwriterQuiz extends QuizElement {
 	get actions() {
 		const actions: Record<string, ActionDeclaration & { group: string }> = {};
 		for (const [name, type] of this.questionActions) {
-			actions[name] = { group: "questions", label: { _: type.getName(this.lang) } };
+			actions[name] = { group: "questions", label: { _: type.getName(this.lang, this.msg) } };
 		}
 		return actions;
 	}
@@ -215,7 +215,7 @@ export class WebwriterQuiz extends QuizElement {
 		return html`<div class="insert-task-grid">
 			${Array.from(this.questionActions, ([name, type]) => html`<sl-button @click=${() => this.insertQuizType(name)}>
 				${type.icon ? html`<sl-icon slot="prefix" src=${type.icon}></sl-icon>` : nothing}
-				${type.getName(this.lang)}
+				${type.getName(this.lang, this.msg)}
 			</sl-button>`)}
 		</div>`;
 	}

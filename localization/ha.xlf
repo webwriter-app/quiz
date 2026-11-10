@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<file target-language="ha" source-language="en-US" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<trans-unit id="s73c0e4814878d26e">
+  <source>Snap to grid</source>
+<target>Manna a ragar layuka</target></trans-unit>
+<trans-unit id="s5c8e286841ccfd0e">
+  <source>Grid columns</source>
+<target>Ginshikan raga</target></trans-unit>
+<trans-unit id="s96d2f1dc180a46d8">
+  <source>Debug</source>
+<target>Gano kurakurai</target></trans-unit>
+<trans-unit id="s468f08dd3166cf44">
+  <source>Choose Background</source>
+<target>Zaɓi bango</target></trans-unit>
+<trans-unit id="sc01c972e33754d22">
+  <source>Feedback if selected</source>
+<target>Ra’ayi idan an zaɓa</target></trans-unit>
+<trans-unit id="s31ac9cd289910c65">
+  <source>Feedback if not selected</source>
+<target>Ra’ayi idan ba a zaɓa ba</target></trans-unit>
+<trans-unit id="s9daa676c05ab2a68">
+  <source>Single Choice</source>
+<target>Zaɓi ɗaya</target></trans-unit>
+<trans-unit id="s485bbcc5d19e2b20">
+  <source>Multiple Choice</source>
+<target>Zaɓi da yawa</target></trans-unit>
+<trans-unit id="s159928724265eb05">
+  <source>Add Option</source>
+<target>Ƙara zaɓi</target></trans-unit>
+<trans-unit id="s37cbecaec58e2192">
+  <source>Mode</source>
+<target>Yanayi</target></trans-unit>
+<trans-unit id="s3d249bb480032121">
+  <source>List</source>
+<target>Jerin abubuwa</target></trans-unit>
+<trans-unit id="sde8252d2a4d268ce">
+  <source>Tiles</source>
+<target>Fale-fale</target></trans-unit>
+<trans-unit id="s2e4818861000b13f">
+  <source>Layout</source>
+<target>Tsarin shimfiɗa</target></trans-unit>
+<trans-unit id="sf0fce877a8caebec">
+  <source>Randomize Order</source>
+<target>Jera a bazuwar</target></trans-unit>
+<trans-unit id="s678dbf717a0b079d">
+  <source>Pass/Fail</source>
+<target>Ya ci ko ya faɗi</target></trans-unit>
+<trans-unit id="sffeb741d73d302b3">
+  <source>Partial Credit</source>
+<target>Makin wani ɓangare</target></trans-unit>
+<trans-unit id="sb8f0e32715402f50">
+  <source>Grading Method</source>
+<target>Hanyar tantancewa</target></trans-unit>
+<trans-unit id="s021fb26da6a25f79">
+  <source>True or False</source>
+<target>Gaskiya ko ƙarya</target></trans-unit>
+<trans-unit id="s85ea99fb52be3385">
+  <source>True</source>
+<target>Gaskiya</target></trans-unit>
+<trans-unit id="s7254ca27b16ae2d8">
+  <source>False</source>
+<target>Ƙarya</target></trans-unit>
+<trans-unit id="sf90be97cb08f3d5a">
+  <source>Placeholder</source>
+<target>Rubutun riƙon wuri</target></trans-unit>
+<trans-unit id="sd24f4d056c0124f6">
+  <source>Empty gap</source>
+<target>Gurbi mara komai</target></trans-unit>
+<trans-unit id="sdb9694f31d64cfc8">
+  <source>Your answer</source>
+<target>Amsarka</target></trans-unit>
+<trans-unit id="s855bb4e2b08d1a18">
+  <source>No answer</source>
+<target>Babu amsa</target></trans-unit>
+<trans-unit id="s0d9a7bb29fee2d85">
+  <source>Correct answer</source>
+<target>Amsa daidai</target></trans-unit>
+<trans-unit id="seaf97719986faf4f">
+  <source>Gap</source>
+<target>Gurbi</target></trans-unit>
+<trans-unit id="scc5671964ae0d6f7">
+  <source>Insert gap at selection</source>
+<target>Saka gurbi a wurin da aka zaɓa</target></trans-unit>
+<trans-unit id="sbbb7581f20733d79">
+  <source>Freeform input</source>
+<target>Shigarwa cikin ’yanci</target></trans-unit>
+<trans-unit id="sb20f85b66b8eed5b">
+  <source>Drag and drop</source>
+<target>Ja ka sauke</target></trans-unit>
+<trans-unit id="s34adfb0ab932043d">
+  <source>Ignore case</source>
+<target>Yi watsi da bambancin manya da ƙananan haruffa</target></trans-unit>
+<trans-unit id="s2492f5fb1b05b45e">
+  <source>Text</source>
+<target>Rubutu</target></trans-unit>
+<trans-unit id="s721db58b7b0ea2e3">
+  <source>Available answers</source>
+<target>Amsoshin da ake da su</target></trans-unit>
+<trans-unit id="s03d845021c14b84f">
+  <source>Return to answers</source>
+<target>Koma ga amsoshi</target></trans-unit>
+<trans-unit id="s4802e47fe2e95134">
+  <source>Option</source>
+<target>Zaɓi</target></trans-unit>
+<trans-unit id="s2ba5f4d8f3bd7c57">
+  <source>Order</source>
+<target>Jeri</target></trans-unit>
+<trans-unit id="s2d96dca399230ff3">
+  <source>The layout variant to use.</source>
+<target>Nau’in shimfiɗar da za a yi amfani da shi.</target></trans-unit>
+<trans-unit id="sd23ee5e66df8400a">
+  <source>Direction</source>
+<target>Hanya</target></trans-unit>
+<trans-unit id="s94c650bef124bd01">
+  <source>Ascending</source>
+<target>Daga ƙarami zuwa babba</target></trans-unit>
+<trans-unit id="s15bdec250a4a55fb">
+  <source>Descending</source>
+<target>Daga babba zuwa ƙarami</target></trans-unit>
+<trans-unit id="s21b5ec7253ee5705">
+  <source>The order direction to use.</source>
+<target>Hanyar jerin da za a yi amfani da ita.</target></trans-unit>
+<trans-unit id="sde7fee183b3bda88">
+  <source>Numbering</source>
+<target>Sanya lambobi</target></trans-unit>
+<trans-unit id="s669b18c6d2d9c95b">
+  <source>None</source>
+<target>Babu</target></trans-unit>
+<trans-unit id="scc337566a7187408">
+  <source>Numeric</source>
+<target>Da lambobi</target></trans-unit>
+<trans-unit id="se8a94b4effa2033e">
+  <source>Alphabetic</source>
+<target>Da haruffa</target></trans-unit>
+<trans-unit id="s7667ffa7b27a7232">
+  <source>Roman</source>
+<target>Da lambobin Romawa</target></trans-unit>
+<trans-unit id="s36163be9d8064432">
+  <source>The numbering style to use.</source>
+<target>Salon sanya lambobi da za a yi amfani da shi.</target></trans-unit>
+<trans-unit id="s8685fbc5eca0de27">
+  <source>Grading</source>
+<target>Tantancewa</target></trans-unit>
+<trans-unit id="s57784c3b7df6150c">
+  <source>Partial (Position)</source>
+<target>Wani ɓangare (matsayi)</target></trans-unit>
+<trans-unit id="sb1c40c0af94993b6">
+  <source>Partial (Sequence)</source>
+<target>Wani ɓangare (jere)</target></trans-unit>
+<trans-unit id="s4058ed60e59264ed">
+  <source>The grading method to use.</source>
+<target>Hanyar tantancewar da za a yi amfani da ita.</target></trans-unit>
+<trans-unit id="s52cfa1d198476806">
+  <source>Item</source>
+<target>Abu</target></trans-unit>
+<trans-unit id="saadba46653e4ffef">
+  <source>Pairing</source>
+<target>Haɗa biyu-biyu</target></trans-unit>
+<trans-unit id="sbdc2605da169f810">
+  <source>Add Pair</source>
+<target>Ƙara biyu</target></trans-unit>
+<trans-unit id="s16e1bead7b9c95ce">
+  <source>Memory</source>
+<target>Ƙwaƙwalwa</target></trans-unit>
+<trans-unit id="sf4e3c96801ebe794">
+  <source>Volume: <x id="0" equiv-text="${this.volume}" />%</source>
+<target>Ƙarfin sauti: <x id="0" equiv-text="${this.volume}" />%</target></trans-unit>
+<trans-unit id="s7acd963aa22be70c">
+  <source>Speed: <x id="0" equiv-text="${this.playbackSpeed}" />x</source>
+<target>Sauri: <x id="0" equiv-text="${this.playbackSpeed}" />×</target></trans-unit>
+<trans-unit id="s5d86300c6e210017">
+  <source>WebWriter does not have permission to access the microphone.</source>
+<target>WebWriter ba shi da izinin amfani da makirufo.</target></trans-unit>
+<trans-unit id="sb5b8485f95c97a79">
+  <source>An error occurred while accessing the microphone.</source>
+<target>An samu kuskure wajen amfani da makirufo.</target></trans-unit>
+<trans-unit id="s653f729e608b6653">
+  <source>Click to Start Recording</source>
+<target>Danna don fara rikodi</target></trans-unit>
+<trans-unit id="saa3efba1f0c816b7">
+  <source>Speech</source>
+<target>Magana</target></trans-unit>
+<trans-unit id="s49c940aecfef3ea0">
+  <source>Mark</source>
+<target>Alama</target></trans-unit>
+<trans-unit id="s848dd69654cedb5a">
+  <source>Toggle Marking at Position</source>
+<target>Kunna ko kashe alama a wannan wuri</target></trans-unit>
+<trans-unit id="s80dc9f56411917df">
+  <source>Text to Highlight</source>
+<target>Rubutun da za a haskaka</target></trans-unit>
+<trans-unit id="s3ff3b89e5871fae3">
+  <source>Multiple lines are not supported</source>
+<target>Ba a goyon bayan layuka da yawa</target></trans-unit>
+<trans-unit id="s9dcffdd89c8e0f58">
+  <source>Hint</source>
+<target>Alamar taimako</target></trans-unit>
+<trans-unit id="s7a153886c76b7dcb">
+  <source>Show detailed feedback</source>
+<target>Nuna cikakken ra’ayi</target></trans-unit>
+<trans-unit id="s2f9c7cb1f24c3de8">
+  <source>Require confirmation before submitting</source>
+<target>Nemi tabbaci kafin aikawa</target></trans-unit>
+<trans-unit id="s5ca3b69235e6046b">
+  <source>Require confirmation before resetting</source>
+<target>Nemi tabbaci kafin sake saitawa</target></trans-unit>
+<trans-unit id="s2e379649e77c8952">
+  <source>Hide question titles</source>
+<target>Ɓoye taken tambayoyi</target></trans-unit>
+<trans-unit id="saa48690ce74705d4">
+  <source>Hide points</source>
+<target>Ɓoye maki</target></trans-unit>
+<trans-unit id="s53bc6e49623c8f80">
+  <source>Add Question</source>
+<target>Ƙara tambaya</target></trans-unit>
+<trans-unit id="s766f42576852db83">
+  <source>Submit answers?</source>
+<target>A aika da amsoshi?</target></trans-unit>
+<trans-unit id="sbcdedcdd8451318c">
+  <source>Reset answers?</source>
+<target>A sake saita amsoshi?</target></trans-unit>
+<trans-unit id="s0b733d4a22c3b12f">
+  <source>Submit your answers for evaluation?</source>
+<target>A aika da amsoshinka don a tantance su?</target></trans-unit>
+<trans-unit id="s7ac431061b2ebf1a">
+  <source>Reset all answers and start over?</source>
+<target>A goge duk amsoshi a fara daga farko?</target></trans-unit>
+<trans-unit id="s2ceb11be2290bb1b">
+  <source>Cancel</source>
+<target>Soke</target></trans-unit>
+<trans-unit id="sb3d4f79d9d8b71e5">
+  <source>Submit</source>
+<target>Aika</target></trans-unit>
+<trans-unit id="s270d49ea25614a7b">
+  <source>Reset answers</source>
+<target>Sake saita amsoshi</target></trans-unit>
+<trans-unit id="s729dc6aabe408a53">
+  <source>Question <x id="0" equiv-text="${1}" /></source>
+<target>Tambaya <x id="0" equiv-text="${1}" /></target></trans-unit>
+<trans-unit id="scabf78417c4e5d86">
+  <source>Points</source>
+<target>Maki</target></trans-unit>
+<trans-unit id="s6b39496c00a99aed">
+  <source>Move question up</source>
+<target>Motsa tambaya sama</target></trans-unit>
+<trans-unit id="s4ba3fea645f5b52c">
+  <source>Move question down</source>
+<target>Motsa tambaya ƙasa</target></trans-unit>
+<trans-unit id="s3b6b3fe1c8b7b5de">
+  <source>Delete question</source>
+<target>Goge tambaya</target></trans-unit>
+<trans-unit id="s43f438831bf2524d">
+  <source>Unanswered</source>
+<target>Ba a amsa ba</target></trans-unit>
+<trans-unit id="s71ba655ef7772e6c">
+  <source>Incorrect</source>
+<target>Ba daidai ba</target></trans-unit>
+<trans-unit id="s4158d5fc29a1f991">
+  <source>Correct</source>
+<target>Daidai</target></trans-unit>
+<trans-unit id="s19d2c07c1effbdaf">
+  <source>Partially correct</source>
+<target>Wani ɓangare daidai</target></trans-unit>
+<trans-unit id="s73feab3544c345b1">
+  <source>point</source>
+<target>maki</target></trans-unit>
+<trans-unit id="sdd02ad83d7cf88a6">
+  <source>points</source>
+<target>maki</target></trans-unit>
+<trans-unit id="s54393bfa280ea55b">
+  <source>Prompt</source>
+<target>Rubutun tambaya</target></trans-unit>
+<trans-unit id="sd2223afb7d6b100d">
+  <source>Type</source>
+<target>Nau’i</target></trans-unit>
+<trans-unit id="sfe628f6e69f78cca">
+  <source>Long Text</source>
+<target>Dogon rubutu</target></trans-unit>
+<trans-unit id="s2317e68a652c8498">
+  <source>Short Text</source>
+<target>Gajeren rubutu</target></trans-unit>
+<trans-unit id="sbbb97b1c63507dc0">
+  <source>Number</source>
+<target>Lamba</target></trans-unit>
+<trans-unit id="sac8252732f2edb19">
+  <source>Date</source>
+<target>Kwanan wata</target></trans-unit>
+<trans-unit id="s48e186fb300e5464">
+  <source>Time</source>
+<target>Lokaci</target></trans-unit>
+<trans-unit id="s9bae45e308549364">
+  <source>Date &amp; Time</source>
+<target>Kwanan wata da lokaci</target></trans-unit>
+<trans-unit id="se2af7220fe721133">
+  <source>Free answer</source>
+<target>Amsa cikin ’yanci</target></trans-unit>
+<trans-unit id="sa0a8f80935f767dd">
+  <source>Ignore capitalization</source>
+<target>Yi watsi da bambancin manya da ƙananan haruffa</target></trans-unit>
+<trans-unit id="s1705e89d78286348">
+  <source>Message for correct solution</source>
+<target>Saƙon mafita daidai</target></trans-unit>
+<trans-unit id="sea7b286dd4c986fd">
+  <source>Message for wrong solution</source>
+<target>Saƙon mafita marar daidai</target></trans-unit>
+<trans-unit id="sa937fce28916575e">
+  <source>Solution</source>
+<target>Mafita</target></trans-unit>
+<trans-unit id="sbb588bb505779122">
+  <source>Feedback</source>
+<target>Ra’ayi</target></trans-unit>
+</body>
+</file>
+</xliff>

@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<file target-language="ko" source-language="en-US" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<trans-unit id="s73c0e4814878d26e">
+  <source>Snap to grid</source>
+<target>격자에 맞추기</target></trans-unit>
+<trans-unit id="s5c8e286841ccfd0e">
+  <source>Grid columns</source>
+<target>격자 열</target></trans-unit>
+<trans-unit id="s96d2f1dc180a46d8">
+  <source>Debug</source>
+<target>디버그</target></trans-unit>
+<trans-unit id="s468f08dd3166cf44">
+  <source>Choose Background</source>
+<target>배경 선택</target></trans-unit>
+<trans-unit id="sc01c972e33754d22">
+  <source>Feedback if selected</source>
+<target>선택한 경우 피드백</target></trans-unit>
+<trans-unit id="s31ac9cd289910c65">
+  <source>Feedback if not selected</source>
+<target>선택하지 않은 경우 피드백</target></trans-unit>
+<trans-unit id="s9daa676c05ab2a68">
+  <source>Single Choice</source>
+<target>단일 선택</target></trans-unit>
+<trans-unit id="s485bbcc5d19e2b20">
+  <source>Multiple Choice</source>
+<target>복수 선택</target></trans-unit>
+<trans-unit id="s159928724265eb05">
+  <source>Add Option</source>
+<target>옵션 추가</target></trans-unit>
+<trans-unit id="s37cbecaec58e2192">
+  <source>Mode</source>
+<target>모드</target></trans-unit>
+<trans-unit id="s3d249bb480032121">
+  <source>List</source>
+<target>목록</target></trans-unit>
+<trans-unit id="sde8252d2a4d268ce">
+  <source>Tiles</source>
+<target>타일</target></trans-unit>
+<trans-unit id="s2e4818861000b13f">
+  <source>Layout</source>
+<target>레이아웃</target></trans-unit>
+<trans-unit id="sf0fce877a8caebec">
+  <source>Randomize Order</source>
+<target>순서 무작위화</target></trans-unit>
+<trans-unit id="s678dbf717a0b079d">
+  <source>Pass/Fail</source>
+<target>통과/실패</target></trans-unit>
+<trans-unit id="sffeb741d73d302b3">
+  <source>Partial Credit</source>
+<target>부분 점수</target></trans-unit>
+<trans-unit id="sb8f0e32715402f50">
+  <source>Grading Method</source>
+<target>채점 방식</target></trans-unit>
+<trans-unit id="s021fb26da6a25f79">
+  <source>True or False</source>
+<target>참 또는 거짓</target></trans-unit>
+<trans-unit id="s85ea99fb52be3385">
+  <source>True</source>
+<target>참</target></trans-unit>
+<trans-unit id="s7254ca27b16ae2d8">
+  <source>False</source>
+<target>거짓</target></trans-unit>
+<trans-unit id="sf90be97cb08f3d5a">
+  <source>Placeholder</source>
+<target>자리표시자</target></trans-unit>
+<trans-unit id="sd24f4d056c0124f6">
+  <source>Empty gap</source>
+<target>빈칸</target></trans-unit>
+<trans-unit id="sdb9694f31d64cfc8">
+  <source>Your answer</source>
+<target>내 답변</target></trans-unit>
+<trans-unit id="s855bb4e2b08d1a18">
+  <source>No answer</source>
+<target>답변 없음</target></trans-unit>
+<trans-unit id="s0d9a7bb29fee2d85">
+  <source>Correct answer</source>
+<target>정답</target></trans-unit>
+<trans-unit id="seaf97719986faf4f">
+  <source>Gap</source>
+<target>갭</target></trans-unit>
+<trans-unit id="scc5671964ae0d6f7">
+  <source>Insert gap at selection</source>
+<target>선택한 위치에 빈칸 삽입</target></trans-unit>
+<trans-unit id="sbbb7581f20733d79">
+  <source>Freeform input</source>
+<target>자유 입력</target></trans-unit>
+<trans-unit id="sb20f85b66b8eed5b">
+  <source>Drag and drop</source>
+<target>끌어서 놓기</target></trans-unit>
+<trans-unit id="s34adfb0ab932043d">
+  <source>Ignore case</source>
+<target>대소문자 무시</target></trans-unit>
+<trans-unit id="s2492f5fb1b05b45e">
+  <source>Text</source>
+<target>텍스트</target></trans-unit>
+<trans-unit id="s721db58b7b0ea2e3">
+  <source>Available answers</source>
+<target>사용 가능한 답변</target></trans-unit>
+<trans-unit id="s03d845021c14b84f">
+  <source>Return to answers</source>
+<target>답변으로 돌아가기</target></trans-unit>
+<trans-unit id="s4802e47fe2e95134">
+  <source>Option</source>
+<target>옵션</target></trans-unit>
+<trans-unit id="s2ba5f4d8f3bd7c57">
+  <source>Order</source>
+<target>순서</target></trans-unit>
+<trans-unit id="s2d96dca399230ff3">
+  <source>The layout variant to use.</source>
+<target>사용할 레이아웃 유형입니다.</target></trans-unit>
+<trans-unit id="sd23ee5e66df8400a">
+  <source>Direction</source>
+<target>방향</target></trans-unit>
+<trans-unit id="s94c650bef124bd01">
+  <source>Ascending</source>
+<target>오름차순</target></trans-unit>
+<trans-unit id="s15bdec250a4a55fb">
+  <source>Descending</source>
+<target>내림차순</target></trans-unit>
+<trans-unit id="s21b5ec7253ee5705">
+  <source>The order direction to use.</source>
+<target>사용할 정렬 방향입니다.</target></trans-unit>
+<trans-unit id="sde7fee183b3bda88">
+  <source>Numbering</source>
+<target>번호 매기기</target></trans-unit>
+<trans-unit id="s669b18c6d2d9c95b">
+  <source>None</source>
+<target>없음</target></trans-unit>
+<trans-unit id="scc337566a7187408">
+  <source>Numeric</source>
+<target>숫자</target></trans-unit>
+<trans-unit id="se8a94b4effa2033e">
+  <source>Alphabetic</source>
+<target>알파벳</target></trans-unit>
+<trans-unit id="s7667ffa7b27a7232">
+  <source>Roman</source>
+<target>로마 숫자</target></trans-unit>
+<trans-unit id="s36163be9d8064432">
+  <source>The numbering style to use.</source>
+<target>사용할 번호 매기기 방식입니다.</target></trans-unit>
+<trans-unit id="s8685fbc5eca0de27">
+  <source>Grading</source>
+<target>채점</target></trans-unit>
+<trans-unit id="s57784c3b7df6150c">
+  <source>Partial (Position)</source>
+<target>부분 점수(위치)</target></trans-unit>
+<trans-unit id="sb1c40c0af94993b6">
+  <source>Partial (Sequence)</source>
+<target>부분 점수(순서)</target></trans-unit>
+<trans-unit id="s4058ed60e59264ed">
+  <source>The grading method to use.</source>
+<target>사용할 채점 방식입니다.</target></trans-unit>
+<trans-unit id="s52cfa1d198476806">
+  <source>Item</source>
+<target>항목</target></trans-unit>
+<trans-unit id="saadba46653e4ffef">
+  <source>Pairing</source>
+<target>짝짓기</target></trans-unit>
+<trans-unit id="sbdc2605da169f810">
+  <source>Add Pair</source>
+<target>쌍 추가</target></trans-unit>
+<trans-unit id="s16e1bead7b9c95ce">
+  <source>Memory</source>
+<target>기억</target></trans-unit>
+<trans-unit id="sf4e3c96801ebe794">
+  <source>Volume: <x id="0" equiv-text="${this.volume}" />%</source>
+<target>볼륨: <x id="0" equiv-text="${this.volume}" />%</target></trans-unit>
+<trans-unit id="s7acd963aa22be70c">
+  <source>Speed: <x id="0" equiv-text="${this.playbackSpeed}" />x</source>
+<target>속도: <x id="0" equiv-text="${this.playbackSpeed}" />x</target></trans-unit>
+<trans-unit id="s5d86300c6e210017">
+  <source>WebWriter does not have permission to access the microphone.</source>
+<target>WebWriter에 마이크 접근 권한이 없습니다.</target></trans-unit>
+<trans-unit id="sb5b8485f95c97a79">
+  <source>An error occurred while accessing the microphone.</source>
+<target>마이크에 접근하는 동안 오류가 발생했습니다.</target></trans-unit>
+<trans-unit id="s653f729e608b6653">
+  <source>Click to Start Recording</source>
+<target>클릭하여 녹음 시작</target></trans-unit>
+<trans-unit id="saa3efba1f0c816b7">
+  <source>Speech</source>
+<target>음성</target></trans-unit>
+<trans-unit id="s49c940aecfef3ea0">
+  <source>Mark</source>
+<target>표시</target></trans-unit>
+<trans-unit id="s848dd69654cedb5a">
+  <source>Toggle Marking at Position</source>
+<target>이 위치의 표시 전환</target></trans-unit>
+<trans-unit id="s80dc9f56411917df">
+  <source>Text to Highlight</source>
+<target>강조 표시할 텍스트</target></trans-unit>
+<trans-unit id="s3ff3b89e5871fae3">
+  <source>Multiple lines are not supported</source>
+<target>여러 줄은 지원되지 않습니다</target></trans-unit>
+<trans-unit id="s9dcffdd89c8e0f58">
+  <source>Hint</source>
+<target>힌트</target></trans-unit>
+<trans-unit id="s7a153886c76b7dcb">
+  <source>Show detailed feedback</source>
+<target>자세한 피드백 표시</target></trans-unit>
+<trans-unit id="s2f9c7cb1f24c3de8">
+  <source>Require confirmation before submitting</source>
+<target>제출 전에 확인 필요</target></trans-unit>
+<trans-unit id="s5ca3b69235e6046b">
+  <source>Require confirmation before resetting</source>
+<target>초기화 전에 확인 필요</target></trans-unit>
+<trans-unit id="s2e379649e77c8952">
+  <source>Hide question titles</source>
+<target>질문 제목 숨기기</target></trans-unit>
+<trans-unit id="saa48690ce74705d4">
+  <source>Hide points</source>
+<target>점수 숨기기</target></trans-unit>
+<trans-unit id="s53bc6e49623c8f80">
+  <source>Add Question</source>
+<target>질문 추가</target></trans-unit>
+<trans-unit id="s766f42576852db83">
+  <source>Submit answers?</source>
+<target>답변을 제출할까요?</target></trans-unit>
+<trans-unit id="sbcdedcdd8451318c">
+  <source>Reset answers?</source>
+<target>답변을 초기화할까요?</target></trans-unit>
+<trans-unit id="s0b733d4a22c3b12f">
+  <source>Submit your answers for evaluation?</source>
+<target>평가를 위해 답변을 제출할까요?</target></trans-unit>
+<trans-unit id="s7ac431061b2ebf1a">
+  <source>Reset all answers and start over?</source>
+<target>모든 답변을 초기화하고 다시 시작할까요?</target></trans-unit>
+<trans-unit id="s2ceb11be2290bb1b">
+  <source>Cancel</source>
+<target>취소</target></trans-unit>
+<trans-unit id="sb3d4f79d9d8b71e5">
+  <source>Submit</source>
+<target>제출</target></trans-unit>
+<trans-unit id="s270d49ea25614a7b">
+  <source>Reset answers</source>
+<target>답변 초기화</target></trans-unit>
+<trans-unit id="s729dc6aabe408a53">
+  <source>Question <x id="0" equiv-text="${1}" /></source>
+<target>질문 <x id="0" equiv-text="${1}" /></target></trans-unit>
+<trans-unit id="scabf78417c4e5d86">
+  <source>Points</source>
+<target>점수</target></trans-unit>
+<trans-unit id="s6b39496c00a99aed">
+  <source>Move question up</source>
+<target>질문 위로 이동</target></trans-unit>
+<trans-unit id="s4ba3fea645f5b52c">
+  <source>Move question down</source>
+<target>질문 아래로 이동</target></trans-unit>
+<trans-unit id="s3b6b3fe1c8b7b5de">
+  <source>Delete question</source>
+<target>질문 삭제</target></trans-unit>
+<trans-unit id="s43f438831bf2524d">
+  <source>Unanswered</source>
+<target>미응답</target></trans-unit>
+<trans-unit id="s71ba655ef7772e6c">
+  <source>Incorrect</source>
+<target>오답</target></trans-unit>
+<trans-unit id="s4158d5fc29a1f991">
+  <source>Correct</source>
+<target>정답</target></trans-unit>
+<trans-unit id="s19d2c07c1effbdaf">
+  <source>Partially correct</source>
+<target>부분 정답</target></trans-unit>
+<trans-unit id="s73feab3544c345b1">
+  <source>point</source>
+<target>점</target></trans-unit>
+<trans-unit id="sdd02ad83d7cf88a6">
+  <source>points</source>
+<target>점</target></trans-unit>
+<trans-unit id="s54393bfa280ea55b">
+  <source>Prompt</source>
+<target>문항</target></trans-unit>
+<trans-unit id="sd2223afb7d6b100d">
+  <source>Type</source>
+<target>유형</target></trans-unit>
+<trans-unit id="sfe628f6e69f78cca">
+  <source>Long Text</source>
+<target>긴 텍스트</target></trans-unit>
+<trans-unit id="s2317e68a652c8498">
+  <source>Short Text</source>
+<target>짧은 텍스트</target></trans-unit>
+<trans-unit id="sbbb97b1c63507dc0">
+  <source>Number</source>
+<target>숫자</target></trans-unit>
+<trans-unit id="sac8252732f2edb19">
+  <source>Date</source>
+<target>날짜</target></trans-unit>
+<trans-unit id="s48e186fb300e5464">
+  <source>Time</source>
+<target>시간</target></trans-unit>
+<trans-unit id="s9bae45e308549364">
+  <source>Date &amp; Time</source>
+<target>날짜 및 시간</target></trans-unit>
+<trans-unit id="se2af7220fe721133">
+  <source>Free answer</source>
+<target>자유 답변</target></trans-unit>
+<trans-unit id="sa0a8f80935f767dd">
+  <source>Ignore capitalization</source>
+<target>대소문자 무시</target></trans-unit>
+<trans-unit id="s1705e89d78286348">
+  <source>Message for correct solution</source>
+<target>정답 메시지</target></trans-unit>
+<trans-unit id="sea7b286dd4c986fd">
+  <source>Message for wrong solution</source>
+<target>오답 메시지</target></trans-unit>
+<trans-unit id="sa937fce28916575e">
+  <source>Solution</source>
+<target>정답</target></trans-unit>
+<trans-unit id="sbb588bb505779122">
+  <source>Feedback</source>
+<target>피드백</target></trans-unit>
+</body>
+</file>
+</xliff>

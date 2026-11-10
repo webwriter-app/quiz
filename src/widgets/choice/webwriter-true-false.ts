@@ -20,7 +20,7 @@ registerQuizType({
 	packageId,
 	widgetPosition: 1,
 	id: "webwriter-true-false",
-	getName: locale => messageFor(locale)("True or False"),
+	getName: (locale, translate = messageFor(locale)) => translate("True or False"),
 	icon: TrueFalseIcon,
 	createInstance: () => document.createElement("webwriter-true-false"),
 })

@@ -39,7 +39,7 @@ registerQuizType({
 	packageId,
 	widgetPosition: 2,
 	id: "webwriter-single-choice",
-	getName: locale => messageFor(locale)("Single Choice"),
+	getName: (locale, translate = messageFor(locale)) => translate("Single Choice"),
 	icon: UiRadiosIcon,
 	createInstance: () => createChoice("single"),
 });
@@ -48,7 +48,7 @@ registerQuizType({
 	packageId,
 	widgetPosition: 3,
 	id: "webwriter-multiple-choice",
-	getName: locale => messageFor(locale)("Multiple Choice"),
+	getName: (locale, translate = messageFor(locale)) => translate("Multiple Choice"),
 	icon: UiChecksIcon,
 	createInstance: () => createChoice("multiple"),
 });

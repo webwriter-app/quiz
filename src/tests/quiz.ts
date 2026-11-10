@@ -143,6 +143,24 @@ async function languages(fixture: HTMLElement) {
 	assert(german.getAttribute("lang") === null, "Changing the ancestor language must not add an attribute");
 	assert(german.shadowRoot!.textContent.includes("Submit"), "Respond to a language change on the ancestor");
 	assert(french.shadowRoot!.textContent.includes("Envoyer"), "Keep the other widget's language");
+
+	const actionLabels = (quiz: WebwriterQuiz) => Object.values(quiz.actions).map(action => action.label._);
+	fixture.lang = "dv";
+	french.lang = "zh-Hant";
+	for (let attempt = 0; attempt < 60 && (
+		!actionLabels(german).includes("ގިނަ އިޚްތިޔާރު") ||
+		!actionLabels(french).includes("多選")
+	); attempt++) await settleUpdates();
+	assert(actionLabels(german).includes("ގިނަ އިޚްތިޔާރު"), "Use the inherited Dhivehi question type label");
+	assert(actionLabels(french).includes("多選"), "Use the Traditional Chinese question type label in the other quiz");
+
+	german.confirmSubmit = true;
+	await german.updateComplete;
+	clickButton(german.shadowRoot!, "ފޮނުވާ");
+	await german.updateComplete;
+	const confirmation = german.shadowRoot!.querySelector("sl-dialog[open]");
+	assert(confirmation?.getAttribute("label") === "ޖަވާބުތައް ފޮނުވަންތޯ؟",
+		"Render the submit confirmation in the learner's language");
 }
 
 async function titleVisibility(fixture: HTMLElement) {

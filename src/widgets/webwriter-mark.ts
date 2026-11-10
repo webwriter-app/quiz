@@ -23,7 +23,7 @@ registerQuizType({
 	packageId,
 	widgetPosition: 20,
 	id: "webwriter-mark",
-	getName: locale => messageFor(locale)("Mark"),
+	getName: (locale, translate = messageFor(locale)) => translate("Mark"),
 	icon: HighlighterIcon,
 	createInstance: () => {
 		const task = document.createElement("webwriter-mark");

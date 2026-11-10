@@ -22,7 +22,7 @@ registerQuizType({
 	packageId,
 	widgetPosition: 30,
 	id: "webwriter-gap",
-	getName: locale => messageFor(locale)("Gap"),
+	getName: (locale, translate = messageFor(locale)) => translate("Gap"),
 	icon: InputCursorIcon,
 	createInstance: () => {
 		const task = document.createElement("webwriter-gap");

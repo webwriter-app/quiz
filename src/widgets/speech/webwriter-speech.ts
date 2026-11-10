@@ -20,7 +20,7 @@ registerQuizType({
 	packageId,
 	widgetPosition: 40,
 	id: "webwriter-speech",
-	getName: locale => messageFor(locale)("Speech"),
+	getName: (locale, translate = messageFor(locale)) => translate("Speech"),
 	icon: MicIcon,
 	createInstance: () => document.createElement("webwriter-speech"),
 });

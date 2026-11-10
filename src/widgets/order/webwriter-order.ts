@@ -31,7 +31,7 @@ registerQuizType({
 	packageId,
 	widgetPosition: 20,
 	id: "webwriter-order",
-	getName: locale => messageFor(locale)("Order"),
+	getName: (locale, translate = messageFor(locale)) => translate("Order"),
 	icon: ArrowDownUpIcon,
 	createInstance: () => {
 		const task = document.createElement("webwriter-order");

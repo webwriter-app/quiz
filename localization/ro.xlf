@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<file target-language="ro" source-language="en-US" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<trans-unit id="s73c0e4814878d26e">
+  <source>Snap to grid</source>
+<target>Aliniere la grilă</target></trans-unit>
+<trans-unit id="s5c8e286841ccfd0e">
+  <source>Grid columns</source>
+<target>Coloanele grilei</target></trans-unit>
+<trans-unit id="s96d2f1dc180a46d8">
+  <source>Debug</source>
+<target>Depanare</target></trans-unit>
+<trans-unit id="s468f08dd3166cf44">
+  <source>Choose Background</source>
+<target>Alege fundalul</target></trans-unit>
+<trans-unit id="sc01c972e33754d22">
+  <source>Feedback if selected</source>
+<target>Feedback la selectare</target></trans-unit>
+<trans-unit id="s31ac9cd289910c65">
+  <source>Feedback if not selected</source>
+<target>Feedback dacă nu este selectat</target></trans-unit>
+<trans-unit id="s9daa676c05ab2a68">
+  <source>Single Choice</source>
+<target>O singură alegere</target></trans-unit>
+<trans-unit id="s485bbcc5d19e2b20">
+  <source>Multiple Choice</source>
+<target>Alegere multiplă</target></trans-unit>
+<trans-unit id="s159928724265eb05">
+  <source>Add Option</source>
+<target>Adaugă opțiune</target></trans-unit>
+<trans-unit id="s37cbecaec58e2192">
+  <source>Mode</source>
+<target>Mod</target></trans-unit>
+<trans-unit id="s3d249bb480032121">
+  <source>List</source>
+<target>Listă</target></trans-unit>
+<trans-unit id="sde8252d2a4d268ce">
+  <source>Tiles</source>
+<target>Dale</target></trans-unit>
+<trans-unit id="s2e4818861000b13f">
+  <source>Layout</source>
+<target>Aspect</target></trans-unit>
+<trans-unit id="sf0fce877a8caebec">
+  <source>Randomize Order</source>
+<target>Amestecă ordinea</target></trans-unit>
+<trans-unit id="s678dbf717a0b079d">
+  <source>Pass/Fail</source>
+<target>Promovat/respins</target></trans-unit>
+<trans-unit id="sffeb741d73d302b3">
+  <source>Partial Credit</source>
+<target>Punctaj parțial</target></trans-unit>
+<trans-unit id="sb8f0e32715402f50">
+  <source>Grading Method</source>
+<target>Metodă de evaluare</target></trans-unit>
+<trans-unit id="s021fb26da6a25f79">
+  <source>True or False</source>
+<target>Adevărat sau fals</target></trans-unit>
+<trans-unit id="s85ea99fb52be3385">
+  <source>True</source>
+<target>Adevărat</target></trans-unit>
+<trans-unit id="s7254ca27b16ae2d8">
+  <source>False</source>
+<target>Fals</target></trans-unit>
+<trans-unit id="sf90be97cb08f3d5a">
+  <source>Placeholder</source>
+<target>Text substituent</target></trans-unit>
+<trans-unit id="sd24f4d056c0124f6">
+  <source>Empty gap</source>
+<target>Spațiu liber</target></trans-unit>
+<trans-unit id="sdb9694f31d64cfc8">
+  <source>Your answer</source>
+<target>Răspunsul tău</target></trans-unit>
+<trans-unit id="s855bb4e2b08d1a18">
+  <source>No answer</source>
+<target>Niciun răspuns</target></trans-unit>
+<trans-unit id="s0d9a7bb29fee2d85">
+  <source>Correct answer</source>
+<target>Răspuns corect</target></trans-unit>
+<trans-unit id="seaf97719986faf4f">
+  <source>Gap</source>
+<target>Diferență</target></trans-unit>
+<trans-unit id="scc5671964ae0d6f7">
+  <source>Insert gap at selection</source>
+<target>Inserează un spațiu în selecție</target></trans-unit>
+<trans-unit id="sbbb7581f20733d79">
+  <source>Freeform input</source>
+<target>Introducere liberă</target></trans-unit>
+<trans-unit id="sb20f85b66b8eed5b">
+  <source>Drag and drop</source>
+<target>Trage și plasează</target></trans-unit>
+<trans-unit id="s34adfb0ab932043d">
+  <source>Ignore case</source>
+<target>Ignoră diferența dintre majuscule și minuscule</target></trans-unit>
+<trans-unit id="s2492f5fb1b05b45e">
+  <source>Text</source>
+<target>Text</target></trans-unit>
+<trans-unit id="s721db58b7b0ea2e3">
+  <source>Available answers</source>
+<target>Răspunsuri disponibile</target></trans-unit>
+<trans-unit id="s03d845021c14b84f">
+  <source>Return to answers</source>
+<target>Înapoi la răspunsuri</target></trans-unit>
+<trans-unit id="s4802e47fe2e95134">
+  <source>Option</source>
+<target>Opțiune</target></trans-unit>
+<trans-unit id="s2ba5f4d8f3bd7c57">
+  <source>Order</source>
+<target>Ordine</target></trans-unit>
+<trans-unit id="s2d96dca399230ff3">
+  <source>The layout variant to use.</source>
+<target>Varianta de aspect care va fi folosită.</target></trans-unit>
+<trans-unit id="sd23ee5e66df8400a">
+  <source>Direction</source>
+<target>Direcție</target></trans-unit>
+<trans-unit id="s94c650bef124bd01">
+  <source>Ascending</source>
+<target>Crescător</target></trans-unit>
+<trans-unit id="s15bdec250a4a55fb">
+  <source>Descending</source>
+<target>Descrescător</target></trans-unit>
+<trans-unit id="s21b5ec7253ee5705">
+  <source>The order direction to use.</source>
+<target>Direcția de ordonare care va fi folosită.</target></trans-unit>
+<trans-unit id="sde7fee183b3bda88">
+  <source>Numbering</source>
+<target>Numerotare</target></trans-unit>
+<trans-unit id="s669b18c6d2d9c95b">
+  <source>None</source>
+<target>Niciuna</target></trans-unit>
+<trans-unit id="scc337566a7187408">
+  <source>Numeric</source>
+<target>Numerică</target></trans-unit>
+<trans-unit id="se8a94b4effa2033e">
+  <source>Alphabetic</source>
+<target>Alfabetică</target></trans-unit>
+<trans-unit id="s7667ffa7b27a7232">
+  <source>Roman</source>
+<target>Romană</target></trans-unit>
+<trans-unit id="s36163be9d8064432">
+  <source>The numbering style to use.</source>
+<target>Stilul de numerotare care va fi folosit.</target></trans-unit>
+<trans-unit id="s8685fbc5eca0de27">
+  <source>Grading</source>
+<target>Evaluare</target></trans-unit>
+<trans-unit id="s57784c3b7df6150c">
+  <source>Partial (Position)</source>
+<target>Parțial (după poziție)</target></trans-unit>
+<trans-unit id="sb1c40c0af94993b6">
+  <source>Partial (Sequence)</source>
+<target>Parțial (după ordine)</target></trans-unit>
+<trans-unit id="s4058ed60e59264ed">
+  <source>The grading method to use.</source>
+<target>Metoda de evaluare care va fi folosită.</target></trans-unit>
+<trans-unit id="s52cfa1d198476806">
+  <source>Item</source>
+<target>Element</target></trans-unit>
+<trans-unit id="saadba46653e4ffef">
+  <source>Pairing</source>
+<target>Asociere</target></trans-unit>
+<trans-unit id="sbdc2605da169f810">
+  <source>Add Pair</source>
+<target>Adaugă pereche</target></trans-unit>
+<trans-unit id="s16e1bead7b9c95ce">
+  <source>Memory</source>
+<target>Memorie</target></trans-unit>
+<trans-unit id="sf4e3c96801ebe794">
+  <source>Volume: <x id="0" equiv-text="${this.volume}" />%</source>
+<target>Volum: <x id="0" equiv-text="${this.volume}" />%</target></trans-unit>
+<trans-unit id="s7acd963aa22be70c">
+  <source>Speed: <x id="0" equiv-text="${this.playbackSpeed}" />x</source>
+<target>Viteză: <x id="0" equiv-text="${this.playbackSpeed}" />x</target></trans-unit>
+<trans-unit id="s5d86300c6e210017">
+  <source>WebWriter does not have permission to access the microphone.</source>
+<target>WebWriter nu are permisiunea de a accesa microfonul.</target></trans-unit>
+<trans-unit id="sb5b8485f95c97a79">
+  <source>An error occurred while accessing the microphone.</source>
+<target>A apărut o eroare la accesarea microfonului.</target></trans-unit>
+<trans-unit id="s653f729e608b6653">
+  <source>Click to Start Recording</source>
+<target>Apasă pentru a începe înregistrarea</target></trans-unit>
+<trans-unit id="saa3efba1f0c816b7">
+  <source>Speech</source>
+<target>Vorbire</target></trans-unit>
+<trans-unit id="s49c940aecfef3ea0">
+  <source>Mark</source>
+<target>Marchează</target></trans-unit>
+<trans-unit id="s848dd69654cedb5a">
+  <source>Toggle Marking at Position</source>
+<target>Comută marcarea la poziție</target></trans-unit>
+<trans-unit id="s80dc9f56411917df">
+  <source>Text to Highlight</source>
+<target>Text de evidențiat</target></trans-unit>
+<trans-unit id="s3ff3b89e5871fae3">
+  <source>Multiple lines are not supported</source>
+<target>Mai multe rânduri nu sunt acceptate</target></trans-unit>
+<trans-unit id="s9dcffdd89c8e0f58">
+  <source>Hint</source>
+<target>Indiciu</target></trans-unit>
+<trans-unit id="s7a153886c76b7dcb">
+  <source>Show detailed feedback</source>
+<target>Afișează feedback detaliat</target></trans-unit>
+<trans-unit id="s2f9c7cb1f24c3de8">
+  <source>Require confirmation before submitting</source>
+<target>Solicită confirmare înainte de trimitere</target></trans-unit>
+<trans-unit id="s5ca3b69235e6046b">
+  <source>Require confirmation before resetting</source>
+<target>Solicită confirmare înainte de resetare</target></trans-unit>
+<trans-unit id="s2e379649e77c8952">
+  <source>Hide question titles</source>
+<target>Ascunde titlurile întrebărilor</target></trans-unit>
+<trans-unit id="saa48690ce74705d4">
+  <source>Hide points</source>
+<target>Ascunde punctele</target></trans-unit>
+<trans-unit id="s53bc6e49623c8f80">
+  <source>Add Question</source>
+<target>Adaugă întrebare</target></trans-unit>
+<trans-unit id="s766f42576852db83">
+  <source>Submit answers?</source>
+<target>Trimiți răspunsurile?</target></trans-unit>
+<trans-unit id="sbcdedcdd8451318c">
+  <source>Reset answers?</source>
+<target>Resetezi răspunsurile?</target></trans-unit>
+<trans-unit id="s0b733d4a22c3b12f">
+  <source>Submit your answers for evaluation?</source>
+<target>Trimiți răspunsurile pentru evaluare?</target></trans-unit>
+<trans-unit id="s7ac431061b2ebf1a">
+  <source>Reset all answers and start over?</source>
+<target>Resetezi toate răspunsurile și reîncepi?</target></trans-unit>
+<trans-unit id="s2ceb11be2290bb1b">
+  <source>Cancel</source>
+<target>Anulează</target></trans-unit>
+<trans-unit id="sb3d4f79d9d8b71e5">
+  <source>Submit</source>
+<target>Trimite</target></trans-unit>
+<trans-unit id="s270d49ea25614a7b">
+  <source>Reset answers</source>
+<target>Resetează răspunsurile</target></trans-unit>
+<trans-unit id="s729dc6aabe408a53">
+  <source>Question <x id="0" equiv-text="${1}" /></source>
+<target>Întrebarea <x id="0" equiv-text="${1}" /></target></trans-unit>
+<trans-unit id="scabf78417c4e5d86">
+  <source>Points</source>
+<target>Puncte</target></trans-unit>
+<trans-unit id="s6b39496c00a99aed">
+  <source>Move question up</source>
+<target>Mută întrebarea în sus</target></trans-unit>
+<trans-unit id="s4ba3fea645f5b52c">
+  <source>Move question down</source>
+<target>Mută întrebarea în jos</target></trans-unit>
+<trans-unit id="s3b6b3fe1c8b7b5de">
+  <source>Delete question</source>
+<target>Șterge întrebarea</target></trans-unit>
+<trans-unit id="s43f438831bf2524d">
+  <source>Unanswered</source>
+<target>Fără răspuns</target></trans-unit>
+<trans-unit id="s71ba655ef7772e6c">
+  <source>Incorrect</source>
+<target>Incorect</target></trans-unit>
+<trans-unit id="s4158d5fc29a1f991">
+  <source>Correct</source>
+<target>Corect</target></trans-unit>
+<trans-unit id="s19d2c07c1effbdaf">
+  <source>Partially correct</source>
+<target>Parțial corect</target></trans-unit>
+<trans-unit id="s73feab3544c345b1">
+  <source>point</source>
+<target>punct</target></trans-unit>
+<trans-unit id="sdd02ad83d7cf88a6">
+  <source>points</source>
+<target>puncte</target></trans-unit>
+<trans-unit id="s54393bfa280ea55b">
+  <source>Prompt</source>
+<target>Enunț</target></trans-unit>
+<trans-unit id="sd2223afb7d6b100d">
+  <source>Type</source>
+<target>Tip</target></trans-unit>
+<trans-unit id="sfe628f6e69f78cca">
+  <source>Long Text</source>
+<target>Text lung</target></trans-unit>
+<trans-unit id="s2317e68a652c8498">
+  <source>Short Text</source>
+<target>Text scurt</target></trans-unit>
+<trans-unit id="sbbb97b1c63507dc0">
+  <source>Number</source>
+<target>Număr</target></trans-unit>
+<trans-unit id="sac8252732f2edb19">
+  <source>Date</source>
+<target>Dată</target></trans-unit>
+<trans-unit id="s48e186fb300e5464">
+  <source>Time</source>
+<target>Oră</target></trans-unit>
+<trans-unit id="s9bae45e308549364">
+  <source>Date &amp; Time</source>
+<target>Dată și oră</target></trans-unit>
+<trans-unit id="se2af7220fe721133">
+  <source>Free answer</source>
+<target>Răspuns liber</target></trans-unit>
+<trans-unit id="sa0a8f80935f767dd">
+  <source>Ignore capitalization</source>
+<target>Ignoră majusculele</target></trans-unit>
+<trans-unit id="s1705e89d78286348">
+  <source>Message for correct solution</source>
+<target>Mesaj pentru soluția corectă</target></trans-unit>
+<trans-unit id="sea7b286dd4c986fd">
+  <source>Message for wrong solution</source>
+<target>Mesaj pentru soluția greșită</target></trans-unit>
+<trans-unit id="sa937fce28916575e">
+  <source>Solution</source>
+<target>Soluție</target></trans-unit>
+<trans-unit id="sbb588bb505779122">
+  <source>Feedback</source>
+<target>Feedback</target></trans-unit>
+</body>
+</file>
+</xliff>

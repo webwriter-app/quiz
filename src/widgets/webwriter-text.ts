@@ -22,7 +22,7 @@ registerQuizType({
 	packageId,
 	widgetPosition: 30,
 	id: "webwriter-text",
-	getName: locale => messageFor(locale)("Text"),
+	getName: (locale, translate = messageFor(locale)) => translate("Text"),
 	icon: TextParagraphIcon,
 	createInstance: () => document.createElement("webwriter-text"),
 });

@@ -1,9 +1,11 @@
+import type { MsgFn } from "@lit/localize";
+
 export type QuizType = {
 	packageId: string;
 	widgetPosition?: number;
 	id: string;
 	icon: string;
-	getName(locale?: string): string;
+	getName(locale?: string, translate?: MsgFn): string;
 	createInstance(): QuizTaskElement;
 };
 

@@ -58,7 +58,7 @@ registerQuizType({
 	packageId,
 	widgetPosition: 40,
 	id: "webwriter-pairing",
-	getName: locale => messageFor(locale)("Pairing"),
+	getName: (locale, translate = messageFor(locale)) => translate("Pairing"),
 	icon: ShuffleIcon,
 	createInstance: () => document.createElement("webwriter-pairing"),
 });
