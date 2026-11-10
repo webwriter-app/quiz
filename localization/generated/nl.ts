@@ -112,4 +112,3 @@
 'sfe628f6e69f78cca': `Lange tekst`,
 'sffeb741d73d302b3': `Deelpunten`,
     };
-  

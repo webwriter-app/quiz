@@ -1,4 +1,4 @@
-import { msg } from "@lit/localize";
+import { localizeElement } from "./instance-localization";
 import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
 import { ActionDeclaration, LitElementWw, OptionDeclaration } from "@webwriter/lit";
 import { css, html, nothing, PropertyValues } from "lit";
@@ -13,6 +13,7 @@ const CLICK_SLOP = 4;
 const RESIZE_DIRECTIONS: ResizeDirection[] = ["nw", "n", "ne", "e", "se", "s", "sw", "w"];
 
 export abstract class ArtboardContainerElement extends LitElementWw {
+	private readonly messages = localizeElement(this);
 	static shadowRootOptions: ShadowRootInit = {
 		...LitElementWw.shadowRootOptions,
 		slotAssignment: "manual",
@@ -128,10 +129,10 @@ export abstract class ArtboardContainerElement extends LitElementWw {
 
 	get dynamicOptions() {
 		const options: Record<string, OptionDeclaration> = {
-			"snap-to-grid": { type: "boolean", label: { _: msg("Snap to grid") } },
+			"snap-to-grid": { type: "boolean", label: { _: this.messages.msg("Snap to grid") } },
 		};
 		if (this.snapToGrid) {
-			options["grid-columns"] = { type: "number", label: { _: msg("Grid columns") }, min: 1, step: 1 };
+			options["grid-columns"] = { type: "number", label: { _: this.messages.msg("Grid columns") }, min: 1, step: 1 };
 		}
 		return options;
 	}
@@ -213,7 +214,7 @@ export abstract class ArtboardContainerElement extends LitElementWw {
 		if (!this.isContentEditable) return nothing;
 
 		return html`<header>
-			<sl-button size="small">${msg("Debug")}</sl-button>
+			<sl-button size="small">${this.messages.msg("Debug")}</sl-button>
 		</header>`;
 	}
 
@@ -652,7 +653,7 @@ export abstract class ArtboardContainerElement extends LitElementWw {
 
 	get dynamicActions() {
 		return {
-			openBackgroundFileDialog: { label: { _: msg("Choose Background") } },
+			openBackgroundFileDialog: { label: { _: this.messages.msg("Choose Background") } },
 		} as Record<string, ActionDeclaration>;
 	}
 
@@ -661,7 +662,7 @@ export abstract class ArtboardContainerElement extends LitElementWw {
 
 		return html`
 			<div class="background-chooser">
-				<sl-button @click=${this.openBackgroundFileDialog}>${msg("Choose Background")}</sl-button>
+				<sl-button @click=${this.openBackgroundFileDialog}>${this.messages.msg("Choose Background")}</sl-button>
 			</div>
 		`;
 	}

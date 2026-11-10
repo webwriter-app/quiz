@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
 <file target-language="it" source-language="en-US" original="lit-localize-inputs" datatype="plaintext">
 <body>
 <trans-unit id="s54393bfa280ea55b">
@@ -191,12 +191,12 @@
   <target>Memory</target>
 </trans-unit>
 <trans-unit id="sf4e3c96801ebe794">
-  <source>Volume: <x id="0" equiv-text="${this.volume}"/>%</source>
-  <target>Volume: <x id="0" equiv-text="${this.volume}"/>%</target>
+  <source>Volume: <x id="0" equiv-text="${this.volume}" />%</source>
+  <target>Volume: <x id="0" equiv-text="${this.volume}" />%</target>
 </trans-unit>
 <trans-unit id="s7acd963aa22be70c">
-  <source>Speed: <x id="0" equiv-text="${this.playbackSpeed}"/>x</source>
-  <target>Velocità: <x id="0" equiv-text="${this.playbackSpeed}"/>x</target>
+  <source>Speed: <x id="0" equiv-text="${this.playbackSpeed}" />x</source>
+  <target>Velocità: <x id="0" equiv-text="${this.playbackSpeed}" />x</target>
 </trans-unit>
 <trans-unit id="s5d86300c6e210017">
   <source>WebWriter does not have permission to access the microphone.</source>
@@ -299,9 +299,8 @@
   <target>Punti</target>
 </trans-unit>
 <trans-unit id="s729dc6aabe408a53">
-  <source>Question <x id="0" equiv-text="${1}"/></source>
-  <target>Domanda <x id="0" equiv-text="${index + 1}"/></target>
-</trans-unit>
+  <source>Question <x id="0" equiv-text="${1}" /></source>
+<target>Domanda <x id="0" equiv-text="${1}" /></target></trans-unit>
 <trans-unit id="s43f438831bf2524d">
   <source>Unanswered</source>
   <target>Senza risposta</target>

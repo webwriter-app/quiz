@@ -6,7 +6,10 @@
 		"fr-FR",
 		"es-ES",
 		"it",
-		"nl"
+		"nl",
+		"fr",
+		"de",
+		"es"
 	],
 	"tsConfig": "./tsconfig.json",
 	"output": {

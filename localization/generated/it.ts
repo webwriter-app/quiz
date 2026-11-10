@@ -112,4 +112,3 @@
 'sfe628f6e69f78cca': `Testo lungo`,
 'sffeb741d73d302b3': `Punteggio parziale`,
     };
-  

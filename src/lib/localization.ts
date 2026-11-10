@@ -1,3 +1,4 @@
+import { effectiveLanguage, localizeElement } from "./instance-localization";
 import type { msg } from "@lit/localize";
 import { runtimeMsg } from "@lit/localize/internal/runtime-msg.js";
 import { LitElementWw, type ActionDeclaration, type OptionDeclaration } from "@webwriter/lit";
@@ -19,6 +20,7 @@ export function messageFor(locale = ""): typeof msg {
 }
 
 export class QuizElement extends LitElementWw {
+	private readonly messages = localizeElement(this);
 	// The published base declares these as fields, although the drawer supports getters.
 	// @ts-expect-error The base field is type-only and does not define an instance value.
 	get options(): Record<string, OptionDeclaration> { return {}; }
@@ -26,14 +28,7 @@ export class QuizElement extends LitElementWw {
 	get actions(): Record<string, ActionDeclaration & { group?: string }> { return {}; }
 
 	get lang(): string {
-		let element: Element = this;
-		while (true) {
-			const language = element.closest("[lang]");
-			if (language) return language.getAttribute("lang") ?? "";
-			const root = element.getRootNode();
-			if (!(root instanceof ShadowRoot)) return "";
-			element = root.host;
-		}
+		return effectiveLanguage(this);
 	}
 
 	set lang(value: string) {
@@ -41,7 +36,7 @@ export class QuizElement extends LitElementWw {
 	}
 
 	protected get msg() {
-		return messageFor(this.lang);
+		return this.messages.msg;
 	}
 
 	protected updated(changed: PropertyValues) {

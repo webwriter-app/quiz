@@ -125,13 +125,20 @@ async function languages(fixture: HTMLElement) {
 	fixture.lang = "de-AT";
 	french.lang = "fr-CA";
 	fixture.append(german, french);
+	for (let attempt = 0; attempt < 60 && (
+		german.options.hidePoints.label._ !== "Punkte ausblenden" ||
+		french.options.hidePoints.label._ !== "Masquer les points"
+	); attempt++) await settleUpdates();
 	await Promise.all([german.updateComplete, french.updateComplete]);
+	assert(german.getAttribute("lang") === null, "Inherited language must stay out of authored HTML");
 	assert(german.options.hidePoints.label._ === "Punkte ausblenden", "Use the inherited German drawer label");
 	assert(french.options.hidePoints.label._ === "Masquer les points", "Use the French widget override");
 	assert(german.shadowRoot!.textContent.includes("Abgeben"), "Render German learner labels");
 	assert(french.shadowRoot!.textContent.includes("Envoyer"), "Render French learner labels");
 	fixture.lang = "en-GB";
 	await settleUpdates();
+	await german.updateComplete;
+	assert(german.getAttribute("lang") === null, "Changing the ancestor language must not add an attribute");
 	assert(german.shadowRoot!.textContent.includes("Submit"), "Respond to a language change on the ancestor");
 	assert(french.shadowRoot!.textContent.includes("Envoyer"), "Keep the other widget's language");
 }

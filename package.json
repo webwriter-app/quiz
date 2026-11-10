@@ -22,7 +22,15 @@
     "isced2011-8",
     "quiz",
     "choice",
-    "test"
+    "test",
+    "widget-lang-en",
+    "widget-lang-en-GB",
+    "widget-lang-en-CA",
+    "widget-lang-en-AU",
+    "widget-lang-en-IN",
+    "widget-lang-fr",
+    "widget-lang-de",
+    "widget-lang-es"
   ],
   "license": "MIT",
   "author": "Frederic Salmen <frederic@fsalmen.de>",
@@ -131,5 +139,6 @@
     "./editing-config.json": "./editing-config.json",
     "./custom-elements.json": "./custom-elements.json"
   },
-  "customElements": "custom-elements.json"
+  "customElements": "custom-elements.json",
+  "editingConfig": {}
 }
