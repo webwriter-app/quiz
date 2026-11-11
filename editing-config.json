@@ -104,7 +104,16 @@
 			"so": "Imtixaan",
 			"ti": "ፈተና",
 			"sw": "Jaribio",
-			"ha": "Gwaji"
+			"ha": "Gwaji",
+			"yue-Hans": "测验",
+			"yue-Hant": "測驗",
+			"kmr": "Pirsiyarî",
+			"kmr-Latn": "Pirsiyarî",
+			"kmr-Arab": "پرسیاری",
+			"ckb": "تاقیکردنەوە",
+			"ckb-Arab": "تاقیکردنەوە",
+			"af-ZA": "Vasvra",
+			"af-NA": "Vasvra"
 		}
 	},
 	"./widgets/webwriter-quiz-hint": {
@@ -215,7 +224,16 @@
 			"so": "Tilmaanta imtixaanka",
 			"ti": "ናይ ፈተና ሓገዝ",
 			"sw": "Kidokezo cha jaribio",
-			"ha": "Alamar taimakon gwaji"
+			"ha": "Alamar taimakon gwaji",
+			"yue-Hans": "测验提示",
+			"yue-Hant": "測驗提示",
+			"kmr": "Alîkariya pirsê",
+			"kmr-Latn": "Alîkariya pirsê",
+			"kmr-Arab": "ئالیکاریا پرسێ",
+			"ckb": "ئاماژەی تاقیکردنەوە",
+			"ckb-Arab": "ئاماژەی تاقیکردنەوە",
+			"af-ZA": "Vasvrawenk",
+			"af-NA": "Vasvrawenk"
 		}
 	},
 	"./widgets/webwriter-quiz-feedback": {
@@ -324,7 +342,16 @@
 			"so": "Jawaab celin",
 			"ti": "ግብረ መልሲ",
 			"sw": "Maoni",
-			"ha": "Ra’ayi"
+			"ha": "Ra’ayi",
+			"yue-Hans": "回馈",
+			"yue-Hant": "回饋",
+			"kmr": "Bersiv",
+			"kmr-Latn": "Bersiv",
+			"kmr-Arab": "بەرسڤ",
+			"ckb": "وەڵامدانەوە",
+			"ckb-Arab": "وەڵامدانەوە",
+			"af-ZA": "Terugvoer",
+			"af-NA": "Terugvoer"
 		}
 	},
 	"./widgets/webwriter-true-false": {
@@ -435,7 +462,16 @@
 			"so": "Run ama been",
 			"ti": "ሓቂ ወይ ሓሶት",
 			"sw": "Kweli au si kweli",
-			"ha": "Gaskiya ko ƙarya"
+			"ha": "Gaskiya ko ƙarya",
+			"yue-Hans": "是非题",
+			"yue-Hant": "是非題",
+			"kmr": "Rast-Ne rast",
+			"kmr-Latn": "Rast-Ne rast",
+			"kmr-Arab": "راست-نە راست",
+			"ckb": "ڕاست / هەڵە",
+			"ckb-Arab": "ڕاست / هەڵە",
+			"af-ZA": "Waar of onwaar",
+			"af-NA": "Waar of onwaar"
 		}
 	},
 	"./widgets/webwriter-choice": {
@@ -545,7 +581,16 @@
 			"so": "Doorasho",
 			"ti": "ምርጫ",
 			"sw": "Chaguo",
-			"ha": "Zaɓi"
+			"ha": "Zaɓi",
+			"yue-Hans": "选项",
+			"yue-Hant": "選項",
+			"kmr": "Hilbijartin",
+			"kmr-Latn": "Hilbijartin",
+			"kmr-Arab": "هلبژارتن",
+			"ckb": "هەڵبژاردن",
+			"ckb-Arab": "هەڵبژاردن",
+			"af-ZA": "Keuse",
+			"af-NA": "Keuse"
 		}
 	},
 	"./widgets/webwriter-choice-item": {
@@ -655,7 +700,16 @@
 			"so": "Qodob doorasho",
 			"ti": "ናይ ምርጫ ባእታ",
 			"sw": "Kipengele cha chaguo",
-			"ha": "Abin zaɓi"
+			"ha": "Abin zaɓi",
+			"yue-Hans": "选项项目",
+			"yue-Hant": "選項項目",
+			"kmr": "Hêmana hilbijartinê",
+			"kmr-Latn": "Hêmana hilbijartinê",
+			"kmr-Arab": "هێمانا هلبژارتنێ",
+			"ckb": "بڕگەی هەڵبژاردن",
+			"ckb-Arab": "بڕگەی هەڵبژاردن",
+			"af-ZA": "Keuse-item",
+			"af-NA": "Keuse-item"
 		}
 	},
 	"./widgets/webwriter-order": {
@@ -768,7 +822,16 @@
 			"so": "Kala hormarin",
 			"ti": "ምስራዕ",
 			"sw": "Mpangilio",
-			"ha": "Jeri"
+			"ha": "Jeri",
+			"yue-Hans": "排序",
+			"yue-Hant": "排序",
+			"kmr": "Rêzkirin",
+			"kmr-Latn": "Rêzkirin",
+			"kmr-Arab": "رێزکرن",
+			"ckb": "ڕیزکردن",
+			"ckb-Arab": "ڕیزکردن",
+			"af-ZA": "Ordening",
+			"af-NA": "Ordening"
 		}
 	},
 	"./widgets/webwriter-order-item": {
@@ -878,7 +941,16 @@
 			"so": "Qodob la kala hormariyo",
 			"ti": "ዝስራዕ ባእታ",
 			"sw": "Kipengele cha kupanga",
-			"ha": "Abin jerawa"
+			"ha": "Abin jerawa",
+			"yue-Hans": "排序项目",
+			"yue-Hant": "排序項目",
+			"kmr": "Hêmana rêzkirinê",
+			"kmr-Latn": "Hêmana rêzkirinê",
+			"kmr-Arab": "هێمانا رێزکرنێ",
+			"ckb": "بڕگەی ڕیزکردن",
+			"ckb-Arab": "بڕگەی ڕیزکردن",
+			"af-ZA": "Ordeningsitem",
+			"af-NA": "Ordeningsitem"
 		}
 	},
 	"./widgets/webwriter-speech": {
@@ -991,7 +1063,16 @@
 			"so": "Hadal",
 			"ti": "ዘረባ",
 			"sw": "Matamshi",
-			"ha": "Magana"
+			"ha": "Magana",
+			"yue-Hans": "语音",
+			"yue-Hant": "語音",
+			"kmr": "Axaftin",
+			"kmr-Latn": "Axaftin",
+			"kmr-Arab": "ئاخافتن",
+			"ckb": "قسەکردن",
+			"ckb-Arab": "قسەکردن",
+			"af-ZA": "Spraak",
+			"af-NA": "Spraak"
 		}
 	},
 	"./widgets/webwriter-text": {
@@ -1105,7 +1186,16 @@
 			"so": "Qoraal",
 			"ti": "ጽሑፍ",
 			"sw": "Maandishi",
-			"ha": "Rubutu"
+			"ha": "Rubutu",
+			"yue-Hans": "文字",
+			"yue-Hant": "文字",
+			"kmr": "Nivîs",
+			"kmr-Latn": "Nivîs",
+			"kmr-Arab": "نڤیس",
+			"ckb": "دەق",
+			"ckb-Arab": "دەق",
+			"af-ZA": "Teks",
+			"af-NA": "Teks"
 		}
 	},
 	"./widgets/webwriter-gap": {
@@ -1219,7 +1309,16 @@
 			"so": "Meel bannaan",
 			"ti": "ባዶ ቦታ",
 			"sw": "Pengo",
-			"ha": "Gurbi"
+			"ha": "Gurbi",
+			"yue-Hans": "填空",
+			"yue-Hant": "填空",
+			"kmr": "Valahî",
+			"kmr-Latn": "Valahî",
+			"kmr-Arab": "ڤالاهی",
+			"ckb": "بۆشایی",
+			"ckb-Arab": "بۆشایی",
+			"af-ZA": "Oop plek",
+			"af-NA": "Oop plek"
 		}
 	},
 	"./widgets/webwriter-mark": {
@@ -1334,7 +1433,16 @@
 			"so": "Calaamadayn",
 			"ti": "ምልክት ምግባር",
 			"sw": "Kuangazia",
-			"ha": "Alama"
+			"ha": "Alama",
+			"yue-Hans": "标记",
+			"yue-Hant": "標記",
+			"kmr": "Nîşankirin",
+			"kmr-Latn": "Nîşankirin",
+			"kmr-Arab": "نیشانکرن",
+			"ckb": "نیشانەکردن",
+			"ckb-Arab": "نیشانەکردن",
+			"af-ZA": "Merk",
+			"af-NA": "Merk"
 		}
 	},
 	"./widgets/webwriter-pairing": {
@@ -1448,7 +1556,16 @@
 			"so": "Isku aadis",
 			"ti": "ምጽምማድ",
 			"sw": "Kulinganisha jozi",
-			"ha": "Haɗa biyu-biyu"
+			"ha": "Haɗa biyu-biyu",
+			"yue-Hans": "配对",
+			"yue-Hant": "配對",
+			"kmr": "Cotkirin",
+			"kmr-Latn": "Cotkirin",
+			"kmr-Arab": "جۆتکرن",
+			"ckb": "جووتکردن",
+			"ckb-Arab": "جووتکردن",
+			"af-ZA": "Pas bymekaar",
+			"af-NA": "Pas bymekaar"
 		}
 	},
 	"./widgets/webwriter-pairing-item": {
@@ -1570,7 +1687,16 @@
 			"so": "Qodob la isku aadiyo",
 			"ti": "ዝጽመድ ባእታ",
 			"sw": "Kipengele cha jozi",
-			"ha": "Abin haɗawa"
+			"ha": "Abin haɗawa",
+			"yue-Hans": "配对项目",
+			"yue-Hant": "配對項目",
+			"kmr": "Hêmana cotkirinê",
+			"kmr-Latn": "Hêmana cotkirinê",
+			"kmr-Arab": "هێمانا جۆتکرنێ",
+			"ckb": "بڕگەی جووتکردن",
+			"ckb-Arab": "بڕگەی جووتکردن",
+			"af-ZA": "Pasitem",
+			"af-NA": "Pasitem"
 		}
 	},
 	"./widgets/webwriter-gap-item": {
@@ -1683,7 +1809,16 @@
 			"so": "Qodob buuxin",
 			"ti": "ዝምላእ ባእታ",
 			"sw": "Kipengele cha pengo",
-			"ha": "Abin cike gurbi"
+			"ha": "Abin cike gurbi",
+			"yue-Hans": "填空项目",
+			"yue-Hant": "填空項目",
+			"kmr": "Hêmana valahiyê",
+			"kmr-Latn": "Hêmana valahiyê",
+			"kmr-Arab": "هێمانا ڤالاهیێ",
+			"ckb": "بڕگەی بۆشایی",
+			"ckb-Arab": "بڕگەی بۆشایی",
+			"af-ZA": "Invulitem",
+			"af-NA": "Invulitem"
 		}
 	},
 	".": {
@@ -1790,7 +1925,16 @@
 			"so": "Imtixaan",
 			"ti": "ፈተና",
 			"sw": "Jaribio",
-			"ha": "Gwaji"
+			"ha": "Gwaji",
+			"yue-Hans": "测验",
+			"yue-Hant": "測驗",
+			"kmr": "Pirsiyarî",
+			"kmr-Latn": "Pirsiyarî",
+			"kmr-Arab": "پرسیاری",
+			"ckb": "تاقیکردنەوە",
+			"ckb-Arab": "تاقیکردنەوە",
+			"af-ZA": "Vasvra",
+			"af-NA": "Vasvra"
 		},
 		"description": {
 			"_": "Add interactive tasks (multiple choice, order, free text, highlighting, or speech input). Make a quiz out of multiple tasks.",
@@ -1895,7 +2039,16 @@
 			"so": "Ku dar hawlo la falgeli karo sida doorashooyin, kala hormarin, qoraal xor ah, calaamadayn ama gelin cod ah. Hawlo dhowr ah ka samee imtixaan.",
 			"ti": "መልሲ ምምራጽ፣ ምስራዕ፣ ናጻ ጽሑፍ፣ ምልክት ምግባር ወይ ብድምጺ ምምላስ ዝኣመሰሉ መስተጋብራዊ ዕማማት ወስኹ። ካብ ብዙሓት ዕማማት ፈተና ስርሑ።",
 			"sw": "Ongeza kazi shirikishi: kuchagua majibu, kupanga, kuandika kwa uhuru, kuangazia au kujibu kwa sauti. Unda jaribio kutokana na kazi kadhaa.",
-			"ha": "Ƙara ayyukan hulɗa: zaɓin amsoshi, jeri, rubutu na kyauta, haskakawa ko shigar da murya. Haɗa ayyuka da dama don yin gwaji."
+			"ha": "Ƙara ayyukan hulɗa: zaɓin amsoshi, jeri, rubutu na kyauta, haskakawa ko shigar da murya. Haɗa ayyuka da dama don yin gwaji.",
+			"yue-Hans": "加入互动练习（选择题、排序、自由文字、标示或语音输入）。将多条练习组成测验。",
+			"yue-Hant": "加入互動練習（選擇題、排序、自由文字、標示或語音輸入）。將多條練習組成測驗。",
+			"kmr": "Karên înteraktîf lê zêde bike (hilbijartina yek an gelek, rêzkirin, nivîsa azad, nîşankirin an têketina dengê). Ji gelek karan pirsiyariyekê çêbike.",
+			"kmr-Latn": "Karên înteraktîf lê zêde bike (hilbijartina yek an gelek, rêzkirin, nivîsa azad, nîşankirin an têketina dengê). Ji gelek karan pirsiyariyekê çêbike.",
+			"kmr-Arab": "کارێن ئینتەراکتیف لێ زێدە bike (هلبژارتنا یەک ئان گەلەک, رێزکرن, نڤیسا ئازاد, نیشانکرن ئان تێکەتنا دەنگێ). ژ گەلەک کاران پرسیاریەکێ چێبکە.",
+			"ckb": "ئەرکی کارلێک‌لێکراو زیاد بکە (هەڵبژاردنی فرە، ڕیزکردن، دەقی ئازاد، نیشانەکردن یان تێخستنی دەنگ). لە چەند ئەرکێکەوە تاقیکردنەوەیەک دروست بکە.",
+			"ckb-Arab": "ئەرکی کارلێک‌لێکراو زیاد بکە (هەڵبژاردنی فرە، ڕیزکردن، دەقی ئازاد، نیشانەکردن یان تێخستنی دەنگ). لە چەند ئەرکێکەوە تاقیکردنەوەیەک دروست بکە.",
+			"af-ZA": "Voeg interaktiewe take by (meervoudige keuse, ordening, vrye teks, uitlig of spraakinvoer). Bou ’n vasvra uit verskeie take.",
+			"af-NA": "Voeg interaktiewe take by (meervoudige keuse, ordening, vrye teks, uitlig of spraakinvoer). Bou ’n vasvra uit verskeie take."
 		}
 	},
 	"./snippets/true-or-false": {
@@ -2002,7 +2155,16 @@
 			"so": "Run ama been",
 			"ti": "ሓቂ ወይ ሓሶት",
 			"sw": "Kweli au si kweli",
-			"ha": "Gaskiya ko ƙarya"
+			"ha": "Gaskiya ko ƙarya",
+			"yue-Hans": "是非题",
+			"yue-Hant": "是非題",
+			"kmr": "Rast An Ne rast",
+			"kmr-Latn": "Rast An Ne rast",
+			"kmr-Arab": "راست ئان نە راست",
+			"ckb": "ڕاست یان هەڵە",
+			"ckb-Arab": "ڕاست یان هەڵە",
+			"af-ZA": "Waar of onwaar",
+			"af-NA": "Waar of onwaar"
 		}
 	},
 	"./snippets/single-choice": {
@@ -2112,7 +2274,16 @@
 			"so": "Hal doorasho",
 			"ti": "ሓደ ምርጫ",
 			"sw": "Chaguo moja",
-			"ha": "Zaɓi ɗaya"
+			"ha": "Zaɓi ɗaya",
+			"yue-Hans": "单选题",
+			"yue-Hant": "單選題",
+			"kmr": "Hilbijartina yekê",
+			"kmr-Latn": "Hilbijartina yekê",
+			"kmr-Arab": "هلبژارتنا یەکێ",
+			"ckb": "هەڵبژاردنی تاک",
+			"ckb-Arab": "هەڵبژاردنی تاک",
+			"af-ZA": "Enkelkeuse",
+			"af-NA": "Enkelkeuse"
 		}
 	},
 	"./snippets/multiple-choice": {
@@ -2222,7 +2393,16 @@
 			"so": "Doorashooyin badan",
 			"ti": "ብዙሕ ምርጫ",
 			"sw": "Chaguo nyingi",
-			"ha": "Zaɓi da yawa"
+			"ha": "Zaɓi da yawa",
+			"yue-Hans": "多项选择",
+			"yue-Hant": "多項選擇",
+			"kmr": "Hilbijartina gelekê",
+			"kmr-Latn": "Hilbijartina gelekê",
+			"kmr-Arab": "هلبژارتنا گەلەکێ",
+			"ckb": "هەڵبژاردنی فرە",
+			"ckb-Arab": "هەڵبژاردنی فرە",
+			"af-ZA": "Meervoudige keuse",
+			"af-NA": "Meervoudige keuse"
 		}
 	},
 	"./snippets/order": {
@@ -2332,7 +2512,16 @@
 			"so": "Kala hormarin",
 			"ti": "ምስራዕ",
 			"sw": "Mpangilio",
-			"ha": "Jeri"
+			"ha": "Jeri",
+			"yue-Hans": "排序",
+			"yue-Hant": "排序",
+			"kmr": "Rêzkirin",
+			"kmr-Latn": "Rêzkirin",
+			"kmr-Arab": "رێزکرن",
+			"ckb": "ڕیزکردن",
+			"ckb-Arab": "ڕیزکردن",
+			"af-ZA": "Ordening",
+			"af-NA": "Ordening"
 		}
 	},
 	"./snippets/text": {
@@ -2442,7 +2631,16 @@
 			"so": "Qoraal",
 			"ti": "ጽሑፍ",
 			"sw": "Maandishi",
-			"ha": "Rubutu"
+			"ha": "Rubutu",
+			"yue-Hans": "文字",
+			"yue-Hant": "文字",
+			"kmr": "Nivîs",
+			"kmr-Latn": "Nivîs",
+			"kmr-Arab": "نڤیس",
+			"ckb": "دەق",
+			"ckb-Arab": "دەق",
+			"af-ZA": "Teks",
+			"af-NA": "Teks"
 		}
 	},
 	"./snippets/mark": {
@@ -2552,7 +2750,16 @@
 			"so": "Calaamadayn",
 			"ti": "ምልክት ምግባር",
 			"sw": "Kuangazia",
-			"ha": "Alama"
+			"ha": "Alama",
+			"yue-Hans": "标记",
+			"yue-Hant": "標記",
+			"kmr": "Nîşankirin",
+			"kmr-Latn": "Nîşankirin",
+			"kmr-Arab": "نیشانکرن",
+			"ckb": "نیشانەکردن",
+			"ckb-Arab": "نیشانەکردن",
+			"af-ZA": "Merk",
+			"af-NA": "Merk"
 		}
 	},
 	"./snippets/speech": {
@@ -2662,7 +2869,16 @@
 			"so": "Hadal",
 			"ti": "ዘረባ",
 			"sw": "Matamshi",
-			"ha": "Magana"
+			"ha": "Magana",
+			"yue-Hans": "语音",
+			"yue-Hant": "語音",
+			"kmr": "Axaftin",
+			"kmr-Latn": "Axaftin",
+			"kmr-Arab": "ئاخافتن",
+			"ckb": "قسەکردن",
+			"ckb-Arab": "قسەکردن",
+			"af-ZA": "Spraak",
+			"af-NA": "Spraak"
 		}
 	},
 	"./snippets/gap": {
@@ -2772,7 +2988,16 @@
 			"so": "Meel bannaan",
 			"ti": "ባዶ ቦታ",
 			"sw": "Pengo",
-			"ha": "Gurbi"
+			"ha": "Gurbi",
+			"yue-Hans": "填空",
+			"yue-Hant": "填空",
+			"kmr": "Valahî",
+			"kmr-Latn": "Valahî",
+			"kmr-Arab": "ڤالاهی",
+			"ckb": "بۆشایی",
+			"ckb-Arab": "بۆشایی",
+			"af-ZA": "Oop plek",
+			"af-NA": "Oop plek"
 		}
 	},
 	"./snippets/pairing": {
@@ -2882,7 +3107,16 @@
 			"so": "Isku aadis",
 			"ti": "ምጽምማድ",
 			"sw": "Kulinganisha jozi",
-			"ha": "Haɗa biyu-biyu"
+			"ha": "Haɗa biyu-biyu",
+			"yue-Hans": "配对",
+			"yue-Hant": "配對",
+			"kmr": "Cotkirin",
+			"kmr-Latn": "Cotkirin",
+			"kmr-Arab": "جۆتکرن",
+			"ckb": "جووتکردن",
+			"ckb-Arab": "جووتکردن",
+			"af-ZA": "Pas bymekaar",
+			"af-NA": "Pas bymekaar"
 		}
 	}
 }

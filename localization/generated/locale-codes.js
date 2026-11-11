@@ -11,6 +11,8 @@ export const sourceLocale = `en-US`;
  * lexicographically.
  */
 export const targetLocales = [
+  `af-NA`,
+  `af-ZA`,
   `am`,
   `ar`,
   `az`,
@@ -20,6 +22,8 @@ export const targetLocales = [
   `bs`,
   `ca`,
   `ca-ES-valencia`,
+  `ckb`,
+  `ckb-Arab`,
   `cnr`,
   `cs`,
   `cy`,
@@ -53,6 +57,9 @@ export const targetLocales = [
   `ka`,
   `kk`,
   `km`,
+  `kmr`,
+  `kmr-Arab`,
+  `kmr-Latn`,
   `kn`,
   `ko`,
   `ky`,
@@ -107,6 +114,8 @@ export const targetLocales = [
   `ur`,
   `uz`,
   `vi`,
+  `yue-Hans`,
+  `yue-Hant`,
   `zh`,
   `zh-Hans`,
   `zh-Hant`,
@@ -116,6 +125,8 @@ export const targetLocales = [
  * All valid project locale codes. Sorted lexicographically.
  */
 export const allLocales = [
+  `af-NA`,
+  `af-ZA`,
   `am`,
   `ar`,
   `az`,
@@ -125,6 +136,8 @@ export const allLocales = [
   `bs`,
   `ca`,
   `ca-ES-valencia`,
+  `ckb`,
+  `ckb-Arab`,
   `cnr`,
   `cs`,
   `cy`,
@@ -159,6 +172,9 @@ export const allLocales = [
   `ka`,
   `kk`,
   `km`,
+  `kmr`,
+  `kmr-Arab`,
+  `kmr-Latn`,
   `kn`,
   `ko`,
   `ky`,
@@ -213,6 +229,8 @@ export const allLocales = [
   `ur`,
   `uz`,
   `vi`,
+  `yue-Hans`,
+  `yue-Hant`,
   `zh`,
   `zh-Hans`,
   `zh-Hant`,
