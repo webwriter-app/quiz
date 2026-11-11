@@ -161,6 +161,14 @@ async function languages(fixture: HTMLElement) {
 	assert(actionLabels(german).includes("ގިނަ އިޚްތިޔާރު"), "Use the inherited Dhivehi question type label");
 	assert(actionLabels(french).includes("多選"), "Use the Traditional Chinese question type label in the other quiz");
 
+	const filipino = document.createElement("webwriter-quiz") as WebwriterQuiz;
+	filipino.lang = "tl";
+	fixture.append(filipino);
+	for (let attempt = 0; attempt < 60 && !actionLabels(filipino).includes("Maramihang pagpipilian"); attempt++) {
+		await settleUpdates();
+	}
+	assert(actionLabels(filipino).includes("Maramihang pagpipilian"), "Resolve the canonical Filipino locale from tl");
+
 	german.confirmSubmit = true;
 	await german.updateComplete;
 	clickButton(german.shadowRoot!, "ފޮނުވާ");

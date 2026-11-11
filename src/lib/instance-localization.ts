@@ -4,7 +4,9 @@ import type { LitElement } from "lit";
 // @ts-ignore The Lit localization CLI emits the locale index as JavaScript.
 import { sourceLocale, targetLocales } from "../../localization/generated/locale-codes.js";
 
-const supported = new Map([sourceLocale, ...targetLocales].map(locale => [locale.toLowerCase(), locale]));
+const supported = new Map([sourceLocale, ...targetLocales].map(locale => [
+  new Intl.Locale(locale).baseName.toLowerCase(), locale,
+]));
 const regionalDefaults: Record<string, string> = {
   bn: "bn-BD", de: "de-DE", es: "es-ES", fa: "fa-IR", fr: "fr-FR",
   no: "nb", pt: "pt-PT",
