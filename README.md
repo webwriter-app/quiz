@@ -3,7 +3,7 @@
 
 Add interactive tasks (multiple choice, order, free text, highlighting, or speech input). Make a quiz out of multiple tasks.
 
-In WebWriter 2, use the quiz’s question buttons or the Widget drawer to insert questions. The package includes one-question snippets for each built-in type with question titles and points hidden.
+In WebWriter 2, use the quiz’s question buttons to insert questions. The package includes one-question snippets for each built-in type with question titles and points hidden.
 
 In edit mode, **Add Feedback** inserts a block you can edit and format in the question. Choice and Order group it with **Add Option** in both layouts. The last question shares that row with **Add Question** on the right. Learners see the feedback block after a valid submission, including for open-ended and ungraded questions. **Show detailed feedback** controls answer-specific feedback and solution reveal.
 
@@ -77,7 +77,7 @@ drawer shows points and question commands.
 Register the custom element and call `registerQuizType` from
 `@webwriter/quiz/api` with a factory that creates an instance. Give the widget
 the `quiz-task` editing group and start its content expression with
-`webwriter-quiz-hint? p webwriter-quiz-feedback?`. The quiz drawer supplies a `<p slot="prompt">` when the
+`webwriter-quiz-hint? p webwriter-quiz-feedback?`. The quiz supplies a `<p slot="prompt">` when the
 factory has not supplied one. A question hint is a direct
 `<webwriter-quiz-hint slot="hint">` child before the prompt. **Add Feedback**
 inserts a `<webwriter-quiz-feedback slot="feedback">` child after the answer content.

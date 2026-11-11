@@ -59,6 +59,7 @@ async function authoring(fixture: HTMLElement) {
 	const quiz = document.createElement("webwriter-quiz") as WebwriterQuiz;
 	fixture.append(quiz);
 	await quiz.updateComplete;
+	assert(Object.keys(quiz.actions).length === 0, "The quiz drawer must omit question insertion actions");
 	assert(quiz.shadowRoot!.querySelectorAll(".insert-task-grid sl-button").length === 9,
 		"An empty quiz must show all built-in insertion buttons");
 	clickButton(quiz.shadowRoot!, "True or False");
@@ -88,9 +89,10 @@ async function authoring(fixture: HTMLElement) {
 	const comment = document.createComment("preserve me");
 	quiz.append(comment);
 	for (const label of ["True or False", "Single Choice", "Multiple Choice", "Order", "Text", "Mark", "Speech", "Gap", "Pairing", "External type"]) {
-		action(quiz, label);
+		await settleUpdates();
+		clickButton((quiz.lastElementChild ?? quiz).shadowRoot!, label);
 	}
-	assert(quiz.children.length === 10, "The drawer must insert built-in and externally registered questions");
+	assert(quiz.children.length === 10, "The question picker must insert built-in and externally registered questions");
 	assert(Array.from(quiz.children).every(task => task instanceof WebwriterTask), "Task types must be direct quiz children");
 	await settleUpdates();
 	assert(Array.from(quiz.children).every(task => task.shadowRoot!.querySelector(".add-feedback")),
@@ -151,24 +153,28 @@ async function languages(fixture: HTMLElement) {
 	assert(german.shadowRoot!.textContent.includes("Submit"), "Respond to a language change on the ancestor");
 	assert(french.shadowRoot!.textContent.includes("Envoyer"), "Keep the other widget's language");
 
-	const actionLabels = (quiz: WebwriterQuiz) => Object.values(quiz.actions).map(action => action.label._);
+	const questionLabels = (quiz: WebwriterQuiz) =>
+		Array.from(quiz.shadowRoot?.querySelectorAll(".insert-task-grid sl-button") ?? [], button => button.textContent.trim());
+	fixture.contentEditable = "true";
 	fixture.lang = "dv";
 	french.lang = "zh-Hant";
 	for (let attempt = 0; attempt < 60 && (
-		!actionLabels(german).includes("ގިނަ އިޚްތިޔާރު") ||
-		!actionLabels(french).includes("多選")
+		!questionLabels(german).includes("ގިނަ އިޚްތިޔާރު") ||
+		!questionLabels(french).includes("多選")
 	); attempt++) await settleUpdates();
-	assert(actionLabels(german).includes("ގިނަ އިޚްތިޔާރު"), "Use the inherited Dhivehi question type label");
-	assert(actionLabels(french).includes("多選"), "Use the Traditional Chinese question type label in the other quiz");
+	assert(questionLabels(german).includes("ގިނަ އިޚްތިޔާރު"), "Use the inherited Dhivehi question type label");
+	assert(questionLabels(french).includes("多選"), "Use the Traditional Chinese question type label in the other quiz");
 
 	const filipino = document.createElement("webwriter-quiz") as WebwriterQuiz;
 	filipino.lang = "tl";
 	fixture.append(filipino);
-	for (let attempt = 0; attempt < 60 && !actionLabels(filipino).includes("Maramihang pagpipilian"); attempt++) {
+	for (let attempt = 0; attempt < 60 && !questionLabels(filipino).includes("Maramihang pagpipilian"); attempt++) {
 		await settleUpdates();
 	}
-	assert(actionLabels(filipino).includes("Maramihang pagpipilian"), "Resolve the canonical Filipino locale from tl");
+	assert(questionLabels(filipino).includes("Maramihang pagpipilian"), "Resolve the canonical Filipino locale from tl");
 
+	fixture.contentEditable = "false";
+	await settleUpdates();
 	german.confirmSubmit = true;
 	await german.updateComplete;
 	clickButton(german.shadowRoot!, "ފޮނުވާ");

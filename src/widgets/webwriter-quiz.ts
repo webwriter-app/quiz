@@ -5,7 +5,7 @@ import SlDropdown from "@shoelace-style/shoelace/dist/components/dropdown/dropdo
 import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
 import SlProgressBar from "@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.component.js";
 import "@shoelace-style/shoelace/dist/themes/light.css";
-import type { ActionDeclaration, OptionDeclaration } from "@webwriter/lit";
+import type { OptionDeclaration } from "@webwriter/lit";
 import AddIcon from "bootstrap-icons/icons/plus-lg.svg";
 import { css, html, nothing, type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -31,20 +31,6 @@ export class WebwriterQuiz extends QuizElement {
 			hideQuestionTitle: { type: "boolean", label: { _: this.msg("Hide question titles") } },
 			hidePoints: { type: "boolean", label: { _: this.msg("Hide points") } },
 		};
-	}
-
-	/** @internal */
-	get actions() {
-		const actions: Record<string, ActionDeclaration & { group: string }> = {};
-		for (const [name, type] of this.questionActions) {
-			actions[name] = { group: "questions", label: { _: type.getName(this.lang, this.msg) } };
-		}
-		return actions;
-	}
-
-	/** @internal */
-	get optionGroups() {
-		return { questions: { label: { _: this.msg("Add Question") } } };
 	}
 
 	/** @internal */
@@ -140,22 +126,18 @@ export class WebwriterQuiz extends QuizElement {
 
 	private unsubscribe?: () => void;
 
-	private questionActions = new Map<string, QuizType>();
+	private questionTypes = new Map<string, QuizType>();
 	private addQuestionDropdown = createRef<SlDropdown>();
 
 	connectedCallback() {
 		super.connectedCallback();
 		this.unsubscribe = onQuizTypesChanged(types => {
-			const actions = new Map<string, QuizType>();
+			const questionTypes = new Map<string, QuizType>();
 			for (const type of types) {
-				const name = `insertQuestion:${JSON.stringify([type.packageId, type.id])}`;
-				if (!Object.hasOwn(this, name)) {
-					Object.defineProperty(this, name, { value: () => this.insertQuizType(name) });
-				}
-				if (!actions.has(name)) actions.set(name, type);
+				const key = JSON.stringify([type.packageId, type.id]);
+				if (!questionTypes.has(key)) questionTypes.set(key, type);
 			}
-			this.questionActions = actions;
-			this.refreshDrawer();
+			this.questionTypes = questionTypes;
 			this.requestUpdate();
 		});
 	}
@@ -164,7 +146,7 @@ export class WebwriterQuiz extends QuizElement {
 		super.disconnectedCallback();
 		this.unsubscribe?.();
 		this.unsubscribe = undefined;
-		this.questionActions.clear();
+		this.questionTypes.clear();
 	}
 
 	protected updated(changedProperties: PropertyValues) {
@@ -177,8 +159,8 @@ export class WebwriterQuiz extends QuizElement {
 		}
 	}
 
-	private insertQuizType(action: string) {
-		const quizType = this.questionActions.get(action);
+	private insertQuizType(key: string) {
+		const quizType = this.questionTypes.get(key);
 		if (!quizType || !this.isConnected || !this.editable) return;
 		const task = quizType.createInstance();
 		if (!isQuizTask(task)) return;
@@ -194,7 +176,7 @@ export class WebwriterQuiz extends QuizElement {
 
 	private InsertQuestionGrid() {
 		return html`<div class="insert-task-grid">
-			${Array.from(this.questionActions, ([name, type]) => html`<sl-button @click=${() => this.insertQuizType(name)}>
+			${Array.from(this.questionTypes, ([key, type]) => html`<sl-button @click=${() => this.insertQuizType(key)}>
 				${type.icon ? html`<sl-icon slot="prefix" src=${type.icon}></sl-icon>` : nothing}
 				${type.getName(this.lang, this.msg)}
 			</sl-button>`)}
