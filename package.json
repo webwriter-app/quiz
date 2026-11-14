@@ -143,13 +143,13 @@
     "@lit/localize": "^0.12.2",
     "@shoelace-style/shoelace": "^2.20.1",
     "@webwriter/lit": "^3.0.0",
-    "bootstrap-icons": "^1.13.1",
+    "bootstrap-icons": "^1.13.2",
     "lit": "^3"
   },
   "devDependencies": {
     "@lit/localize-tools": "^0.8",
     "@webwriter/build": "^1.13.1",
-    "typescript": "~5.9.0"
+    "typescript": "~7.0.2"
   },
   "exports": {
     "./api": {
