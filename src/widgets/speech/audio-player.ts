@@ -1,6 +1,5 @@
-import { msg, str } from "@lit/localize";
-import { LitElementWw } from "@webwriter/lit";
-import { css, html, PropertyValues } from "lit";
+import { str } from "@lit/localize";
+import { css, html, nothing, PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ref } from "lit/directives/ref.js";
 
@@ -15,6 +14,7 @@ import PauseFillIcon from "bootstrap-icons/icons/pause-fill.svg";
 import PlayFillIcon from "bootstrap-icons/icons/play-fill.svg";
 import SlidersIcon from "bootstrap-icons/icons/sliders.svg";
 import TrashIcon from "bootstrap-icons/icons/trash.svg";
+import { QuizElement } from "../../lib/localization";
 import {
 	BAR_WIDTH,
 	formatDuration,
@@ -26,7 +26,7 @@ import {
 
 const PLAYHEAD_RADIUS = 5;
 
-export class AudioPlayer extends LitElementWw {
+export class AudioPlayer extends QuizElement {
 	static scopedElements = {
 		"sl-button": SlButton,
 		"sl-icon": SlIcon,
@@ -71,6 +71,9 @@ export class AudioPlayer extends LitElementWw {
 	@state() private accessor volume = 100;
 	@state() private accessor playbackSpeed = 1;
 
+	@property({ attribute: false }) accessor allowDelete = true;
+
+	private sourceLoad?: AbortController;
 	private audioElement: HTMLAudioElement | null = null;
 	private audioContext: AudioContext | null = null;
 	private amplitudeSamples: number[] = [];
@@ -79,23 +82,42 @@ export class AudioPlayer extends LitElementWw {
 	private waveform = new WaveformCanvas();
 	private resizeObserver = new ResizeObserver(() => this.resizeCanvas());
 
+	connectedCallback() {
+		super.connectedCallback();
+		this.requestUpdate("src");
+	}
+
 	disconnectedCallback() {
 		super.disconnectedCallback();
-		this.stopAnimationLoop();
+		this.unloadAudio();
 		this.resizeObserver.disconnect();
+	}
+
+	private unloadAudio() {
+		this.sourceLoad?.abort();
+		this.sourceLoad = undefined;
+		this.stopAnimationLoop();
+		this.playing = false;
 		if (this.audioElement) {
 			this.audioElement.pause();
+			this.audioElement.removeAttribute("src");
+			this.audioElement.load();
 			this.audioElement = null;
 		}
 		if (this.audioContext) {
-			this.audioContext.close();
+			void this.audioContext.close();
 			this.audioContext = null;
 		}
 	}
 
-	updated(changedProperties: Map<string, unknown>) {
-		if (changedProperties.has("src") && this.src) {
-			this.loadAudio();
+	protected updated(changed: PropertyValues) {
+		super.updated(changed);
+		if (changed.has("src")) {
+			this.unloadAudio();
+			this.duration = 0;
+			this.currentTime = 0;
+			this.amplitudeSamples = [];
+			if (this.isConnected && this.src) void this.loadAudio(this.src);
 		}
 	}
 
@@ -119,44 +141,47 @@ export class AudioPlayer extends LitElementWw {
 		if (this.waveform.resize()) this.renderWaveform();
 	}
 
-	private async loadAudio() {
-		if (!this.src) return;
+	private async loadAudio(src: string) {
+		this.sourceLoad = new AbortController();
+		const { signal } = this.sourceLoad;
 
 		// Create audio element for playback
-		this.audioElement = new Audio(this.src);
+		const audio = this.audioElement = new Audio(src);
 		this.audioElement.volume = this.volume / 100;
 		this.audioElement.playbackRate = this.playbackSpeed;
 		this.audioElement.addEventListener("loadedmetadata", () => {
-			this.duration = this.audioElement!.duration;
-		});
+			this.duration = audio.duration;
+		}, { signal });
 		// The animation loop only samples while playing, so the canvas would keep showing the
 		// position of its last frame when playback stops. Re-sync whenever the clock settles.
 		for (const event of ["play", "pause", "seeked"]) {
-			this.audioElement.addEventListener(event, () => this.syncCurrentTime());
+			this.audioElement.addEventListener(event, () => this.syncCurrentTime(), { signal });
 		}
 		this.audioElement.addEventListener("ended", () => {
 			this.playing = false;
 			this.stopAnimationLoop();
 			this.currentTime = 0;
-			this.audioElement!.currentTime = 0;
+			audio.currentTime = 0;
 			this.renderWaveform();
-		});
+		}, { signal });
 
 		// Decode audio to generate waveform
-		await this.generateWaveformData();
-		this.renderWaveform();
+		await this.generateWaveformData(src, signal);
+		if (!signal.aborted) this.renderWaveform();
 	}
 
-	private async generateWaveformData() {
-		if (!this.src) return;
+	private async generateWaveformData(src: string, signal: AbortSignal) {
+		let context: AudioContext | undefined;
 
 		try {
 			// Fetch and decode the audio data
-			const response = await fetch(this.src);
+			const response = await fetch(src, { signal });
 			const arrayBuffer = await response.arrayBuffer();
 
-			this.audioContext = new AudioContext();
-			const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+			if (signal.aborted) return;
+			context = this.audioContext = new AudioContext();
+			const audioBuffer = await context.decodeAudioData(arrayBuffer);
+			if (signal.aborted) return;
 			const channelData = audioBuffer.getChannelData(0);
 
 			// Downsample the channel data to one peak per bar that fits into the canvas
@@ -171,11 +196,13 @@ export class AudioPlayer extends LitElementWw {
 				this.amplitudeSamples.push(peakAmplitude(channelData, start, end));
 			}
 
-			// Close audio context after decoding (we use HTMLAudioElement for playback)
-			this.audioContext.close();
-			this.audioContext = null;
 		} catch (e) {
-			console.error("Failed to generate waveform data:", e);
+			if (!signal.aborted) console.error("Failed to generate waveform data:", e);
+		} finally {
+			if (context && context === this.audioContext) {
+				void context.close();
+				this.audioContext = null;
+			}
 		}
 	}
 
@@ -296,7 +323,7 @@ export class AudioPlayer extends LitElementWw {
 					</sl-button>
 					<div class="options">
 						<sl-range
-							label=${msg(str`Volume: ${this.volume}%`)}
+							label=${this.msg(str`Volume: ${this.volume}%`)}
 							min="0"
 							max="100"
 							value=${this.volume}
@@ -304,7 +331,7 @@ export class AudioPlayer extends LitElementWw {
 							@sl-input=${this.handleVolumeChange}
 						></sl-range>
 						<sl-range
-							label=${msg(str`Speed: ${this.playbackSpeed}x`)}
+							label=${this.msg(str`Speed: ${this.playbackSpeed}x`)}
 							min="0.5"
 							max="2"
 							step="0.1"
@@ -314,11 +341,11 @@ export class AudioPlayer extends LitElementWw {
 						></sl-range>
 					</div>
 				</sl-dropdown>
-				<sl-button
+				${this.allowDelete ? html`<sl-button
 					@click=${() => this.dispatchEvent(new CustomEvent("delete-recording", { bubbles: true, composed: true }))}
 				>
 					<sl-icon src=${TrashIcon}></sl-icon>
-				</sl-button>
+				</sl-button>` : nothing}
 			</sl-button-group>
 		`;
 	}

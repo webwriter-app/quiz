@@ -1,7 +1,5 @@
-import { msg } from "@lit/localize";
 import SlIconButton from "@shoelace-style/shoelace/dist/components/icon-button/icon-button.component.js";
 import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
-import { LitElementWw } from "@webwriter/lit";
 import { css, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -11,6 +9,7 @@ import { DraggableGridItem } from "../../lib/draggable-grid";
 import { HintPopup } from "../../lib/hint-popup";
 import { commonStyles } from "../../lib/utils";
 import { WebwriterOrder } from "./webwriter-order";
+import { QuizElement } from "../../lib/localization";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -41,7 +40,7 @@ const ROMAN_NUMERALS_TABLE: [number, string][] = [
  * `<webwriter-quiz-hint>` may be assigned to its `hint` slot.
  */
 @customElement("webwriter-order-item")
-export class WebwriterOrderItem extends LitElementWw implements DraggableGridItem {
+export class WebwriterOrderItem extends QuizElement implements DraggableGridItem {
 	static styles = [
 		commonStyles,
 		css`
@@ -232,7 +231,7 @@ export class WebwriterOrderItem extends LitElementWw implements DraggableGridIte
 			>
 				${this.isContentEditable ? html`<div></div>` : html`<sl-icon class="grip" src=${gripIcon}></sl-icon>`}
 				<div class="position numbering-${parent.numberingStyle}">${this.getPositionText()}</div>
-				<slot class="content" style=${`--ww-placeholder: "${msg("Option")}"`}></slot>
+				<slot class="content" style=${`--ww-placeholder: "${this.msg("Option")}"`}></slot>
 				<div class="actions author-only">
 					<sl-icon-button ?data-drag-handle=${this.isContentEditable} src=${gripIcon}></sl-icon-button>
 				</div>

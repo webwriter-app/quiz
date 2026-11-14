@@ -41,7 +41,8 @@ export class HintPopup extends LitElementWw {
 
 			&::part(popup) {
 				padding: var(--sl-spacing-x-small);
-				max-width: 20rem;
+				max-width: min(20rem, 100cqi, var(--auto-size-available-width, 20rem));
+				overflow-wrap: anywhere;
 				background: var(--sl-color-neutral-700);
 				border-radius: var(--sl-border-radius-medium);
 				color: var(--sl-color-neutral-0);
@@ -95,37 +96,12 @@ export class HintPopup extends LitElementWw {
 		const host = this.host;
 		if (!host) return;
 
-		if (host.isContentEditable && this.open) {
-			if (this.hostContentEls.length === 0) this.insertHintElement(host);
+		if (host.isContentEditable && this.open && !this.hostContentEls.length) this.insertHintElement(host);
+	}
 
-			// Move cursor to the end of the hint content when opening the popup
-			setTimeout(() => {
-				if (!(this.children[0] instanceof HTMLSlotElement)) return;
-				const assignedElements = this.children[0].assignedElements();
-				const hintContent = assignedElements[assignedElements.length - 1];
-				if (!(hintContent instanceof HTMLElement)) return;
-
-				let endContainer: Node = hintContent;
-				while (endContainer.lastChild) endContainer = endContainer.lastChild;
-
-				const range = hintContent.ownerDocument.createRange();
-				range.setStart(
-					endContainer,
-					endContainer.nodeType === Node.TEXT_NODE
-						? (endContainer.textContent ?? "").length
-						: endContainer.childNodes.length,
-				);
-				range.collapse(true);
-
-				const selection = hintContent.ownerDocument.getSelection();
-				selection?.removeAllRanges();
-				selection?.addRange(range);
-			}, 0);
-		} else if (host.isContentEditable && !this.open) {
-			if (!this.hasContent) {
-				this.hostContentEls.forEach(el => el.remove());
-			}
-		}
+	disconnectedCallback() {
+		super.disconnectedCallback();
+		this.open = false;
 	}
 
 	render() {
@@ -133,8 +109,9 @@ export class HintPopup extends LitElementWw {
 
 		return html`<sl-popup
 			?active=${this.open}
-			placement="left"
+			placement="bottom-end"
 			arrow
+			flip
 			auto-size
 			shift
 			distance="5"

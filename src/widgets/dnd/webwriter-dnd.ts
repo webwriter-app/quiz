@@ -1,8 +1,5 @@
-import { msg } from "@lit/localize";
-import HandIndexThumbIcon from "bootstrap-icons/icons/hand-index-thumb.svg";
 import { customElement } from "lit/decorators.js";
-import { name as packageId } from "../../../package.json";
-import { IWebWriterQuizType, registerQuizType } from "../../api";
+import type { IWebWriterQuizType } from "../../api";
 import { ArtboardContainerElement } from "../../lib/artboard";
 
 declare global {
@@ -10,15 +7,6 @@ declare global {
 		"webwriter-dnd": WebWriterDragAndDrop;
 	}
 }
-
-registerQuizType({
-	packageId,
-	widgetPosition: 20,
-	id: "webwriter-dnd",
-	getName: () => msg("Drag and Drop"),
-	icon: HandIndexThumbIcon,
-	createInstance: () => document.createElement("webwriter-dnd"),
-});
 
 @customElement("webwriter-dnd")
 export class WebWriterDragAndDrop extends ArtboardContainerElement implements IWebWriterQuizType {

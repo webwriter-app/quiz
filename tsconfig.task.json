@@ -1,0 +1,11 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"declaration": true,
+		"emitDeclarationOnly": true,
+		"rootDir": ".",
+		"outDir": "./dist/types",
+		"skipLibCheck": true
+	},
+	"files": ["custom.d.ts", "src/widgets/webwriter-task.ts"]
+}

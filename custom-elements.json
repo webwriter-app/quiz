@@ -8,7 +8,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "An answer where learners mark the words of a text that fit the question.\n\nThe text must be assigned to the default slot; the element itself must be\nassigned to the default slot of a `<webwriter-task>`.",
+          "description": "An answer where learners mark the words of a text that fit the question.\n\nPut the text to mark in the default slot.",
           "name": "WebWriterMark",
           "members": [
             {
@@ -302,13 +302,23 @@
             }
           ],
           "superclass": {
-            "name": "LitElementWw",
-            "package": "@webwriter/lit"
+            "name": "WebwriterTask",
+            "module": "src/widgets/webwriter-task.ts"
           },
           "tagName": "webwriter-mark",
           "customElement": true,
           "modulePath": "src/widgets/webwriter-mark.ts",
-          "definitionPath": "src/widgets/webwriter-mark.ts"
+          "definitionPath": "src/widgets/webwriter-mark.ts",
+          "slots": [
+            {
+              "name": "prompt",
+              "description": "The question prompt."
+            },
+            {
+              "name": "hint",
+              "description": "An optional question hint."
+            }
+          ]
         }
       ],
       "exports": [
@@ -336,7 +346,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "A generic hint element that can be used inside a variety of elements that\nexplicitly mention it in their documentation, such as `<webwriter-task>`.\n\nUnless otherwise specified, it should be assigned to the `hint` slot of its\nparent element.",
+          "description": "A generic hint element that can be used inside a variety of elements that\nexplicitly mention it in their documentation, such as quiz tasks and choice items.\n\nUnless otherwise specified, it should be assigned to the `hint` slot of its\nparent element.",
           "name": "WebwriterQuizHint",
           "members": [],
           "superclass": {
@@ -370,11 +380,49 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/widgets/webwriter-quiz-feedback.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Formatted feedback authored in the feedback slot of a question.",
+          "name": "WebwriterQuizFeedback",
+          "members": [],
+          "superclass": {
+            "name": "QuizElement",
+            "module": "src/lib/localization.ts"
+          },
+          "tagName": "webwriter-quiz-feedback",
+          "customElement": true,
+          "modulePath": "src/widgets/webwriter-quiz-feedback.ts",
+          "definitionPath": "src/widgets/webwriter-quiz-feedback.ts"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WebwriterQuizFeedback",
+          "declaration": {
+            "name": "WebwriterQuizFeedback",
+            "module": "src/widgets/webwriter-quiz-feedback.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "webwriter-quiz-feedback",
+          "declaration": {
+            "name": "WebwriterQuizFeedback",
+            "module": "src/widgets/webwriter-quiz-feedback.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/widgets/webwriter-quiz.ts",
       "declarations": [
         {
           "kind": "class",
-          "description": "A quiz groups multiple `<webwriter-task>` elements into one exercise that is\nsubmitted, graded and reset as a whole.\n\nThe tasks must be assigned to the default slot.",
+          "description": "A quiz groups direct question elements into one exercise that is submitted, graded, and reset as a whole.",
           "name": "WebwriterQuiz",
           "members": [
             {
@@ -408,6 +456,17 @@
               "default": "false",
               "description": "Whether learners have to confirm a dialog before resetting.",
               "attribute": "confirm-reset",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "hideQuestionTitle",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether the generated question titles are hidden.",
+              "attribute": "hide-question-title",
               "reflects": true
             },
             {
@@ -583,6 +642,15 @@
               "fieldName": "confirmReset"
             },
             {
+              "name": "hide-question-title",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether the generated question titles are hidden.",
+              "fieldName": "hideQuestionTitle"
+            },
+            {
               "name": "hide-points",
               "type": {
                 "text": "boolean"
@@ -623,50 +691,12 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/widgets/webwriter-task-prompt.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "The question text of a `<webwriter-task>`.\n\nIt must be assigned to the `prompt` slot of its parent element. An optional\n`<webwriter-quiz-hint>` may be assigned to its `hint` slot.",
-          "name": "WebwriterTaskPrompt",
-          "members": [],
-          "superclass": {
-            "name": "LitElementWw",
-            "package": "@webwriter/lit"
-          },
-          "tagName": "webwriter-task-prompt",
-          "customElement": true,
-          "modulePath": "src/widgets/webwriter-task-prompt.ts",
-          "definitionPath": "src/widgets/webwriter-task-prompt.ts"
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "WebwriterTaskPrompt",
-          "declaration": {
-            "name": "WebwriterTaskPrompt",
-            "module": "src/widgets/webwriter-task-prompt.ts"
-          }
-        },
-        {
-          "kind": "custom-element-definition",
-          "name": "webwriter-task-prompt",
-          "declaration": {
-            "name": "WebwriterTaskPrompt",
-            "module": "src/widgets/webwriter-task-prompt.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
       "path": "src/widgets/webwriter-task.ts",
       "declarations": [
         {
           "kind": "class",
-          "description": "A task describes a single quiz question, which consists of a\n`<webwriter-task-prompt>`, an optional `<webwriter-quiz-hint>` and an answer\nof a certain type, such as `<webwriter-choice>`.\n\nThe `<webwriter-task-prompt>` must be assigned to the `prompt` slot, the\n`<webwriter-quiz-hint>` must be assigned to the `hint` slot and the answer\nmust be assigned to the default slot.",
           "name": "WebwriterTask",
+          "description": "Base class for a quiz question.",
           "members": [
             {
               "kind": "field",
@@ -674,81 +704,10 @@
               "type": {
                 "text": "number"
               },
-              "privacy": "private",
               "default": "1",
+              "description": "The maximum score for this question.",
               "attribute": "points",
               "reflects": true
-            },
-            {
-              "kind": "field",
-              "name": "requiredWarning",
-              "type": {
-                "text": "boolean"
-              },
-              "privacy": "private",
-              "default": "false"
-            },
-            {
-              "kind": "field",
-              "name": "score",
-              "type": {
-                "text": "number | undefined"
-              },
-              "privacy": "private"
-            },
-            {
-              "kind": "field",
-              "name": "gradable",
-              "type": {
-                "text": "boolean"
-              },
-              "privacy": "private",
-              "default": "false"
-            },
-            {
-              "kind": "field",
-              "name": "gradabilityUpdate",
-              "type": {
-                "text": "number"
-              },
-              "privacy": "private",
-              "default": "0"
-            },
-            {
-              "kind": "method",
-              "name": "formatScore",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "score",
-                  "type": {
-                    "text": "number"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "updateGradability",
-              "privacy": "private"
-            },
-            {
-              "kind": "method",
-              "name": "QuizHeader",
-              "privacy": "private"
-            },
-            {
-              "kind": "method",
-              "name": "TaskResult",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "quiz",
-                  "type": {
-                    "text": "WebwriterQuiz"
-                  }
-                }
-              ]
             }
           ],
           "attributes": [
@@ -758,31 +717,34 @@
                 "text": "number"
               },
               "default": "1",
+              "description": "The maximum score for this question.",
               "fieldName": "points"
             }
           ],
+          "slots": [
+            {
+              "name": "prompt",
+              "description": "The question prompt."
+            },
+            {
+              "name": "hint",
+              "description": "An optional question hint."
+            },
+            {
+              "name": "feedback",
+              "description": "Optional formatted feedback shown after a valid submission."
+            }
+          ],
           "superclass": {
-            "name": "LitElementWw",
-            "package": "@webwriter/lit"
-          },
-          "tagName": "webwriter-task",
-          "customElement": true,
-          "modulePath": "src/widgets/webwriter-task.ts",
-          "definitionPath": "src/widgets/webwriter-task.ts"
+            "name": "QuizElement",
+            "module": "src/lib/localization.ts"
+          }
         }
       ],
       "exports": [
         {
           "kind": "js",
           "name": "WebwriterTask",
-          "declaration": {
-            "name": "WebwriterTask",
-            "module": "src/widgets/webwriter-task.ts"
-          }
-        },
-        {
-          "kind": "custom-element-definition",
-          "name": "webwriter-task",
           "declaration": {
             "name": "WebwriterTask",
             "module": "src/widgets/webwriter-task.ts"
@@ -796,7 +758,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "An answer where learners type a value into an input field.\n\nIt must be assigned to the default slot of a `<webwriter-task>`.",
+          "description": "An answer where learners type a value into an input field.",
           "name": "WebwriterText",
           "members": [
             {
@@ -1043,13 +1005,23 @@
             }
           ],
           "superclass": {
-            "name": "LitElementWw",
-            "package": "@webwriter/lit"
+            "name": "WebwriterTask",
+            "module": "src/widgets/webwriter-task.ts"
           },
           "tagName": "webwriter-text",
           "customElement": true,
           "modulePath": "src/widgets/webwriter-text.ts",
-          "definitionPath": "src/widgets/webwriter-text.ts"
+          "definitionPath": "src/widgets/webwriter-text.ts",
+          "slots": [
+            {
+              "name": "prompt",
+              "description": "The question prompt."
+            },
+            {
+              "name": "hint",
+              "description": "An optional question hint."
+            }
+          ]
         }
       ],
       "exports": [
@@ -1395,13 +1367,23 @@
             }
           ],
           "superclass": {
-            "name": "LitElementWw",
-            "package": "@webwriter/lit"
+            "name": "WebwriterTask",
+            "module": "src/widgets/webwriter-task.ts"
           },
           "tagName": "webwriter-choice",
           "customElement": true,
           "modulePath": "src/widgets/choice/webwriter-choice.ts",
-          "definitionPath": "src/widgets/choice/webwriter-choice.ts"
+          "definitionPath": "src/widgets/choice/webwriter-choice.ts",
+          "slots": [
+            {
+              "name": "prompt",
+              "description": "The question prompt."
+            },
+            {
+              "name": "hint",
+              "description": "An optional question hint."
+            }
+          ]
         }
       ],
       "exports": [
@@ -1429,7 +1411,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "An answer where learners decide whether a statement is true or false.\n\nIt must be assigned to the default slot of a `<webwriter-task>`.",
+          "description": "An answer where learners decide whether a statement is true or false.",
           "name": "WebwriterTrueFalse",
           "members": [
             {
@@ -1526,13 +1508,23 @@
             }
           ],
           "superclass": {
-            "name": "LitElementWw",
-            "package": "@webwriter/lit"
+            "name": "WebwriterTask",
+            "module": "src/widgets/webwriter-task.ts"
           },
           "tagName": "webwriter-true-false",
           "customElement": true,
           "modulePath": "src/widgets/choice/webwriter-true-false.ts",
-          "definitionPath": "src/widgets/choice/webwriter-true-false.ts"
+          "definitionPath": "src/widgets/choice/webwriter-true-false.ts",
+          "slots": [
+            {
+              "name": "prompt",
+              "description": "The question prompt."
+            },
+            {
+              "name": "hint",
+              "description": "An optional question hint."
+            }
+          ]
         }
       ],
       "exports": [
@@ -1935,13 +1927,23 @@
             }
           ],
           "superclass": {
-            "name": "LitElementWw",
-            "package": "@webwriter/lit"
+            "name": "WebwriterTask",
+            "module": "src/widgets/webwriter-task.ts"
           },
           "tagName": "webwriter-gap",
           "customElement": true,
           "modulePath": "src/widgets/gap/webwriter-gap.ts",
-          "definitionPath": "src/widgets/gap/webwriter-gap.ts"
+          "definitionPath": "src/widgets/gap/webwriter-gap.ts",
+          "slots": [
+            {
+              "name": "prompt",
+              "description": "The question prompt."
+            },
+            {
+              "name": "hint",
+              "description": "An optional question hint."
+            }
+          ]
         }
       ],
       "exports": [
@@ -2182,13 +2184,23 @@
             }
           ],
           "superclass": {
-            "name": "LitElementWw",
-            "package": "@webwriter/lit"
+            "name": "WebwriterTask",
+            "module": "src/widgets/webwriter-task.ts"
           },
           "tagName": "webwriter-order",
           "customElement": true,
           "modulePath": "src/widgets/order/webwriter-order.ts",
-          "definitionPath": "src/widgets/order/webwriter-order.ts"
+          "definitionPath": "src/widgets/order/webwriter-order.ts",
+          "slots": [
+            {
+              "name": "prompt",
+              "description": "The question prompt."
+            },
+            {
+              "name": "hint",
+              "description": "An optional question hint."
+            }
+          ]
         }
       ],
       "exports": [
@@ -2707,7 +2719,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "An answer where learners record a spoken response.\n\nIt must be assigned to the default slot of a `<webwriter-task>`.",
+          "description": "An answer where learners record a spoken response.",
           "name": "WebwriterSpeech",
           "members": [
             {
@@ -2717,7 +2729,7 @@
                 "text": "string | null"
               },
               "default": "null",
-              "description": "The recording of the learner as a data URL, or `null` if nothing was recorded yet.",
+              "description": "An existing recording URL saved in authored HTML.",
               "attribute": "src",
               "reflects": true
             },
@@ -2742,18 +2754,28 @@
                 "text": "string | null"
               },
               "default": "null",
-              "description": "The recording of the learner as a data URL, or `null` if nothing was recorded yet.",
+              "description": "An existing recording URL saved in authored HTML.",
               "fieldName": "src"
             }
           ],
           "superclass": {
-            "name": "LitElementWw",
-            "package": "@webwriter/lit"
+            "name": "WebwriterTask",
+            "module": "src/widgets/webwriter-task.ts"
           },
           "tagName": "webwriter-speech",
           "customElement": true,
           "modulePath": "src/widgets/speech/webwriter-speech.ts",
-          "definitionPath": "src/widgets/speech/webwriter-speech.ts"
+          "definitionPath": "src/widgets/speech/webwriter-speech.ts",
+          "slots": [
+            {
+              "name": "prompt",
+              "description": "The question prompt."
+            },
+            {
+              "name": "hint",
+              "description": "An optional question hint."
+            }
+          ]
         }
       ],
       "exports": [

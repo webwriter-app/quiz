@@ -1,18 +1,17 @@
-import { msg } from "@lit/localize";
-import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
-import { action, LitElementWw, type OptionDeclaration } from "@webwriter/lit";
+import { type OptionDeclaration } from "@webwriter/lit";
 import ArrowDownUpIcon from "bootstrap-icons/icons/arrow-down-up.svg";
-import PlusIcon from "bootstrap-icons/icons/plus.svg";
-import { css, html, nothing, PropertyValues } from "lit";
-import { customElement, property, queryAssignedElements } from "lit/decorators.js";
-import LOCALIZE from "../../../localization/generated";
+import { css, html, PropertyValues } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import { name as packageId } from "../../../package.json";
-import { IWebWriterQuizType, registerQuizType } from "../../api";
+import { registerQuizType } from "../../api";
 import { DraggableGrid, DraggableGridReorderEvent } from "../../lib/draggable-grid";
 import { encryptedProperty, encryptPlaintextAttributes } from "../../lib/encrypted-property";
-import { commonStyles, randomizeArray } from "../../lib/utils";
-import { mutateWithStableSelection, registerAsEnterCreatesNew } from "../../lib/webwriter-quirks";
+import { QuizItems } from "../../lib/quiz-items";
+import { commonStyles } from "../../lib/utils";
+import { mutateWithStableSelection } from "../../lib/webwriter-quirks";
 import type { WebwriterOrderItem } from "./webwriter-order-item";
+import { messageFor } from "../../lib/localization";
+import { WebwriterTask } from "../webwriter-task";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -30,9 +29,15 @@ registerQuizType({
 	packageId,
 	widgetPosition: 20,
 	id: "webwriter-order",
-	getName: () => msg("Order"),
+	getName: (locale, translate = messageFor(locale)) => translate("Order"),
 	icon: ArrowDownUpIcon,
-	createInstance: () => document.createElement("webwriter-order"),
+	createInstance: () => {
+		const task = document.createElement("webwriter-order");
+		const item = document.createElement("webwriter-order-item");
+		item.append(document.createElement("p"));
+		task.append(item);
+		return task;
+	},
 });
 
 /**
@@ -42,62 +47,71 @@ registerQuizType({
  * slot.
  */
 @customElement("webwriter-order")
-export class WebwriterOrder extends LitElementWw implements IWebWriterQuizType {
+export class WebwriterOrder extends WebwriterTask {
+	static shadowRootOptions: ShadowRootInit = { ...WebwriterTask.shadowRootOptions, slotAssignment: "manual" };
+
 	/** @internal */
-	get dynamicOptions(): Record<string, OptionDeclaration> {
+	get actions() {
 		return {
+			...super.actions,
+			addOption: { label: { _: this.msg("Add Option") } },
+		};
+	}
+
+	/** @internal */
+	get options(): Record<string, OptionDeclaration> {
+		return {
+			...super.options,
 			"layout": {
 				type: "select",
-				label: { _: msg("Layout") },
+				label: { _: this.msg("Layout") },
 				options: [
-					{ value: "list", label: { _: msg("List") } },
-					{ value: "tiles", label: { _: msg("Tiles") } },
+					{ value: "list", label: { _: this.msg("List") } },
+					{ value: "tiles", label: { _: this.msg("Tiles") } },
 				],
-				description: { _: msg("The layout variant to use.") },
+				description: { _: this.msg("The layout variant to use.") },
 			},
 			"direction": {
 				type: "select",
-				label: { _: msg("Direction") },
+				label: { _: this.msg("Direction") },
 				options: [
-					{ value: "ascending", label: { _: msg("Ascending") } },
-					{ value: "descending", label: { _: msg("Descending") } },
+					{ value: "ascending", label: { _: this.msg("Ascending") } },
+					{ value: "descending", label: { _: this.msg("Descending") } },
 				],
-				description: { _: msg("The order direction to use.") },
+				description: { _: this.msg("The order direction to use.") },
 			},
-			"numbering-style": {
+			numberingStyle: {
 				type: "select",
-				label: { _: msg("Numbering") },
+				label: { _: this.msg("Numbering") },
 				options: [
-					{ value: "none", label: { _: msg("None") } },
-					{ value: "numeric", label: { _: msg("Numeric") } },
-					{ value: "alphabetic", label: { _: msg("Alphabetic") } },
-					{ value: "roman", label: { _: msg("Roman") } },
+					{ value: "none", label: { _: this.msg("None") } },
+					{ value: "numeric", label: { _: this.msg("Numeric") } },
+					{ value: "alphabetic", label: { _: this.msg("Alphabetic") } },
+					{ value: "roman", label: { _: this.msg("Roman") } },
 				],
-				description: { _: msg("The numbering style to use.") },
+				description: { _: this.msg("The numbering style to use.") },
 			},
-			"grading-method": {
+			gradingMethod: {
 				type: "select",
-				label: { _: msg("Grading") },
+				label: { _: this.msg("Grading") },
 				options: [
-					{ value: "pass-fail", label: { _: msg("Pass/Fail") } },
-					{ value: "partial-position", label: { _: msg("Partial (Position)") } },
-					{ value: "partial-sequence", label: { _: msg("Partial (Sequence)") } },
+					{ value: "pass-fail", label: { _: this.msg("Pass/Fail") } },
+					{ value: "partial-position", label: { _: this.msg("Partial (Position)") } },
+					{ value: "partial-sequence", label: { _: this.msg("Partial (Sequence)") } },
 				],
-				description: { _: msg("The grading method to use.") },
+				description: { _: this.msg("The grading method to use.") },
 			},
 		};
 	}
 
 	/** @internal */
-	localize = LOCALIZE;
-
-	/** @internal */
 	static scopedElements = {
+		...WebwriterTask.scopedElements,
 		"draggable-grid": DraggableGrid,
-		"sl-icon": SlIcon,
 	};
 
 	static styles = [
+		WebwriterTask.styles,
 		commonStyles,
 		css`
 			.container-list {
@@ -107,29 +121,8 @@ export class WebwriterOrder extends LitElementWw implements IWebWriterQuizType {
 
 			.container-tiles {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+				grid-template-columns: repeat(auto-fill, minmax(min(130px, 100%), 1fr));
 				gap: var(--sl-spacing-medium);
-
-				.add-option {
-					aspect-ratio: 1 / 1;
-
-					border: 1px dashed var(--sl-color-neutral-300);
-					border-radius: var(--sl-border-radius-medium);
-					box-sizing: border-box;
-					color: var(--sl-color-neutral-500);
-					cursor: pointer;
-
-					display: flex;
-					align-items: center;
-					justify-content: center;
-					gap: 0.5rem;
-
-					&:hover {
-						background-color: var(--sl-color-primary-50);
-						border-color: var(--sl-color-primary-300);
-						color: var(--sl-color-primary-700);
-					}
-				}
 			}
 		`,
 	];
@@ -140,7 +133,7 @@ export class WebwriterOrder extends LitElementWw implements IWebWriterQuizType {
 	 * - `list`: One item per row.
 	 * - `tiles`: A responsive grid of equally sized tiles.
 	 */
-	@property({ type: String, attribute: "layout", reflect: true })
+	@property({ type: String, attribute: "layout", reflect: true, useDefault: true })
 	accessor layout: OrderLayout = "list";
 
 	/**
@@ -149,7 +142,7 @@ export class WebwriterOrder extends LitElementWw implements IWebWriterQuizType {
 	 * - `ascending`: The first item carries the lowest position.
 	 * - `descending`: The first item carries the highest position.
 	 */
-	@property({ type: String, attribute: "direction", reflect: true })
+	@property({ type: String, attribute: "direction", reflect: true, useDefault: true })
 	accessor direction: OrderDirection = "ascending";
 
 	/**
@@ -160,7 +153,7 @@ export class WebwriterOrder extends LitElementWw implements IWebWriterQuizType {
 	 * - `alphabetic`: Latin letters (A., B., C., ...).
 	 * - `roman`: Roman numerals (I., II., III., ...).
 	 */
-	@property({ type: String, attribute: "numbering-style", reflect: true })
+	@property({ type: String, attribute: "numbering-style", reflect: true, useDefault: true })
 	accessor numberingStyle: OrderNumberingStyle = "numeric";
 
 	/**
@@ -170,29 +163,28 @@ export class WebwriterOrder extends LitElementWw implements IWebWriterQuizType {
 	 * - `partial-position`: Credit for each item in its correct position.
 	 * - `partial-sequence`: Credit for each pair of adjacent items in the correct order.
 	 */
-	@property({ type: String, attribute: "grading-method", reflect: true })
+	@property({ type: String, attribute: "grading-method", reflect: true, useDefault: true })
 	accessor gradingMethod: OrderGradingMethod = "pass-fail";
 
 	/**
 	 * The IDs of the items in their correct order. It is obfuscated in the markup so that learners cannot read it directly.
 	 */
-	@property({ type: Array, attribute: true, reflect: true, converter: encryptedProperty })
+	@property({ type: Array, attribute: true, reflect: true, useDefault: true, converter: encryptedProperty })
 	accessor solution: OrderSolution = [];
 
-	/** @internal */
-	@queryAssignedElements()
-	accessor items!: WebwriterOrderItem[];
+	private orderItems = new QuizItems<WebwriterOrderItem>(this, "webwriter-order-item", () => true);
+
+		/** @internal */
+		get items() {
+			return this.orderItems.ordered;
+		}
 
 	protected updated(changed: PropertyValues): void {
 		super.updated(changed);
 
-		if (changed.has("layout") || changed.has("numberingStyle") || changed.has("direction")) {
+		if (changed.has("layout") || changed.has("numberingStyle") || changed.has("direction") || changed.has("editable")) {
 			this.refreshItems();
 		}
-	}
-
-	private randomizeItems() {
-		this.append(...randomizeArray(this.items));
 	}
 
 	checkValidity(): boolean {
@@ -200,27 +192,30 @@ export class WebwriterOrder extends LitElementWw implements IWebWriterQuizType {
 	}
 
 	reset(): void {
-		this.randomizeItems();
+		this.orderItems.shuffle();
 	}
 
 	checkAnswer(detailedFeedback: boolean): number {
-		// TODO: Show detailed feedback if requested
+		const order = this.items.map(item => item.id);
+		const solution = this.solution.length || this.hasAttribute("solution")
+			? this.solution
+			: this.orderItems.authored.map(item => item.id);
+		if (!order.length) return 0;
+		const matches = order.filter((id, index) => id === solution[index]).length;
 
 		switch (this.gradingMethod) {
 			case "pass-fail":
-				return this.items.every((item, index) => item.id === this.solution[index]) ? 1 : 0;
+				return matches === order.length ? 1 : 0;
 			case "partial-position":
-				const correctPositions = this.items.filter((item, index) => item.id === this.solution[index]).length;
-				return correctPositions / this.items.length;
-			case "partial-sequence":
-				let correctSequenceCount = 0;
-				for (let i = 0; i < this.items.length - 1; i++) {
-					const currentIndexInSolution = this.solution.indexOf(this.items[i].id);
-					const nextIndexInSolution = this.solution.indexOf(this.items[i + 1].id);
-
-					if (currentIndexInSolution + 1 === nextIndexInSolution) correctSequenceCount++;
-				}
-				return correctSequenceCount / (this.items.length - 1);
+				return matches / order.length;
+			case "partial-sequence": {
+				if (order.length === 1) return matches;
+				const adjacentMatches = order.slice(0, -1).filter((id, index) => {
+					const position = solution.indexOf(id);
+					return position !== -1 && solution[position + 1] === order[index + 1];
+				}).length;
+				return adjacentMatches / (order.length - 1);
+			}
 			default:
 				return 0;
 		}
@@ -228,55 +223,43 @@ export class WebwriterOrder extends LitElementWw implements IWebWriterQuizType {
 
 	protected firstUpdated(changed: PropertyValues): void {
 		super.firstUpdated(changed);
-		encryptPlaintextAttributes(this);
-		if (!this.isContentEditable) {
-			this.randomizeItems();
-		} else {
-			this.solution = this.items.map(item => item.id);
-		}
+		if (this.editable) encryptPlaintextAttributes(this);
 	}
 
 	private refreshItems() {
 		this.items.forEach(item => item?.requestUpdate?.());
 	}
 
-	connectedCallback() {
-		super.connectedCallback();
-		registerAsEnterCreatesNew("webwriter-order-item");
-	}
-
 	private handleReorder({ detail }: DraggableGridReorderEvent) {
-		mutateWithStableSelection(detail.item, () => this.insertBefore(detail.item, detail.before));
+		if (!this.editable) {
+			this.orderItems.move(detail.item, detail.before);
+			return;
+		}
+		const items = this.orderItems.authored;
+		if (!items.includes(detail.item as WebwriterOrderItem) ||
+			(detail.before && !items.includes(detail.before as WebwriterOrderItem))) return;
+		mutateWithStableSelection(detail.item, () => {
+			this.insertBefore(detail.item, detail.before ?? this.feedbackElement);
+			this.solution = this.orderItems.authored.map(item => item.id);
+		});
 	}
 
-	@action({ label: { _: msg("Add Option") } })
-	private addOption() {
-		this.appendChild(document.createElement("webwriter-order-item"));
+	protected addOption() {
+		if (!this.isConnected || !this.editable) return;
+		const item = this.ownerDocument.createElement("webwriter-order-item");
+		item.id = "ww" + crypto.randomUUID();
+		item.append(this.ownerDocument.createElement("p"));
+		this.insertBefore(item, this.feedbackElement);
+		if (this.hasAttribute("solution")) this.solution = [...this.solution, item.id];
 	}
 
-	private AddOptionButton() {
-		if (this.layout !== "tiles" || !this.isContentEditable) return nothing;
-		return html`
-			<div class="add-option" @click=${this.addOption} id="add-option" data-not-draggable>
-				<sl-icon src=${PlusIcon}></sl-icon>
-				${msg("Add Option")}
-			</div>
-		`;
-	}
-
-	render() {
+	protected renderAnswer() {
 		return html`<draggable-grid
 			class="container-${this.layout}"
 			?vertical=${this.layout === "list"}
 			@reorder=${this.handleReorder}
 		>
-			<slot
-				@slotchange=${() => {
-					this.refreshItems();
-					if (this.isContentEditable) this.solution = this.items.map(item => item.id);
-				}}
-			></slot>
-			${this.AddOptionButton()}
+			<slot @slotchange=${this.refreshItems}></slot>
 		</draggable-grid>`;
 	}
 }

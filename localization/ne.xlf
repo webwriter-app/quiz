@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<file target-language="ne" source-language="en-US" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<trans-unit id="s23600058a1e98e13">
+  <source>Add Feedback</source>
+  <target>प्रतिक्रिया थप्नुहोस्</target>
+</trans-unit>
+<trans-unit id="s73c0e4814878d26e">
+  <source>Snap to grid</source>
+<target>ग्रिडमा मिलाउनुहोस्</target></trans-unit>
+<trans-unit id="s5c8e286841ccfd0e">
+  <source>Grid columns</source>
+<target>ग्रिडका स्तम्भहरू</target></trans-unit>
+<trans-unit id="s96d2f1dc180a46d8">
+  <source>Debug</source>
+<target>डिबग</target></trans-unit>
+<trans-unit id="s468f08dd3166cf44">
+  <source>Choose Background</source>
+<target>पृष्ठभूमि छान्नुहोस्</target></trans-unit>
+<trans-unit id="sc01c972e33754d22">
+  <source>Feedback if selected</source>
+<target>छान्दा प्रतिक्रिया</target></trans-unit>
+<trans-unit id="s31ac9cd289910c65">
+  <source>Feedback if not selected</source>
+<target>नछान्दा प्रतिक्रिया</target></trans-unit>
+<trans-unit id="s9daa676c05ab2a68">
+  <source>Single Choice</source>
+<target>एकल विकल्प</target></trans-unit>
+<trans-unit id="s485bbcc5d19e2b20">
+  <source>Multiple Choice</source>
+<target>बहुविकल्प</target></trans-unit>
+<trans-unit id="s159928724265eb05">
+  <source>Add Option</source>
+<target>विकल्प थप्नुहोस्</target></trans-unit>
+<trans-unit id="s37cbecaec58e2192">
+  <source>Mode</source>
+<target>मोड</target></trans-unit>
+<trans-unit id="s3d249bb480032121">
+  <source>List</source>
+<target>सूची</target></trans-unit>
+<trans-unit id="sde8252d2a4d268ce">
+  <source>Tiles</source>
+<target>टाइलहरू</target></trans-unit>
+<trans-unit id="s2e4818861000b13f">
+  <source>Layout</source>
+<target>लेआउट</target></trans-unit>
+<trans-unit id="sf0fce877a8caebec">
+  <source>Randomize Order</source>
+<target>क्रम अनियमित बनाउनुहोस्</target></trans-unit>
+<trans-unit id="s678dbf717a0b079d">
+  <source>Pass/Fail</source>
+<target>पास/फेल</target></trans-unit>
+<trans-unit id="sffeb741d73d302b3">
+  <source>Partial Credit</source>
+<target>आंशिक अङ्क</target></trans-unit>
+<trans-unit id="sb8f0e32715402f50">
+  <source>Grading Method</source>
+<target>ग्रेडिङ विधि</target></trans-unit>
+<trans-unit id="s021fb26da6a25f79">
+  <source>True or False</source>
+<target>सही वा गलत</target></trans-unit>
+<trans-unit id="s85ea99fb52be3385">
+  <source>True</source>
+<target>सही</target></trans-unit>
+<trans-unit id="s7254ca27b16ae2d8">
+  <source>False</source>
+<target>गलत</target></trans-unit>
+<trans-unit id="sf90be97cb08f3d5a">
+  <source>Placeholder</source>
+<target>स्थानधारक</target></trans-unit>
+<trans-unit id="sd24f4d056c0124f6">
+  <source>Empty gap</source>
+<target>खाली ठाउँ</target></trans-unit>
+<trans-unit id="sdb9694f31d64cfc8">
+  <source>Your answer</source>
+<target>तपाईंको उत्तर</target></trans-unit>
+<trans-unit id="s855bb4e2b08d1a18">
+  <source>No answer</source>
+<target>उत्तर छैन</target></trans-unit>
+<trans-unit id="s0d9a7bb29fee2d85">
+  <source>Correct answer</source>
+<target>सही उत्तर</target></trans-unit>
+<trans-unit id="seaf97719986faf4f">
+  <source>Gap</source>
+<target>खाली ठाउँ</target></trans-unit>
+<trans-unit id="scc5671964ae0d6f7">
+  <source>Insert gap at selection</source>
+<target>छनोटमा खाली ठाउँ घुसाउनुहोस्</target></trans-unit>
+<trans-unit id="sbbb7581f20733d79">
+  <source>Freeform input</source>
+<target>स्वतन्त्र इनपुट</target></trans-unit>
+<trans-unit id="sb20f85b66b8eed5b">
+  <source>Drag and drop</source>
+<target>तान्नुहोस् र छोड्नुहोस्</target></trans-unit>
+<trans-unit id="s34adfb0ab932043d">
+  <source>Ignore case</source>
+<target>ठूलो-सानो अक्षरको फरक बेवास्ता गर्नुहोस्</target></trans-unit>
+<trans-unit id="s2492f5fb1b05b45e">
+  <source>Text</source>
+<target>पाठ</target></trans-unit>
+<trans-unit id="s721db58b7b0ea2e3">
+  <source>Available answers</source>
+<target>उपलब्ध उत्तरहरू</target></trans-unit>
+<trans-unit id="s03d845021c14b84f">
+  <source>Return to answers</source>
+<target>उत्तरहरूमा फर्कनुहोस्</target></trans-unit>
+<trans-unit id="s4802e47fe2e95134">
+  <source>Option</source>
+<target>विकल्प</target></trans-unit>
+<trans-unit id="s2ba5f4d8f3bd7c57">
+  <source>Order</source>
+<target>क्रम</target></trans-unit>
+<trans-unit id="s2d96dca399230ff3">
+  <source>The layout variant to use.</source>
+<target>प्रयोग गर्नुपर्ने लेआउट प्रकार।</target></trans-unit>
+<trans-unit id="sd23ee5e66df8400a">
+  <source>Direction</source>
+<target>दिशा</target></trans-unit>
+<trans-unit id="s94c650bef124bd01">
+  <source>Ascending</source>
+<target>आरोही</target></trans-unit>
+<trans-unit id="s15bdec250a4a55fb">
+  <source>Descending</source>
+<target>अवरोही</target></trans-unit>
+<trans-unit id="s21b5ec7253ee5705">
+  <source>The order direction to use.</source>
+<target>प्रयोग गर्नुपर्ने क्रम दिशा।</target></trans-unit>
+<trans-unit id="sde7fee183b3bda88">
+  <source>Numbering</source>
+<target>नम्बरिङ</target></trans-unit>
+<trans-unit id="s669b18c6d2d9c95b">
+  <source>None</source>
+<target>कुनै पनि होइन</target></trans-unit>
+<trans-unit id="scc337566a7187408">
+  <source>Numeric</source>
+<target>अङ्कीय</target></trans-unit>
+<trans-unit id="se8a94b4effa2033e">
+  <source>Alphabetic</source>
+<target>वर्णमाला क्रम</target></trans-unit>
+<trans-unit id="s7667ffa7b27a7232">
+  <source>Roman</source>
+<target>रोमन</target></trans-unit>
+<trans-unit id="s36163be9d8064432">
+  <source>The numbering style to use.</source>
+<target>प्रयोग गर्नुपर्ने नम्बरिङ शैली।</target></trans-unit>
+<trans-unit id="s8685fbc5eca0de27">
+  <source>Grading</source>
+<target>ग्रेडिङ</target></trans-unit>
+<trans-unit id="s57784c3b7df6150c">
+  <source>Partial (Position)</source>
+<target>आंशिक (स्थान)</target></trans-unit>
+<trans-unit id="sb1c40c0af94993b6">
+  <source>Partial (Sequence)</source>
+<target>आंशिक (क्रम)</target></trans-unit>
+<trans-unit id="s4058ed60e59264ed">
+  <source>The grading method to use.</source>
+<target>प्रयोग गर्नुपर्ने ग्रेडिङ विधि।</target></trans-unit>
+<trans-unit id="s52cfa1d198476806">
+  <source>Item</source>
+<target>वस्तु</target></trans-unit>
+<trans-unit id="saadba46653e4ffef">
+  <source>Pairing</source>
+<target>जोडी मिलाउने</target></trans-unit>
+<trans-unit id="sbdc2605da169f810">
+  <source>Add Pair</source>
+<target>जोडी थप्नुहोस्</target></trans-unit>
+<trans-unit id="s16e1bead7b9c95ce">
+  <source>Memory</source>
+<target>स्मृति</target></trans-unit>
+<trans-unit id="sf4e3c96801ebe794">
+  <source>Volume: <x id="0" equiv-text="${this.volume}" />%</source>
+<target>भोल्युम: <x id="0" equiv-text="${this.volume}" />%</target></trans-unit>
+<trans-unit id="s7acd963aa22be70c">
+  <source>Speed: <x id="0" equiv-text="${this.playbackSpeed}" />x</source>
+<target>गति: <x id="0" equiv-text="${this.playbackSpeed}" />x</target></trans-unit>
+<trans-unit id="s5d86300c6e210017">
+  <source>WebWriter does not have permission to access the microphone.</source>
+<target>WebWriter लाई माइक्रोफोन पहुँच गर्ने अनुमति छैन।</target></trans-unit>
+<trans-unit id="sb5b8485f95c97a79">
+  <source>An error occurred while accessing the microphone.</source>
+<target>माइक्रोफोन पहुँच गर्दा त्रुटि भयो।</target></trans-unit>
+<trans-unit id="s653f729e608b6653">
+  <source>Click to Start Recording</source>
+<target>रेकर्डिङ सुरु गर्न क्लिक गर्नुहोस्</target></trans-unit>
+<trans-unit id="saa3efba1f0c816b7">
+  <source>Speech</source>
+<target>वाणी</target></trans-unit>
+<trans-unit id="s49c940aecfef3ea0">
+  <source>Mark</source>
+<target>चिह्न लगाउने</target></trans-unit>
+<trans-unit id="s848dd69654cedb5a">
+  <source>Toggle Marking at Position</source>
+<target>यस स्थानमा चिह्न लगाउने सुविधा टगल गर्नुहोस्</target></trans-unit>
+<trans-unit id="s80dc9f56411917df">
+  <source>Text to Highlight</source>
+<target>हाइलाइट गर्ने पाठ</target></trans-unit>
+<trans-unit id="s3ff3b89e5871fae3">
+  <source>Multiple lines are not supported</source>
+<target>धेरै लाइनहरू समर्थित छैनन्</target></trans-unit>
+<trans-unit id="s9dcffdd89c8e0f58">
+  <source>Hint</source>
+<target>सङ्केत</target></trans-unit>
+<trans-unit id="s7a153886c76b7dcb">
+  <source>Show detailed feedback</source>
+<target>विस्तृत प्रतिक्रिया देखाउनुहोस्</target></trans-unit>
+<trans-unit id="s2f9c7cb1f24c3de8">
+  <source>Require confirmation before submitting</source>
+<target>पेश गर्नुअघि पुष्टि आवश्यक छ</target></trans-unit>
+<trans-unit id="s5ca3b69235e6046b">
+  <source>Require confirmation before resetting</source>
+<target>रिसेट गर्नुअघि पुष्टि आवश्यक छ</target></trans-unit>
+<trans-unit id="s2e379649e77c8952">
+  <source>Hide question titles</source>
+<target>प्रश्नका शीर्षकहरू लुकाउनुहोस्</target></trans-unit>
+<trans-unit id="saa48690ce74705d4">
+  <source>Hide points</source>
+<target>अङ्कहरू लुकाउनुहोस्</target></trans-unit>
+<trans-unit id="s53bc6e49623c8f80">
+  <source>Add Question</source>
+<target>प्रश्न थप्नुहोस्</target></trans-unit>
+<trans-unit id="s766f42576852db83">
+  <source>Submit answers?</source>
+<target>उत्तरहरू पेश गर्ने?</target></trans-unit>
+<trans-unit id="sbcdedcdd8451318c">
+  <source>Reset answers?</source>
+<target>उत्तरहरू रिसेट गर्ने?</target></trans-unit>
+<trans-unit id="s0b733d4a22c3b12f">
+  <source>Submit your answers for evaluation?</source>
+<target>मूल्याङ्कनका लागि आफ्ना उत्तरहरू पेश गर्ने?</target></trans-unit>
+<trans-unit id="s7ac431061b2ebf1a">
+  <source>Reset all answers and start over?</source>
+<target>सबै उत्तरहरू रिसेट गरेर फेरि सुरु गर्ने?</target></trans-unit>
+<trans-unit id="s2ceb11be2290bb1b">
+  <source>Cancel</source>
+<target>रद्द गर्नुहोस्</target></trans-unit>
+<trans-unit id="sb3d4f79d9d8b71e5">
+  <source>Submit</source>
+<target>पेश गर्नुहोस्</target></trans-unit>
+<trans-unit id="s270d49ea25614a7b">
+  <source>Reset answers</source>
+<target>उत्तरहरू रिसेट गर्नुहोस्</target></trans-unit>
+<trans-unit id="s729dc6aabe408a53">
+  <source>Question <x id="0" equiv-text="${1}" /></source>
+<target>प्रश्न <x id="0" equiv-text="${1}" /></target></trans-unit>
+<trans-unit id="scabf78417c4e5d86">
+  <source>Points</source>
+<target>अङ्कहरू</target></trans-unit>
+<trans-unit id="s6b39496c00a99aed">
+  <source>Move question up</source>
+<target>प्रश्न माथि सार्नुहोस्</target></trans-unit>
+<trans-unit id="s4ba3fea645f5b52c">
+  <source>Move question down</source>
+<target>प्रश्न तल सार्नुहोस्</target></trans-unit>
+<trans-unit id="s3b6b3fe1c8b7b5de">
+  <source>Delete question</source>
+<target>प्रश्न मेटाउनुहोस्</target></trans-unit>
+<trans-unit id="s43f438831bf2524d">
+  <source>Unanswered</source>
+<target>उत्तर दिइएको छैन</target></trans-unit>
+<trans-unit id="s71ba655ef7772e6c">
+  <source>Incorrect</source>
+<target>गलत</target></trans-unit>
+<trans-unit id="s4158d5fc29a1f991">
+  <source>Correct</source>
+<target>सही</target></trans-unit>
+<trans-unit id="s19d2c07c1effbdaf">
+  <source>Partially correct</source>
+<target>आंशिक रूपमा सही</target></trans-unit>
+<trans-unit id="s73feab3544c345b1">
+  <source>point</source>
+<target>अङ्क</target></trans-unit>
+<trans-unit id="sdd02ad83d7cf88a6">
+  <source>points</source>
+<target>अङ्कहरू</target></trans-unit>
+<trans-unit id="s54393bfa280ea55b">
+  <source>Prompt</source>
+<target>प्रम्प्ट</target></trans-unit>
+<trans-unit id="sd2223afb7d6b100d">
+  <source>Type</source>
+<target>प्रकार</target></trans-unit>
+<trans-unit id="sfe628f6e69f78cca">
+  <source>Long Text</source>
+<target>लामो पाठ</target></trans-unit>
+<trans-unit id="s2317e68a652c8498">
+  <source>Short Text</source>
+<target>छोटो पाठ</target></trans-unit>
+<trans-unit id="sbbb97b1c63507dc0">
+  <source>Number</source>
+<target>सङ्ख्या</target></trans-unit>
+<trans-unit id="sac8252732f2edb19">
+  <source>Date</source>
+<target>मिति</target></trans-unit>
+<trans-unit id="s48e186fb300e5464">
+  <source>Time</source>
+<target>समय</target></trans-unit>
+<trans-unit id="s9bae45e308549364">
+  <source>Date &amp; Time</source>
+<target>मिति र समय</target></trans-unit>
+<trans-unit id="se2af7220fe721133">
+  <source>Free answer</source>
+<target>स्वतन्त्र उत्तर</target></trans-unit>
+<trans-unit id="sa0a8f80935f767dd">
+  <source>Ignore capitalization</source>
+<target>ठूलो-सानो अक्षरको फरक बेवास्ता गर्नुहोस्</target></trans-unit>
+<trans-unit id="s1705e89d78286348">
+  <source>Message for correct solution</source>
+<target>सही समाधानका लागि सन्देश</target></trans-unit>
+<trans-unit id="sea7b286dd4c986fd">
+  <source>Message for wrong solution</source>
+<target>गलत समाधानका लागि सन्देश</target></trans-unit>
+<trans-unit id="sa937fce28916575e">
+  <source>Solution</source>
+<target>समाधान</target></trans-unit>
+<trans-unit id="sbb588bb505779122">
+  <source>Feedback</source>
+<target>प्रतिक्रिया</target></trans-unit>
+</body>
+</file>
+</xliff>

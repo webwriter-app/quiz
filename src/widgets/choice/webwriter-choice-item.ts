@@ -1,7 +1,6 @@
-import { msg } from "@lit/localize";
 import SlIconButton from "@shoelace-style/shoelace/dist/components/icon-button/icon-button.component.js";
 import SlIcon from "@shoelace-style/shoelace/dist/components/icon/icon.component.js";
-import { LitElementWw, type OptionDeclaration } from "@webwriter/lit";
+import { type OptionDeclaration } from "@webwriter/lit";
 import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -11,6 +10,7 @@ import { DraggableGridItem } from "../../lib/draggable-grid";
 import { HintPopup } from "../../lib/hint-popup";
 import { commonStyles } from "../../lib/utils";
 import type { WebwriterChoice } from "./webwriter-choice";
+import { QuizElement } from "../../lib/localization";
 
 /**
  * A single option of a `<webwriter-choice>`.
@@ -19,12 +19,12 @@ import type { WebwriterChoice } from "./webwriter-choice";
  * `<webwriter-quiz-hint>` may be assigned to its `hint` slot.
  */
 @customElement("webwriter-choice-item")
-export class WebwriterChoiceItem extends LitElementWw implements DraggableGridItem {
+export class WebwriterChoiceItem extends QuizElement implements DraggableGridItem {
 	/** @internal */
-	get dynamicOptions(): Record<string, OptionDeclaration> {
+	get options(): Record<string, OptionDeclaration> {
 		return {
-			"feedback-selected": { type: "string", label: { _: msg("Feedback if selected") } },
-			"feedback-not-selected": { type: "string", label: { _: msg("Feedback if not selected") } },
+			feedbackSelected: { type: "string", label: { _: this.msg("Feedback if selected") } },
+			feedbackNotSelected: { type: "string", label: { _: this.msg("Feedback if not selected") } },
 		};
 	}
 
@@ -235,13 +235,13 @@ export class WebwriterChoiceItem extends LitElementWw implements DraggableGridIt
 	/**
 	 * The feedback shown after submitting if learners selected this option.
 	 */
-	@property({ type: String, attribute: "feedback-selected", reflect: true })
+	@property({ type: String, attribute: "feedback-selected", reflect: true, useDefault: true })
 	accessor feedbackSelected: string = "";
 
 	/**
 	 * The feedback shown after submitting if learners did not select this option.
 	 */
-	@property({ type: String, attribute: "feedback-not-selected", reflect: true })
+	@property({ type: String, attribute: "feedback-not-selected", reflect: true, useDefault: true })
 	accessor feedbackNotSelected: string = "";
 
 	private dispatchSelectEvent() {

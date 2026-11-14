@@ -1,16 +1,33 @@
+import type { MsgFn } from "@lit/localize";
+
 export type QuizType = {
 	packageId: string;
 	widgetPosition?: number;
 	id: string;
 	icon: string;
-	getName(): string;
-	createInstance(): HTMLElement & IWebWriterQuizType;
+	getName(locale?: string, translate?: MsgFn): string;
+	createInstance(): QuizTaskElement;
 };
 
 export interface IWebWriterQuizType {
 	checkValidity(): boolean;
 	reset(): void;
 	checkAnswer?(detailedFeedback: boolean): number;
+}
+
+/** The quiz and its task classes may be loaded from separate bundles. */
+export interface QuizTaskElement extends HTMLElement, IWebWriterQuizType {
+	readonly maximumPoints: number;
+	readonly hostsQuestionPicker?: boolean;
+	showRequiredWarning(show: boolean): void;
+	showScore(score: number | undefined, submitted?: boolean): void;
+	resetFeedback(): void;
+	requestUpdate(): void;
+}
+
+export function isQuizTask(element: Element): element is QuizTaskElement {
+	const task = element as Partial<QuizTaskElement>;
+	return typeof task.checkValidity === "function" && typeof task.resetFeedback === "function";
 }
 
 type WebwriterQuizRegistry = {
@@ -21,13 +38,13 @@ type WebwriterQuizRegistry = {
 
 declare global {
 	interface Window {
-		__wwQuizRegistry__: WebwriterQuizRegistry;
+		__wwQuizTaskRegistry__: WebwriterQuizRegistry;
 	}
 }
 
 function getRegistry(): WebwriterQuizRegistry {
-	window.__wwQuizRegistry__ ??= { version: 1, quizTypes: [], listeners: [] };
-	return window.__wwQuizRegistry__;
+	window.__wwQuizTaskRegistry__ ??= { version: 2, quizTypes: [], listeners: [] };
+	return window.__wwQuizTaskRegistry__;
 }
 
 export function getQuizTypes(): readonly QuizType[] {

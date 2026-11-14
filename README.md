@@ -1,17 +1,27 @@
-# Quiz (`@webwriter/quiz@2.0.0`)
-[License: MIT](LICENSE) | Version: 2.0.0
+# Quiz (`@webwriter/quiz@3.0.0`)
+[License: MIT](LICENSE) | Version: 3.0.0
 
 Add interactive tasks (multiple choice, order, free text, highlighting, or speech input). Make a quiz out of multiple tasks.
 
+In WebWriter 2, use the quiz’s question buttons to insert questions. The package includes one-question snippets for each built-in type with question titles and points hidden.
 
+In edit mode, **Add Feedback** inserts a block you can edit and format in the question. Choice and Order group it with **Add Option** in both layouts. The last question shares that row with **Add Question** on the right. Learners see the feedback block after a valid submission, including for open-ended and ungraded questions. **Show detailed feedback** controls answer-specific feedback and solution reveal.
 
 
 
 ## `WebwriterQuiz` (`<webwriter-quiz>`)
-A quiz groups multiple `<webwriter-task>` elements into one exercise that is
-submitted, graded and reset as a whole.
+A quiz groups direct question elements into one exercise that is submitted,
+graded, and reset as a whole. Each question owns its prompt, point value, and
+type-specific content.
 
-The tasks must be assigned to the default slot.
+```html
+<webwriter-quiz>
+  <webwriter-true-false points="2">
+    <webwriter-quiz-hint slot="hint"><p>Think about the solar system.</p></webwriter-quiz-hint>
+    <p slot="prompt">Earth orbits the Sun.</p>
+  </webwriter-true-false>
+</webwriter-quiz>
+```
 
 ### Usage
 
@@ -40,6 +50,7 @@ npm install @webwriter/quiz
 | `detailedFeedback` (`detailed-feedback`) | `boolean` | Whether learners see per-answer feedback and the solution after submitting. | `false` | ✓ |
 | `confirmSubmit` (`confirm-submit`) | `boolean` | Whether learners have to confirm a dialog before submitting. | `false` | ✓ |
 | `confirmReset` (`confirm-reset`) | `boolean` | Whether learners have to confirm a dialog before resetting. | `false` | ✓ |
+| `hideQuestionTitle` (`hide-question-title`) | `boolean` | Whether the generated question titles are hidden. | `false` | ✓ |
 | `hidePoints` (`hide-points`) | `boolean` | Whether the points of each task and the total score are hidden. | `false` | ✓ |
 
 *Fields including [properties](https://developer.mozilla.org/en-US/docs/Glossary/Property/JavaScript) and [attributes](https://developer.mozilla.org/en-US/docs/Glossary/Attribute) define the current state of the widget and offer customization options.*
@@ -54,86 +65,26 @@ npm install @webwriter/quiz
 *No public methods, slots, events, custom CSS properties, or CSS parts.*
 
 
-## `WebwriterTask` (`<webwriter-task>`)
-A task describes a single quiz question, which consists of a
-`<webwriter-task-prompt>`, an optional `<webwriter-quiz-hint>` and an answer
-of a certain type, such as `<webwriter-choice>`.
+## Custom question types
 
-The `<webwriter-task-prompt>` must be assigned to the `prompt` slot, the
-`<webwriter-quiz-hint>` must be assigned to the `hint` slot and the answer
-must be assigned to the default slot.
+Extend `WebwriterTask` from `@webwriter/quiz/task`. Implement
+`renderAnswer()`, `checkValidity()`, and `reset()`. To grade the answer,
+also implement `checkAnswer(detailedFeedback)` and return a score from 0 to 1.
+Extend the base styles and scoped elements when declaring your own. Merge
+`super.options` and `super.actions` into any instance declarations so the
+drawer shows points and question commands.
 
-### Usage
-
-Use with a CDN (e.g. [jsdelivr](https://jsdelivr.com)):
-```html
-<link href="https://cdn.jsdelivr.net/npm/@webwriter/quiz/widgets/webwriter-task.css" rel="stylesheet">
-<script type="module" src="https://cdn.jsdelivr.net/npm/@webwriter/quiz/widgets/webwriter-task.js"></script>
-<webwriter-task></webwriter-task>
-```
-
-Or use with a bundler (e.g. [Vite](https://vite.dev)):
-
-```
-npm install @webwriter/quiz
-```
-
-```html
-<link href="@webwriter/quiz/widgets/webwriter-task.css" rel="stylesheet">
-<script type="module" src="@webwriter/quiz/widgets/webwriter-task.js"></script>
-<webwriter-task></webwriter-task>
-```
-
-## Editing config
-| Name | Value |
-| :--: | :---------: |
-
-
-*The [editing config](https://webwriter.app/docs/packages/configuring/#editingconfig) defines how explorable authoring tools such as [WebWriter](https://webwriter.app) treat the widget.*
-
-*No public fields, methods, slots, events, custom CSS properties, or CSS parts.*
-
-
-## `WebwriterTaskPrompt` (`<webwriter-task-prompt>`)
-The question text of a `<webwriter-task>`.
-
-It must be assigned to the `prompt` slot of its parent element. An optional
-`<webwriter-quiz-hint>` may be assigned to its `hint` slot.
-
-### Usage
-
-Use with a CDN (e.g. [jsdelivr](https://jsdelivr.com)):
-```html
-<link href="https://cdn.jsdelivr.net/npm/@webwriter/quiz/widgets/webwriter-task-prompt.css" rel="stylesheet">
-<script type="module" src="https://cdn.jsdelivr.net/npm/@webwriter/quiz/widgets/webwriter-task-prompt.js"></script>
-<webwriter-task-prompt></webwriter-task-prompt>
-```
-
-Or use with a bundler (e.g. [Vite](https://vite.dev)):
-
-```
-npm install @webwriter/quiz
-```
-
-```html
-<link href="@webwriter/quiz/widgets/webwriter-task-prompt.css" rel="stylesheet">
-<script type="module" src="@webwriter/quiz/widgets/webwriter-task-prompt.js"></script>
-<webwriter-task-prompt></webwriter-task-prompt>
-```
-
-## Editing config
-| Name | Value |
-| :--: | :---------: |
-
-
-*The [editing config](https://webwriter.app/docs/packages/configuring/#editingconfig) defines how explorable authoring tools such as [WebWriter](https://webwriter.app) treat the widget.*
-
-*No public fields, methods, slots, events, custom CSS properties, or CSS parts.*
-
+Register the custom element and call `registerQuizType` from
+`@webwriter/quiz/api` with a factory that creates an instance. Give the widget
+the `quiz-task` editing group and start its content expression with
+`webwriter-quiz-hint? p webwriter-quiz-feedback?`. The quiz supplies a `<p slot="prompt">` when the
+factory has not supplied one. A question hint is a direct
+`<webwriter-quiz-hint slot="hint">` child before the prompt. **Add Feedback**
+inserts a `<webwriter-quiz-feedback slot="feedback">` child after the answer content.
 
 ## `WebwriterQuizHint` (`<webwriter-quiz-hint>`)
 A generic hint element that can be used inside a variety of elements that
-explicitly mention it in their documentation, such as `<webwriter-task>`.
+explicitly mention it in their documentation, such as quiz tasks and choice items.
 
 Unless otherwise specified, it should be assigned to the `hint` slot of its
 parent element.
@@ -171,8 +122,6 @@ npm install @webwriter/quiz
 
 ## `WebwriterTrueFalse` (`<webwriter-true-false>`)
 An answer where learners decide whether a statement is true or false.
-
-It must be assigned to the default slot of a `<webwriter-task>`.
 
 ### Usage
 
@@ -419,8 +368,6 @@ npm install @webwriter/quiz
 ## `WebwriterSpeech` (`<webwriter-speech>`)
 An answer where learners record a spoken response.
 
-It must be assigned to the default slot of a `<webwriter-task>`.
-
 ### Usage
 
 Use with a CDN (e.g. [jsdelivr](https://jsdelivr.com)):
@@ -445,7 +392,7 @@ npm install @webwriter/quiz
 ## Fields
 | Name (Attribute Name) | Type | Description | Default | Reflects |
 | :-------------------: | :--: | :---------: | :-----: | :------: |
-| `src` (`src`) | `string \| null` | The recording of the learner as a data URL, or `null` if nothing was recorded yet. | `null` | ✓ |
+| `src` (`src`) | `string \| null` | An existing recording URL saved in authored HTML. | `null` | ✓ |
 
 *Fields including [properties](https://developer.mozilla.org/en-US/docs/Glossary/Property/JavaScript) and [attributes](https://developer.mozilla.org/en-US/docs/Glossary/Attribute) define the current state of the widget and offer customization options.*
 
@@ -469,8 +416,6 @@ npm install @webwriter/quiz
 
 ## `WebwriterText` (`<webwriter-text>`)
 An answer where learners type a value into an input field.
-
-It must be assigned to the default slot of a `<webwriter-task>`.
 
 ### Usage
 
@@ -529,8 +474,7 @@ npm install @webwriter/quiz
 ## `WebWriterMark` (`<webwriter-mark>`)
 An answer where learners mark the words of a text that fit the question.
 
-The text must be assigned to the default slot; the element itself must be
-assigned to the default slot of a `<webwriter-task>`.
+Put the text to mark in the default slot.
 
 ### Usage
 

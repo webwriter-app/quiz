@@ -1,7 +1,5 @@
-import { msg } from "@lit/localize";
-import { LitElementWw } from "@webwriter/lit";
-import { css, html } from "lit";
-import { state } from "lit/decorators.js";
+import { css, html, type PropertyValues } from "lit";
+import { property, state } from "lit/decorators.js";
 import { ref } from "lit/directives/ref.js";
 
 import SlButton from "@shoelace-style/shoelace/dist/components/button/button.component.js";
@@ -13,11 +11,12 @@ import PauseFillIcon from "bootstrap-icons/icons/pause-fill.svg";
 import PlayFillIcon from "bootstrap-icons/icons/play-fill.svg";
 import StopFillIcon from "bootstrap-icons/icons/stop-fill.svg";
 import { formatDuration, peakAmplitude, SAMPLE_BAR_SPACING, WaveformCanvas, waveformStyles } from "./waveform";
+import { QuizElement } from "../../lib/localization";
 
 const SAMPLES_PER_SECOND = 15;
 const FADE_WIDTH = 20;
 
-export class AudioRecorder extends LitElementWw {
+export class AudioRecorder extends QuizElement {
 	static scopedElements = {
 		"sl-button": SlButton,
 		"sl-icon": SlIcon,
@@ -46,14 +45,16 @@ export class AudioRecorder extends LitElementWw {
 		`,
 	];
 
+	@property({ attribute: false }) accessor disabled = false;
 	@state() private accessor recording = false;
+	@state() private accessor requesting = false;
 	@state() private accessor paused = false;
 	@state() private accessor errorMessage: string | null = null;
 	@state() private accessor duration = "00:00";
 
-	private mediaStream!: MediaStream;
-	private mediaRecorder!: MediaRecorder;
-	private audioChunks: Blob[] = [];
+	private mediaStream: MediaStream | undefined;
+	private mediaRecorder: MediaRecorder | undefined;
+	private recordingRequest = 0;
 
 	// Audio analysis for waveform visualization
 	private audioContext: AudioContext | null = null;
@@ -63,6 +64,7 @@ export class AudioRecorder extends LitElementWw {
 	private lastSampleTime: number = 0;
 	private sampleProgress: number = 0;
 	private sampleIntervalId: number | null = null;
+	private waveformFrame = 0;
 
 	private recordingStartTime: number = 0;
 	private recordingTimeOffset: number = 0;
@@ -98,26 +100,54 @@ export class AudioRecorder extends LitElementWw {
 	}
 
 	private async startRecording() {
+		if (this.disabled || this.requesting || this.mediaRecorder) return;
+		this.requesting = true;
+		this.errorMessage = null;
+		const request = ++this.recordingRequest;
+		let stream: MediaStream;
 		try {
-			this.mediaStream = await navigator.mediaDevices.getUserMedia({
-				audio: true,
-			});
+			stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 		} catch (e) {
+			if (request !== this.recordingRequest) return;
+			this.requesting = false;
 			if (e instanceof Error && e.name === "NotAllowedError") {
-				this.errorMessage = msg("WebWriter does not have permission to access the microphone.");
+				this.errorMessage = this.msg("WebWriter does not have permission to access the microphone.");
 			} else {
-				this.errorMessage = msg("An error occurred while accessing the microphone.");
+				this.errorMessage = this.msg("An error occurred while accessing the microphone.");
 			}
 			return;
 		}
-		this.mediaRecorder = new MediaRecorder(this.mediaStream);
+		if (request !== this.recordingRequest || !this.isConnected || this.disabled) {
+			stream.getTracks().forEach(track => track.stop());
+			return;
+		}
+		this.requesting = false;
+		this.mediaStream = stream;
+		try {
+			this.mediaRecorder = new MediaRecorder(stream);
+			this.audioContext = new AudioContext();
+			const source = this.audioContext.createMediaStreamSource(stream);
+			this.analyser = this.audioContext.createAnalyser();
+			this.analyser.fftSize = 256;
+			source.connect(this.analyser);
+			this.mediaRecorder.start();
+		} catch {
+			this.cancelRecording();
+			this.errorMessage = this.msg("An error occurred while accessing the microphone.");
+			return;
+		}
 
-		this.audioChunks = [];
-		this.mediaRecorder.ondataavailable = event => {
-			if (event.data.size > 0) this.audioChunks.push(event.data);
+		const recorder = this.mediaRecorder;
+		const audioChunks: Blob[] = [];
+		recorder.ondataavailable = event => {
+			if (event.data.size > 0) audioChunks.push(event.data);
 		};
-		this.mediaRecorder.onstop = () => {
-			const audioBlob = new Blob(this.audioChunks, { type: "audio/webm" });
+		recorder.onstop = () => {
+			if (request !== this.recordingRequest) return;
+			this.mediaRecorder = undefined;
+			this.recording = false;
+			this.releaseCapture();
+			const audioBlob = new Blob(audioChunks, { type: recorder.mimeType });
 			this.dispatchEvent(
 				new CustomEvent("recording-complete", {
 					detail: { audioBlob },
@@ -127,14 +157,6 @@ export class AudioRecorder extends LitElementWw {
 			);
 		};
 
-		this.mediaRecorder.start();
-
-		// Set up audio analysis for waveform visualization
-		this.audioContext = new AudioContext();
-		const source = this.audioContext.createMediaStreamSource(this.mediaStream);
-		this.analyser = this.audioContext.createAnalyser();
-		this.analyser.fftSize = 256;
-		source.connect(this.analyser);
 		this.analyserDataArray = new Uint8Array(this.analyser.frequencyBinCount);
 		this.amplitudeSamples = [];
 		this.sampleProgress = 0;
@@ -145,33 +167,57 @@ export class AudioRecorder extends LitElementWw {
 
 		this.recording = true;
 		await this.updateComplete;
+		if (!this.recording || request !== this.recordingRequest) return;
 		this.waveform.resize();
-		requestAnimationFrame(this.renderWaveform);
+		this.waveformFrame = requestAnimationFrame(this.renderWaveform);
 	}
 
 	private stopRecording() {
-		// this.recording = false
-		this.paused = false;
-		this.mediaRecorder.stop();
-		this.mediaStream.getTracks().forEach(track => track.stop());
+		if (this.mediaRecorder && this.mediaRecorder.state !== "inactive") this.mediaRecorder.stop();
+		this.releaseCapture();
+	}
 
-		// Clean up audio analysis resources
+	/** Stop a pending or active capture without producing a learner answer. */
+	cancelRecording() {
+		this.recordingRequest++;
+		this.requesting = false;
+		this.recording = false;
+		this.stopRecording();
+		this.mediaRecorder = undefined;
+	}
+
+	private releaseCapture() {
+		this.paused = false;
+		this.mediaStream?.getTracks().forEach(track => track.stop());
+		this.mediaStream = undefined;
+		cancelAnimationFrame(this.waveformFrame);
 		this.stopSampling();
 		if (this.audioContext) {
-			this.audioContext.close();
+			void this.audioContext.close();
 			this.audioContext = null;
 		}
 		this.analyser = null;
 		this.analyserDataArray = null;
 	}
 
+	disconnectedCallback() {
+		super.disconnectedCallback();
+		this.cancelRecording();
+	}
+
+	protected updated(changed: PropertyValues) {
+		super.updated(changed);
+		if (changed.has("disabled") && this.disabled) this.cancelRecording();
+	}
+
 	private pauseRecording() {
-		if (!this.recording || this.paused) return;
+		if (this.mediaRecorder?.state !== "recording") return;
 
 		this.paused = true;
 		this.pausedAt = Date.now();
 
 		this.mediaRecorder.pause();
+		cancelAnimationFrame(this.waveformFrame);
 		this.stopSampling();
 
 		// Suspend audio context to save resources
@@ -179,7 +225,7 @@ export class AudioRecorder extends LitElementWw {
 	}
 
 	private resumeRecording() {
-		if (!this.recording || !this.paused) return;
+		if (this.mediaRecorder?.state !== "paused") return;
 
 		// Add the paused duration to the offset so time calculations remain correct
 		this.recordingTimeOffset += this.pausedAt - this.recordingStartTime;
@@ -190,7 +236,7 @@ export class AudioRecorder extends LitElementWw {
 		this.startSampling();
 
 		this.paused = false;
-		requestAnimationFrame(this.renderWaveform);
+		this.waveformFrame = requestAnimationFrame(this.renderWaveform);
 	}
 
 	private renderWaveform = () => {
@@ -249,7 +295,7 @@ export class AudioRecorder extends LitElementWw {
 			ctx.fillRect(fadeX, 0, FADE_WIDTH, height);
 		}
 
-		requestAnimationFrame(this.renderWaveform);
+		this.waveformFrame = requestAnimationFrame(this.renderWaveform);
 	};
 
 	render() {
@@ -259,7 +305,7 @@ export class AudioRecorder extends LitElementWw {
 			if (this.errorMessage) {
 				content = html`<span class="error"><sl-icon src=${ExclamationCircle}></sl-icon>${this.errorMessage}</span>`;
 			} else {
-				content = html`<span class="info">${msg("Click to Start Recording")}</span>`;
+				content = html`<span class="info">${this.msg("Click to Start Recording")}</span>`;
 			}
 		} else {
 			content = html`
@@ -276,6 +322,7 @@ export class AudioRecorder extends LitElementWw {
 		return html`<sl-button
 				variant="primary"
 				circle
+				?disabled=${this.disabled || this.requesting}
 				@click=${() => (this.recording ? this.stopRecording() : this.startRecording())}
 			>
 				<sl-icon src=${this.recording ? StopFillIcon : MicFillIcon}></sl-icon>

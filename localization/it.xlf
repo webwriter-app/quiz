@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-<file target-language="it" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<file target-language="it" source-language="en-US" original="lit-localize-inputs" datatype="plaintext">
 <body>
+<trans-unit id="s23600058a1e98e13">
+  <source>Add Feedback</source>
+  <target>Aggiungi feedback</target>
+</trans-unit>
 <trans-unit id="s54393bfa280ea55b">
   <source>Prompt</source>
   <target>Consegna</target>
@@ -61,10 +65,6 @@
 <trans-unit id="s7254ca27b16ae2d8">
   <source>False</source>
   <target>Falso</target>
-</trans-unit>
-<trans-unit id="sdc9d86c26cff613b">
-  <source>Drag and Drop</source>
-  <target>Trascinamento</target>
 </trans-unit>
 <trans-unit id="sd24f4d056c0124f6">
   <source>Empty gap</source>
@@ -195,12 +195,12 @@
   <target>Memory</target>
 </trans-unit>
 <trans-unit id="sf4e3c96801ebe794">
-  <source>Volume: <x id="0" equiv-text="${this.volume}"/>%</source>
-  <target>Volume: <x id="0" equiv-text="${this.volume}"/>%</target>
+  <source>Volume: <x id="0" equiv-text="${this.volume}" />%</source>
+  <target>Volume: <x id="0" equiv-text="${this.volume}" />%</target>
 </trans-unit>
 <trans-unit id="s7acd963aa22be70c">
-  <source>Speed: <x id="0" equiv-text="${this.playbackSpeed}"/>x</source>
-  <target>Velocità: <x id="0" equiv-text="${this.playbackSpeed}"/>x</target>
+  <source>Speed: <x id="0" equiv-text="${this.playbackSpeed}" />x</source>
+  <target>Velocità: <x id="0" equiv-text="${this.playbackSpeed}" />x</target>
 </trans-unit>
 <trans-unit id="s5d86300c6e210017">
   <source>WebWriter does not have permission to access the microphone.</source>
@@ -298,18 +298,13 @@
   <source>Add Question</source>
   <target>Aggiungi domanda</target>
 </trans-unit>
-<trans-unit id="s729db3aabe406a0a">
-  <source>Question 1</source>
-  <target>Domanda 1</target>
-</trans-unit>
 <trans-unit id="scabf78417c4e5d86">
   <source>Points</source>
   <target>Punti</target>
 </trans-unit>
 <trans-unit id="s729dc6aabe408a53">
-  <source>Question <x id="0" equiv-text="${index + 1}"/></source>
-  <target>Domanda <x id="0" equiv-text="${index + 1}"/></target>
-</trans-unit>
+  <source>Question <x id="0" equiv-text="${1}" /></source>
+<target>Domanda <x id="0" equiv-text="${1}" /></target></trans-unit>
 <trans-unit id="s43f438831bf2524d">
   <source>Unanswered</source>
   <target>Senza risposta</target>
@@ -401,6 +396,26 @@
 <trans-unit id="s96d2f1dc180a46d8">
   <source>Debug</source>
   <target>Debug</target>
+</trans-unit>
+<trans-unit id="s6b39496c00a99aed">
+  <source>Move question up</source>
+  <target>Sposta la domanda in alto</target>
+</trans-unit>
+<trans-unit id="s4ba3fea645f5b52c">
+  <source>Move question down</source>
+  <target>Sposta la domanda in basso</target>
+</trans-unit>
+<trans-unit id="s3b6b3fe1c8b7b5de">
+  <source>Delete question</source>
+  <target>Elimina la domanda</target>
+</trans-unit>
+<trans-unit id="s2e379649e77c8952">
+  <source>Hide question titles</source>
+  <target>Nascondi i titoli delle domande</target>
+</trans-unit>
+<trans-unit id="sbb588bb505779122">
+  <source>Feedback</source>
+  <target>Feedback</target>
 </trans-unit>
 </body>
 </file>

@@ -2,7 +2,7 @@
     // Do not modify this file by hand!
     // Re-generate this file by running lit-localize
 
-    
+
     import {str} from '@lit/localize';
 
     /* eslint-disable no-irregular-whitespace */
@@ -20,17 +20,20 @@
 's19d2c07c1effbdaf': `Partiellement correct`,
 's21b5ec7253ee5705': `Sens de classement à utiliser.`,
 's2317e68a652c8498': `Texte court`,
+'s23600058a1e98e13': `Ajouter un commentaire`,
 's2492f5fb1b05b45e': `Texte`,
 's270d49ea25614a7b': `Réinitialiser les réponses`,
 's2ba5f4d8f3bd7c57': `Mise en ordre`,
 's2ceb11be2290bb1b': `Annuler`,
 's2d96dca399230ff3': `Variante de disposition à utiliser.`,
+'s2e379649e77c8952': `Masquer les titres des questions`,
 's2e4818861000b13f': `Disposition`,
 's2f9c7cb1f24c3de8': `Demander confirmation avant l'envoi`,
 's31ac9cd289910c65': `Feedback si non sélectionné`,
 's34adfb0ab932043d': `Ignorer la casse`,
 's36163be9d8064432': `Style de numérotation à utiliser.`,
 's37cbecaec58e2192': `Mode`,
+'s3b6b3fe1c8b7b5de': `Supprimer la question`,
 's3d249bb480032121': `Liste`,
 's3ff3b89e5871fae3': `Les lignes multiples ne sont pas prises en charge`,
 's4058ed60e59264ed': `Méthode de notation à utiliser.`,
@@ -41,6 +44,7 @@
 's485bbcc5d19e2b20': `Choix multiple`,
 's48e186fb300e5464': `Heure`,
 's49c940aecfef3ea0': `Surlignage`,
+'s4ba3fea645f5b52c': `Descendre la question`,
 's52cfa1d198476806': `Élément`,
 's53bc6e49623c8f80': `Ajouter une question`,
 's54393bfa280ea55b': `Énoncé`,
@@ -51,10 +55,10 @@
 's653f729e608b6653': `Cliquez pour démarrer l'enregistrement`,
 's669b18c6d2d9c95b': `Aucune`,
 's678dbf717a0b079d': `Tout ou rien`,
+'s6b39496c00a99aed': `Remonter la question`,
 's71ba655ef7772e6c': `Incorrect`,
 's721db58b7b0ea2e3': `Réponses disponibles`,
 's7254ca27b16ae2d8': `Faux`,
-'s729db3aabe406a0a': `Question 1`,
 's729dc6aabe408a53': str`Question ${0}`,
 's73c0e4814878d26e': `Aligner sur la grille`,
 's73feab3544c345b1': `point`,
@@ -84,6 +88,7 @@
 'sb3d4f79d9d8b71e5': `Envoyer`,
 'sb5b8485f95c97a79': `Une erreur s'est produite lors de l'accès au microphone.`,
 'sb8f0e32715402f50': `Méthode de notation`,
+'sbb588bb505779122': `Commentaire`,
 'sbbb7581f20733d79': `Saisie libre`,
 'sbbb97b1c63507dc0': `Nombre`,
 'sbcdedcdd8451318c': `Réinitialiser les réponses ?`,
@@ -96,7 +101,6 @@
 'sd23ee5e66df8400a': `Sens`,
 'sd24f4d056c0124f6': `Trou vide`,
 'sdb9694f31d64cfc8': `Votre réponse`,
-'sdc9d86c26cff613b': `Glisser-déposer`,
 'sdd02ad83d7cf88a6': `points`,
 'sde7fee183b3bda88': `Numérotation`,
 'sde8252d2a4d268ce': `Tuiles`,
@@ -110,4 +114,3 @@
 'sfe628f6e69f78cca': `Texte long`,
 'sffeb741d73d302b3': `Notation partielle`,
     };
-  
